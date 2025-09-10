@@ -2,6 +2,8 @@
 
 A lightweight, modern seller console built with React, TypeScript, and Tailwind CSS for triaging leads and converting them into opportunities. The application follows SOLID design principles with excellent separation of concerns and long-term maintainability.
 
+🌐 **Live Demo**: [https://sampconrad-coverpin.netlify.app/](https://sampconrad-coverpin.netlify.app/)
+
 ## 🚀 Features
 
 ### Lead Management
