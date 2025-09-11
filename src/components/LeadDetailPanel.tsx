@@ -6,7 +6,7 @@ import { useLeads } from '@/hooks/useLeads';
 import type { Lead } from '@/types';
 import { LeadStatus } from '@/types';
 import { formatDateTime, getScoreColor, getStatusColor } from '@/utils/dataTransform';
-import { validateLead } from '@/utils/validation';
+import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
 import { Building, Calendar, X as Cancel, Edit2, Mail, Save, Star, Trash2, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
@@ -56,11 +56,7 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
     // Validate form data
     const validationErrors = validateLead(formData);
     if (validationErrors.length > 0) {
-      const errorMap: Record<string, string> = {};
-      validationErrors.forEach((error) => {
-        errorMap[error.field] = error.message;
-      });
-      setErrors(errorMap);
+      setErrors(convertValidationErrorsToMap(validationErrors));
       return;
     }
 
@@ -317,7 +313,8 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
             <div className='px-6 py-4 border-t border-gray-200'>
               <Button
                 variant='primary'
-                onClick={() => onConvert(lead)}>
+                onClick={() => onConvert(lead)}
+                className='w-full sm:w-auto'>
                 Convert to Opportunity
               </Button>
             </div>
@@ -325,7 +322,6 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

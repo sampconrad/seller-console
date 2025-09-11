@@ -160,3 +160,58 @@ export const getScoreColor = (score: number): string => {
   if (score >= 40) return 'text-orange-600';
   return 'text-red-600';
 };
+
+/**
+ * Format source values to be user-friendly
+ */
+export const formatSource = (source: string): string => {
+  const sourceMap: Record<string, string> = {
+    website: 'Website',
+    referral: 'Referral',
+    cold_call: 'Cold Call',
+    email: 'Email',
+    social_media: 'Social Media',
+    advertisement: 'Advertisement',
+    trade_show: 'Trade Show',
+    other: 'Other',
+  };
+  return sourceMap[source] || source;
+};
+
+/**
+ * Format stage values to be user-friendly
+ */
+export const formatStage = (stage: string): string => {
+  const stageMap: Record<string, string> = {
+    prospecting: 'Prospecting',
+    qualification: 'Qualification',
+    proposal: 'Proposal',
+    negotiation: 'Negotiation',
+    closed_won: 'Closed Won',
+    closed_lost: 'Closed Lost',
+  };
+  return stageMap[stage] || stage;
+};
+
+/**
+ * Parse currency string to number (removes $ and commas)
+ */
+export const parseCurrency = (value: string): number => {
+  const cleaned = value.replace(/[$,]/g, '');
+  return parseFloat(cleaned) || 0;
+};
+
+/**
+ * Format currency with custom options
+ */
+export const formatCurrencyCustom = (value: number, options?: {
+  minimumFractionDigits?: number;
+  maximumFractionDigits?: number;
+}): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: options?.minimumFractionDigits ?? 0,
+    maximumFractionDigits: options?.maximumFractionDigits ?? 2,
+  }).format(value);
+};

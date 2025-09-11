@@ -9,7 +9,7 @@ import type {
   Opportunity,
   SortConfig,
 } from '@/types';
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 
 type AppAction =
   | { type: 'SET_LOADING'; payload: boolean }
@@ -117,7 +117,7 @@ const AppContext = createContext<{
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
-  const [isInitialized, setIsInitialized] = React.useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Load initial data from localStorage
   useEffect(() => {

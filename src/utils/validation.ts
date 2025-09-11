@@ -74,6 +74,16 @@ export const validateOpportunity = (opportunity: Partial<Opportunity>): Validati
   return errors;
 };
 
-// Import Lead and Opportunity types
+/**
+ * Convert validation errors array to error map for form handling
+ */
+export const convertValidationErrorsToMap = (errors: ValidationError[]): Record<string, string> => {
+  const errorMap: Record<string, string> = {};
+  errors.forEach((error) => {
+    errorMap[error.field] = error.message;
+  });
+  return errorMap;
+};
+
 import type { Lead, Opportunity } from '@/types';
 

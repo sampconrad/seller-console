@@ -6,11 +6,12 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useLeads } from '@/hooks/useLeads';
 import type { Lead, TableColumn } from '@/types';
 import { LeadStatus } from '@/types';
-import { formatDate, getScoreColor, getStatusColor } from '@/utils/dataTransform';
-import { ChevronLeft, ChevronRight, Download, Plus, Upload } from 'lucide-react';
-import React, { useState } from 'react';
+import { formatDate, formatSource, getScoreColor, getStatusColor } from '@/utils/dataTransform';
+import { Calendar, Download, Filter, Plus, Search, Upload } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import FormatSelectionModal from './FormatSelectionModal';
 import LeadFormModal from './LeadFormModal';
+import Pagination from './Pagination';
 import Badge from './ui/Badge';
 import Button from './ui/Button';
 import Input from './ui/Input';
@@ -36,12 +37,12 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
   const itemsPerPage = 20;
 
   // Update search filter when debounced value changes (doesn't save to localStorage)
-  React.useEffect(() => {
+  useEffect(() => {
     updateSearch(debouncedSearch);
   }, [debouncedSearch, updateSearch]);
 
   // Reset to first page when filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [filters.search, filters.status]);
 
@@ -50,37 +51,6 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedLeads = leads.slice(startIndex, endIndex);
-
-  // Generate page numbers for pagination
-  const getPageNumbers = () => {
-    const pages = [];
-    const maxVisiblePages = 5;
-
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      const startPage = Math.max(1, currentPage - 2);
-      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-      if (startPage > 1) {
-        pages.push(1);
-        if (startPage > 2) pages.push('...');
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) pages.push('...');
-        pages.push(totalPages);
-      }
-    }
-
-    return pages;
-  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -128,11 +98,24 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
       key: 'name',
       label: 'Name',
       sortable: true,
+      width: '200px',
       render: (value, lead) => (
-        <div>
-          <div className='font-medium text-gray-900'>{value}</div>
-          <div className='text-sm text-gray-500'>{lead.company}</div>
-          <div className='text-xs text-gray-400 font-mono'>#{lead.id}</div>
+        <div className='w-full min-w-0'>
+          <div
+            className='font-medium text-gray-900 truncate'
+            title={value as string}>
+            {value}
+          </div>
+          <div
+            className='text-sm text-gray-500 truncate'
+            title={lead.company}>
+            {lead.company}
+          </div>
+          <div
+            className='text-xs text-gray-400 font-mono truncate'
+            title={`#${lead.id}`}>
+            #{lead.id}
+          </div>
         </div>
       ),
     },
@@ -140,16 +123,33 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
       key: 'email',
       label: 'Email',
       sortable: true,
+      width: '240px',
+      render: (value) => (
+        <div
+          className='truncate'
+          title={value as string}>
+          {value}
+        </div>
+      ),
     },
     {
       key: 'source',
       label: 'Source',
       sortable: true,
+      width: '140px',
+      render: (value) => (
+        <div
+          className='truncate'
+          title={formatSource(value as string)}>
+          {formatSource(value as string)}
+        </div>
+      ),
     },
     {
       key: 'score',
       label: 'Score',
       sortable: true,
+      width: '90px',
       render: (value) => (
         <span className={`font-medium ${getScoreColor(value as number)}`}>{value}%</span>
       ),
@@ -158,6 +158,7 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
       key: 'status',
       label: 'Status',
       sortable: true,
+      width: '130px',
       render: (value) => (
         <Badge
           variant='default'
@@ -170,14 +171,20 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
       key: 'createdAt',
       label: 'Created',
       sortable: true,
-      render: (value) => formatDate(value as Date),
+      width: '150px',
+      render: (value) => (
+        <div className='flex items-center space-x-1'>
+          <Calendar className='w-4 h-4 text-gray-400' />
+          <span>{formatDate(value as Date)}</span>
+        </div>
+      ),
     },
   ];
 
   return (
     <div className='space-y-6'>
       {/* Header */}
-      <div className='w-full'>
+      <div className='w-full text-center sm:text-left'>
         <h1 className='text-2xl font-bold text-gray-900'>Leads</h1>
         <p className='text-gray-600'>Manage and convert your leads into opportunities</p>
       </div>
@@ -190,7 +197,7 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
             onClick={() => setIsImportModalOpen(true)}
             className='w-full sm:w-auto'>
             <Download className='w-4 h-4 mr-2' />
-            Import
+            Import Leads
           </Button>
           <Button
             variant='secondary'
@@ -198,7 +205,7 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
             disabled={leads.length === 0}
             className='w-full sm:w-auto'>
             <Upload className='w-4 h-4 mr-2' />
-            Export
+            Export Leads
           </Button>
         </div>
         <Button
@@ -217,11 +224,13 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
             placeholder='Search leads...'
             value={searchValue}
             onChange={handleSearchChange}
+            leftIcon={<Search className='w-4 h-4 text-gray-400' />}
           />
           <Select
             value={filters.status}
             onChange={handleStatusFilterChange}
             options={statusOptions}
+            leftIcon={<Filter className='w-4 h-4 text-gray-400' />}
           />
           <div className='text-sm text-gray-500 flex ml-auto mr-2 items-center'>
             {leads.length} lead{leads.length !== 1 ? 's' : ''} found
@@ -229,7 +238,6 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
         </div>
       </div>
 
-      {/* Table */}
       <Table
         data={paginatedLeads}
         columns={columns}
@@ -241,78 +249,16 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
         onRowClick={onLeadSelect}
       />
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className='bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6'>
-          <div className='flex-1 flex justify-between sm:hidden'>
-            <Button
-              variant='secondary'
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className='relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'>
-              Previous
-            </Button>
-            <Button
-              variant='secondary'
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className='ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'>
-              Next
-            </Button>
-          </div>
-          <div className='hidden sm:flex-1 sm:flex sm:items-center sm:justify-between'>
-            <div>
-              <p className='text-sm text-gray-700'>
-                Showing <span className='font-medium'>{startIndex + 1}</span> to{' '}
-                <span className='font-medium'>{Math.min(endIndex, leads.length)}</span> of{' '}
-                <span className='font-medium'>{leads.length}</span> results
-              </p>
-            </div>
-            <div>
-              <nav
-                className='relative z-0 inline-flex rounded-md shadow-sm space-x-1'
-                aria-label='Pagination'>
-                <Button
-                  variant='ghost'
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                  className='relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'>
-                  <ChevronLeft className='h-5 w-5' />
-                </Button>
-                {getPageNumbers().map((page, index) => (
-                  <React.Fragment key={index}>
-                    {page === '...' ? (
-                      <span className='relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700'>
-                        ...
-                      </span>
-                    ) : (
-                      <Button
-                        variant={currentPage === page ? 'primary' : 'ghost'}
-                        onClick={() => handlePageChange(page as number)}
-                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                          currentPage === page
-                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-500 hover:text-white'
-                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                        }`}>
-                        {page}
-                      </Button>
-                    )}
-                  </React.Fragment>
-                ))}
-                <Button
-                  variant='ghost'
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                  className='relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'>
-                  <ChevronRight className='h-5 w-5' />
-                </Button>
-              </nav>
-            </div>
-          </div>
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={leads.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+        onPreviousPage={handlePreviousPage}
+        onNextPage={handleNextPage}
+      />
 
-      {/* Format Selection Modals */}
       <FormatSelectionModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
@@ -329,7 +275,6 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
         description='Choose the format for exporting leads'
       />
 
-      {/* Lead Form Modal */}
       <LeadFormModal
         isOpen={isLeadFormModalOpen}
         onClose={() => setIsLeadFormModalOpen(false)}

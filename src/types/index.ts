@@ -120,6 +120,7 @@ export interface TableColumn<T> {
   label: string;
   sortable?: boolean;
   render?: (value: any, item: T) => React.ReactNode;
+  width?: string;
 }
 
 export interface ModalProps {
@@ -138,6 +139,11 @@ export interface ButtonProps {
   children: React.ReactNode;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
+}
+
+export interface HeaderProps {
+  activeTab: 'leads' | 'opportunities';
+  onTabChange: (tab: 'leads' | 'opportunities') => void;
 }
 
 // Hook return types

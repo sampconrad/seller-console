@@ -5,7 +5,7 @@
 import { useLeads } from '@/hooks/useLeads';
 import type { Lead } from '@/types';
 import { LeadStatus } from '@/types';
-import { validateLead } from '@/utils/validation';
+import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
 import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import Button from './ui/Button';
@@ -68,11 +68,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
     // Validate form
     const validationErrors = validateLead(formData as Lead);
     if (validationErrors.length > 0) {
-      const errorMap: Record<string, string> = {};
-      validationErrors.forEach((error) => {
-        errorMap[error.field] = error.message;
-      });
-      setErrors(errorMap);
+      setErrors(convertValidationErrorsToMap(validationErrors));
       return;
     }
 

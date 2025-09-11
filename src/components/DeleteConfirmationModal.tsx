@@ -49,17 +49,19 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
           </div>
         </div>
 
-        <div className='flex justify-end space-x-3 pt-4'>
+        <div className='flex flex-col-reverse sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4'>
           <Button
             variant='secondary'
             onClick={onClose}
-            disabled={isLoading}>
+            disabled={isLoading}
+            className='w-full sm:w-auto mt-3 sm:mt-0'>
             Cancel
           </Button>
           <Button
             variant='danger'
             onClick={handleConfirm}
-            loading={isLoading}>
+            loading={isLoading}
+            className='w-full sm:w-auto'>
             Delete
           </Button>
         </div>
