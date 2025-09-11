@@ -18,6 +18,7 @@ import Select from './ui/Select';
 interface OpportunityFormModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
   mode: 'create' | 'edit';
   lead?: Lead | null;
   opportunity?: Opportunity | null;
@@ -26,13 +27,14 @@ interface OpportunityFormModalProps {
 const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   isOpen,
   onClose,
+  onSuccess,
   mode,
   lead,
   opportunity,
 }) => {
   const { convertToOpportunity } = useLeads();
   const { updateOpportunity } = useOpportunities();
-  
+
   const [formData, setFormData] = useState<OpportunityFormData>({
     name: '',
     stage: OpportunityStage.PROSPECTING,
@@ -42,7 +44,6 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [amountDisplay, setAmountDisplay] = useState('');
-
 
   // Reset form when modal opens/closes or data changes
   useEffect(() => {
@@ -91,6 +92,7 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
     try {
       if (mode === 'create' && lead) {
         await convertToOpportunity(lead.id, formData);
+        onSuccess?.(); // Call success callback for conversion
       } else if (mode === 'edit' && opportunity) {
         await updateOpportunity(opportunity.id, formData);
       }
@@ -112,17 +114,19 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    
+
     // Remove any non-numeric characters except dots
     value = value.replace(/[^0-9.]/g, '');
-    
+
     // Ensure only one dot
     const dotCount = (value.match(/\./g) || []).length;
     if (dotCount > 1) {
       const firstDotIndex = value.indexOf('.');
-      value = value.substring(0, firstDotIndex + 1) + value.substring(firstDotIndex + 1).replace(/\./g, '');
+      value =
+        value.substring(0, firstDotIndex + 1) +
+        value.substring(firstDotIndex + 1).replace(/\./g, '');
     }
-    
+
     // Limit to 2 decimal places
     if (value.includes('.')) {
       const parts = value.split('.');
@@ -130,9 +134,9 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
         value = parts[0] + '.' + parts[1].substring(0, 2);
       }
     }
-    
+
     setAmountDisplay(value);
-    
+
     if (value) {
       const numericValue = parseCurrency(value);
       handleFieldChange('amount', numericValue);

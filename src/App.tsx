@@ -32,6 +32,12 @@ const AppContent: React.FC = () => {
     setIsConversionModalOpen(true);
   };
 
+  const handleConversionSuccess = () => {
+    setIsDetailPanelOpen(false);
+    setSelectedLead(null);
+    setIsConversionModalOpen(false);
+  };
+
   const handleImportClick = async (format: 'json' | 'csv') => {
     // Create file input element
     const input = document.createElement('input');
@@ -57,7 +63,6 @@ const AppContent: React.FC = () => {
 
   const handleCloseConversionModal = () => {
     setIsConversionModalOpen(false);
-    setSelectedLead(null);
   };
 
   return (
@@ -87,6 +92,7 @@ const AppContent: React.FC = () => {
       <OpportunityFormModal
         isOpen={isConversionModalOpen}
         onClose={handleCloseConversionModal}
+        onSuccess={handleConversionSuccess}
         mode='create'
         lead={selectedLead}
       />

@@ -48,11 +48,13 @@ src/
 │   │   └── ToastContainer.tsx   # Toast notification container
 │   ├── DeleteConfirmationModal.tsx    # Delete confirmation dialog
 │   ├── FormatSelectionModal.tsx       # Import/export format selection
+│   ├── Header.tsx                     # Application header component
 │   ├── LeadDetailPanel.tsx           # Lead details with inline editing
 │   ├── LeadFormModal.tsx             # Create/edit lead modal
 │   ├── LeadsList.tsx                 # Main leads management with pagination
 │   ├── OpportunitiesList.tsx         # Opportunities management
-│   └── OpportunityConversionModal.tsx # Lead to opportunity conversion
+│   ├── OpportunityFormModal.tsx      # Create/edit opportunity modal
+│   └── Pagination.tsx                # Pagination component
 ├── context/                       # React Context providers
 │   ├── AppContext.tsx            # Global state management
 │   └── NotificationContext.tsx   # Toast notification context
