@@ -2,7 +2,16 @@
  * Local storage service for persisting application state
  */
 
-import type { Lead, LeadFilters, LeadStatus, Opportunity, OpportunityFilters, OpportunitySortConfig, OpportunityStage, SortConfig } from '@/types';
+import type {
+  Lead,
+  LeadFilters,
+  LeadStatus,
+  Opportunity,
+  OpportunityFilters,
+  OpportunitySortConfig,
+  OpportunityStage,
+  SortConfig,
+} from '@/types';
 
 const STORAGE_KEYS = {
   LEADS: 'coverpin_leads',

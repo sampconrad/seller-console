@@ -93,7 +93,6 @@ const AppContent: React.FC = () => {
         isOpen={isConversionModalOpen}
         onClose={handleCloseConversionModal}
         onSuccess={handleConversionSuccess}
-        mode='create'
         lead={selectedLead}
       />
       <ToastContainer />

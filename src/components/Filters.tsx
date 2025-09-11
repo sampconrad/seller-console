@@ -48,11 +48,10 @@ const Filters: React.FC<FiltersProps> = ({
           rightIcon={
             searchValue && onSearchClear ? (
               <button
-                type="button"
+                type='button'
                 onClick={onSearchClear}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-                title="Clear search"
-              >
+                className='text-gray-400 hover:text-gray-600 transition-colors'
+                title='Clear search'>
                 <X className='w-4 h-4' />
               </button>
             ) : null
@@ -65,7 +64,8 @@ const Filters: React.FC<FiltersProps> = ({
           leftIcon={<Filter className='w-4 h-4 text-gray-400' />}
         />
         <div className='text-sm text-gray-500 flex ml-auto mr-2 items-center'>
-          {totalItems} {itemLabel}{totalItems !== 1 ? 's' : ''} found
+          {totalItems} {itemLabel}
+          {totalItems !== 1 ? 's' : ''} found
         </div>
       </div>
     </div>

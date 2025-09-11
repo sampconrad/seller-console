@@ -5,7 +5,13 @@
 import { useOpportunities } from '@/hooks/useOpportunities';
 import type { Opportunity } from '@/types';
 import { OpportunityStage } from '@/types';
-import { formatDateTime, formatNumber, formatStage, getStageColor, handleAmountInputChange } from '@/utils/dataTransform';
+import {
+  formatDateTime,
+  formatNumber,
+  formatStage,
+  getStageColor,
+  handleAmountInputChange,
+} from '@/utils/dataTransform';
 import { convertValidationErrorsToMap, validateOpportunity } from '@/utils/validation';
 import {
   Building,
@@ -31,10 +37,10 @@ interface OpportunityDetailPanelProps {
   onClose: () => void;
 }
 
-const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({ 
-  opportunity, 
-  isOpen, 
-  onClose 
+const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
+  opportunity,
+  isOpen,
+  onClose,
 }) => {
   const { updateOpportunity, deleteOpportunity } = useOpportunities();
   const [isEditing, setIsEditing] = useState(false);
@@ -318,7 +324,9 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>Account Name</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Account Name
+                    </label>
                     {isEditing ? (
                       <Input
                         value={formData.accountName || ''}
@@ -328,7 +336,9 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                     ) : (
                       <div className='flex items-center space-x-2'>
                         <Building className='w-4 h-4 text-gray-400' />
-                        <p className='text-gray-900'>{formData.accountName || opportunity.accountName}</p>
+                        <p className='text-gray-900'>
+                          {formData.accountName || opportunity.accountName}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -349,11 +359,15 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                     ) : (
                       <div className='flex items-center space-x-2'>
                         <DollarSign className='w-4 h-4 text-gray-400' />
-                        <p className={`font-medium ${(formData.amount || opportunity.amount) ? 'text-green-600' : 'text-gray-500'}`}>
-                          {formData.amount || opportunity.amount 
+                        <p
+                          className={`font-medium ${
+                            formData.amount || opportunity.amount
+                              ? 'text-green-600'
+                              : 'text-gray-500'
+                          }`}>
+                          {formData.amount || opportunity.amount
                             ? formatNumber(formData.amount || opportunity.amount!)
-                            : 'Not specified'
-                          }
+                            : 'Not specified'}
                         </p>
                       </div>
                     )}
@@ -369,7 +383,9 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                         error={errors.stage}
                       />
                     ) : (
-                      <p className='text-gray-900'>{formatStage(formData.stage || opportunity.stage)}</p>
+                      <p className='text-gray-900'>
+                        {formatStage(formData.stage || opportunity.stage)}
+                      </p>
                     )}
                   </div>
                 </div>

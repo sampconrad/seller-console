@@ -28,7 +28,10 @@ export const sortLeads = (leads: Lead[], sortConfig: SortConfig): Lead[] => {
 /**
  * Sort opportunities based on the provided configuration
  */
-export const sortOpportunities = (opportunities: Opportunity[], sortConfig: OpportunitySortConfig): Opportunity[] => {
+export const sortOpportunities = (
+  opportunities: Opportunity[],
+  sortConfig: OpportunitySortConfig
+): Opportunity[] => {
   return [...opportunities].sort((a, b) => {
     const aValue = a[sortConfig.field];
     const bValue = b[sortConfig.field];
@@ -230,10 +233,13 @@ export const parseCurrency = (value: string): number => {
 /**
  * Format currency with custom options
  */
-export const formatCurrencyCustom = (value: number, options?: {
-  minimumFractionDigits?: number;
-  maximumFractionDigits?: number;
-}): string => {
+export const formatCurrencyCustom = (
+  value: number,
+  options?: {
+    minimumFractionDigits?: number;
+    maximumFractionDigits?: number;
+  }
+): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -245,10 +251,13 @@ export const formatCurrencyCustom = (value: number, options?: {
 /**
  * Format number as currency without currency symbol (for use with icon)
  */
-export const formatNumber = (value: number, options?: {
-  minimumFractionDigits?: number;
-  maximumFractionDigits?: number;
-}): string => {
+export const formatNumber = (
+  value: number,
+  options?: {
+    minimumFractionDigits?: number;
+    maximumFractionDigits?: number;
+  }
+): string => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: options?.minimumFractionDigits ?? 2,
     maximumFractionDigits: options?.maximumFractionDigits ?? 2,

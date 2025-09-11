@@ -8,6 +8,7 @@ import type {
   Notification,
   Opportunity,
   OpportunityFilters,
+  OpportunitySortConfig,
   SortConfig,
 } from '@/types';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
