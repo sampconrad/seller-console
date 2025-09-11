@@ -41,9 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
-              {rightIcon}
-            </div>
+            <div className='absolute inset-y-0 right-0 pr-3 flex items-center'>{rightIcon}</div>
           )}
         </div>
         {error && <p className='mt-1 text-sm text-error-600'>{error}</p>}

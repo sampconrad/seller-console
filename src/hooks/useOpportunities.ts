@@ -6,12 +6,28 @@ import { useApp } from '@/context/AppContext';
 import { useNotifications } from '@/context/NotificationContext';
 import { apiService } from '@/services/api';
 import { fileService } from '@/services/fileService';
-import type { ExportOptions, Opportunity } from '@/types';
+import type { ExportOptions, Opportunity, OpportunityFilters } from '@/types';
 import { useCallback } from 'react';
 
 export const useOpportunities = () => {
   const { state, dispatch } = useApp();
   const { addNotification } = useNotifications();
+
+  // Update filters (saves to localStorage)
+  const updateFilters = useCallback(
+    (filters: Partial<OpportunityFilters>) => {
+      dispatch({ type: 'UPDATE_OPPORTUNITY_FILTERS', payload: filters });
+    },
+    [dispatch]
+  );
+
+  // Update search only (doesn't save to localStorage)
+  const updateSearch = useCallback(
+    (search: string) => {
+      dispatch({ type: 'UPDATE_OPPORTUNITY_SEARCH', payload: search });
+    },
+    [dispatch]
+  );
 
   // Update opportunity with optimistic updates
   const updateOpportunity = useCallback(
@@ -102,6 +118,9 @@ export const useOpportunities = () => {
     opportunities: state.opportunities,
     loading: state.isLoading,
     error: state.error,
+    filters: state.opportunityFilters,
+    updateFilters,
+    updateSearch,
     updateOpportunity,
     deleteOpportunity,
     exportOpportunities,

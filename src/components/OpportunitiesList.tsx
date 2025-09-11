@@ -2,12 +2,15 @@
  * Opportunities list component with management functionality
  */
 
+import { useDebounce } from '@/hooks/useDebounce';
 import { useOpportunities } from '@/hooks/useOpportunities';
 import type { Opportunity, TableColumn } from '@/types';
+import { OpportunityStage } from '@/types';
 import { formatCurrency, formatDate, formatStage, getStageColor } from '@/utils/dataTransform';
 import { Calendar, DollarSign, Edit2, Trash2, Upload } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import Filters from './Filters';
 import FormatSelectionModal from './FormatSelectionModal';
 import OpportunityFormModal from './OpportunityFormModal';
 import Pagination from './Pagination';
@@ -16,7 +19,15 @@ import Button from './ui/Button';
 import Table from './ui/Table';
 
 const OpportunitiesList: React.FC = () => {
-  const { opportunities, loading, deleteOpportunity, exportOpportunities } = useOpportunities();
+  const {
+    opportunities,
+    loading,
+    filters,
+    updateFilters,
+    updateSearch,
+    deleteOpportunity,
+    exportOpportunities,
+  } = useOpportunities();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -24,6 +35,10 @@ const OpportunitiesList: React.FC = () => {
   const [editingOpportunity, setEditingOpportunity] = useState<Opportunity | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
+
+  // Filtering state
+  const [searchValue, setSearchValue] = useState(filters.search);
+  const debouncedSearch = useDebounce(searchValue, 300);
 
   const handleEdit = (opportunity: Opportunity) => {
     setEditingOpportunity(opportunity);
@@ -55,11 +70,44 @@ const OpportunitiesList: React.FC = () => {
     exportOpportunities({ format, includeOpportunities: true });
   };
 
+  // Update search filter when debounced value changes (doesn't save to localStorage)
+  useEffect(() => {
+    updateSearch(debouncedSearch);
+  }, [debouncedSearch, updateSearch]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handleSearchClear = () => {
+    setSearchValue('');
+  };
+
+  const handleStageFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateFilters({ stage: e.target.value as OpportunityStage | 'all' });
+  };
+
+  // Filter opportunities based on search and stage
+  const filteredOpportunities = opportunities.filter((opportunity) => {
+    const matchesSearch =
+      opportunity.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      opportunity.accountName.toLowerCase().includes(debouncedSearch.toLowerCase());
+
+    const matchesStage = filters.stage === 'all' || opportunity.stage === filters.stage;
+
+    return matchesSearch && matchesStage;
+  });
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch, filters.stage]);
+
   // Calculate pagination
-  const totalPages = Math.ceil(opportunities.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredOpportunities.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedOpportunities = opportunities.slice(startIndex, endIndex);
+  const paginatedOpportunities = filteredOpportunities.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -76,6 +124,16 @@ const OpportunitiesList: React.FC = () => {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  const stageOptions = [
+    { value: 'all', label: 'All Stages' },
+    { value: OpportunityStage.PROSPECTING, label: 'Prospecting' },
+    { value: OpportunityStage.QUALIFICATION, label: 'Qualification' },
+    { value: OpportunityStage.PROPOSAL, label: 'Proposal' },
+    { value: OpportunityStage.NEGOTIATION, label: 'Negotiation' },
+    { value: OpportunityStage.CLOSED_WON, label: 'Closed Won' },
+    { value: OpportunityStage.CLOSED_LOST, label: 'Closed Lost' },
+  ];
 
   const columns: TableColumn<Opportunity>[] = [
     {
@@ -182,6 +240,18 @@ const OpportunitiesList: React.FC = () => {
         </Button>
       </div>
 
+      <Filters
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onSearchClear={handleSearchClear}
+        searchPlaceholder='Search opportunities...'
+        filterValue={filters.stage}
+        onFilterChange={handleStageFilterChange}
+        filterOptions={stageOptions}
+        totalItems={filteredOpportunities.length}
+        itemLabel='opportunity'
+      />
+
       <Table
         data={paginatedOpportunities}
         columns={columns}
@@ -192,7 +262,7 @@ const OpportunitiesList: React.FC = () => {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        totalItems={opportunities.length}
+        totalItems={filteredOpportunities.length}
         itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
         onPreviousPage={handlePreviousPage}

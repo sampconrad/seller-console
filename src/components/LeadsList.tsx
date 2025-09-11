@@ -7,15 +7,14 @@ import { useLeads } from '@/hooks/useLeads';
 import type { Lead, TableColumn } from '@/types';
 import { LeadStatus } from '@/types';
 import { formatDate, formatSource, getScoreColor, getStatusColor } from '@/utils/dataTransform';
-import { Calendar, Download, Filter, Plus, Search, Upload } from 'lucide-react';
+import { Calendar, Download, Plus, Upload } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import Filters from './Filters';
 import FormatSelectionModal from './FormatSelectionModal';
 import LeadFormModal from './LeadFormModal';
 import Pagination from './Pagination';
 import Badge from './ui/Badge';
 import Button from './ui/Button';
-import Input from './ui/Input';
-import Select from './ui/Select';
 import Table from './ui/Table';
 
 interface LeadsListProps {
@@ -54,6 +53,10 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
+  };
+
+  const handleSearchClear = () => {
+    setSearchValue('');
   };
 
   const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -217,26 +220,17 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onImportClick, onEx
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className='bg-white p-4 rounded-lg shadow'>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-          <Input
-            placeholder='Search leads...'
-            value={searchValue}
-            onChange={handleSearchChange}
-            leftIcon={<Search className='w-4 h-4 text-gray-400' />}
-          />
-          <Select
-            value={filters.status}
-            onChange={handleStatusFilterChange}
-            options={statusOptions}
-            leftIcon={<Filter className='w-4 h-4 text-gray-400' />}
-          />
-          <div className='text-sm text-gray-500 flex ml-auto mr-2 items-center'>
-            {leads.length} lead{leads.length !== 1 ? 's' : ''} found
-          </div>
-        </div>
-      </div>
+      <Filters
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onSearchClear={handleSearchClear}
+        searchPlaceholder='Search leads...'
+        filterValue={filters.status}
+        onFilterChange={handleStatusFilterChange}
+        filterOptions={statusOptions}
+        totalItems={leads.length}
+        itemLabel='lead'
+      />
 
       <Table
         data={paginatedLeads}

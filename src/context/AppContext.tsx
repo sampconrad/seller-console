@@ -7,6 +7,7 @@ import type {
   LeadStatus,
   Notification,
   Opportunity,
+  OpportunityFilters,
   SortConfig,
 } from '@/types';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
@@ -18,7 +19,9 @@ type AppAction =
   | { type: 'SET_OPPORTUNITIES'; payload: Opportunity[] }
   | { type: 'SET_SELECTED_LEAD'; payload: Lead | null }
   | { type: 'UPDATE_FILTERS'; payload: Partial<LeadFilters> }
+  | { type: 'UPDATE_OPPORTUNITY_FILTERS'; payload: Partial<OpportunityFilters> }
   | { type: 'UPDATE_SEARCH'; payload: string }
+  | { type: 'UPDATE_OPPORTUNITY_SEARCH'; payload: string }
   | { type: 'UPDATE_SORT'; payload: SortConfig }
   | { type: 'ADD_NOTIFICATION'; payload: Notification }
   | { type: 'REMOVE_NOTIFICATION'; payload: string }
@@ -36,6 +39,10 @@ const initialState: AppState = {
   filters: {
     search: '',
     status: 'all',
+  },
+  opportunityFilters: {
+    search: '',
+    stage: 'all',
   },
   sortConfig: {
     field: 'score',
@@ -65,10 +72,21 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       storageService.setFilters(newFilters);
       return { ...state, filters: newFilters };
 
+    case 'UPDATE_OPPORTUNITY_FILTERS':
+      const newOpportunityFilters = { ...state.opportunityFilters, ...action.payload };
+      storageService.setOpportunityFilters(newOpportunityFilters);
+      return { ...state, opportunityFilters: newOpportunityFilters };
+
     case 'UPDATE_SEARCH':
       return {
         ...state,
         filters: { ...state.filters, search: action.payload },
+      };
+
+    case 'UPDATE_OPPORTUNITY_SEARCH':
+      return {
+        ...state,
+        opportunityFilters: { ...state.opportunityFilters, search: action.payload },
       };
 
     case 'UPDATE_SORT':
@@ -129,9 +147,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       try {
         // Load persisted state
         const savedFilters = storageService.getFilters();
+        const savedOpportunityFilters = storageService.getOpportunityFilters();
         const savedSortConfig = storageService.getSortConfig();
 
         dispatch({ type: 'UPDATE_FILTERS', payload: savedFilters });
+        dispatch({ type: 'UPDATE_OPPORTUNITY_FILTERS', payload: savedOpportunityFilters });
         dispatch({ type: 'UPDATE_SORT', payload: savedSortConfig });
 
         // Load data from API

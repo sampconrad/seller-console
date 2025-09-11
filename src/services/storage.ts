@@ -2,12 +2,13 @@
  * Local storage service for persisting application state
  */
 
-import type { Lead, LeadFilters, LeadStatus, Opportunity, SortConfig } from '@/types';
+import type { Lead, LeadFilters, LeadStatus, Opportunity, OpportunityFilters, OpportunityStage, SortConfig } from '@/types';
 
 const STORAGE_KEYS = {
   LEADS: 'coverpin_leads',
   OPPORTUNITIES: 'coverpin_opportunities',
   FILTERS: 'coverpin_filters',
+  OPPORTUNITY_FILTERS: 'coverpin_opportunity_filters',
   SORT_CONFIG: 'coverpin_sort_config',
   SAMPLE_DATA_LOADED: 'coverpin_sample_data_loaded',
 } as const;
@@ -76,6 +77,20 @@ class StorageService {
   setFilters(filters: LeadFilters): void {
     // Only save the status filter, not the search
     this.setItem(STORAGE_KEYS.FILTERS, { status: filters.status });
+  }
+
+  // Opportunity Filters (only save stage, not search)
+  getOpportunityFilters(): OpportunityFilters {
+    const savedFilters = this.getItem(STORAGE_KEYS.OPPORTUNITY_FILTERS, { stage: 'all' });
+    return {
+      search: '', // Always start with empty search
+      stage: savedFilters.stage as OpportunityStage | 'all',
+    };
+  }
+
+  setOpportunityFilters(filters: OpportunityFilters): void {
+    // Only save the stage filter, not the search
+    this.setItem(STORAGE_KEYS.OPPORTUNITY_FILTERS, { stage: filters.stage });
   }
 
   // Sort config

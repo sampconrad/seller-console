@@ -48,6 +48,7 @@ src/
 │   │   └── ToastContainer.tsx   # Toast notification container
 │   ├── DeleteConfirmationModal.tsx    # Delete confirmation dialog
 │   ├── FormatSelectionModal.tsx       # Import/export format selection
+│   ├── Filters.tsx                    # Filters component for search and filter functionality
 │   ├── Header.tsx                     # Application header component
 │   ├── LeadDetailPanel.tsx           # Lead details with inline editing
 │   ├── LeadFormModal.tsx             # Create/edit lead modal

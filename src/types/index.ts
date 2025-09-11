@@ -48,12 +48,18 @@ export interface AppState {
   isLoading: boolean;
   error: string | null;
   filters: LeadFilters;
+  opportunityFilters: OpportunityFilters;
   sortConfig: SortConfig;
 }
 
 export interface LeadFilters {
   search: string;
   status: LeadStatus | 'all';
+}
+
+export interface OpportunityFilters {
+  search: string;
+  stage: OpportunityStage | 'all';
 }
 
 export interface SortConfig {
@@ -165,6 +171,9 @@ export interface UseOpportunitiesReturn {
   opportunities: Opportunity[];
   loading: boolean;
   error: string | null;
+  filters: OpportunityFilters;
+  updateFilters: (filters: Partial<OpportunityFilters>) => void;
+  updateSearch: (search: string) => void;
   updateOpportunity: (id: string, updates: Partial<Opportunity>) => Promise<void>;
   deleteOpportunity: (id: string) => Promise<void>;
 }
