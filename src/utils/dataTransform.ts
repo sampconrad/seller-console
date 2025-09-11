@@ -2,7 +2,7 @@
  * Data transformation utilities for sorting, filtering, and formatting
  */
 
-import type { Lead, LeadFilters, SortConfig } from '@/types';
+import type { Lead, LeadFilters, Opportunity, OpportunitySortConfig, SortConfig } from '@/types';
 
 /**
  * Sort leads based on the provided configuration
@@ -11,6 +11,32 @@ export const sortLeads = (leads: Lead[], sortConfig: SortConfig): Lead[] => {
   return [...leads].sort((a, b) => {
     const aValue = a[sortConfig.field];
     const bValue = b[sortConfig.field];
+
+    if (aValue === bValue) return 0;
+
+    let comparison = 0;
+    if (aValue < bValue) {
+      comparison = -1;
+    } else if (aValue > bValue) {
+      comparison = 1;
+    }
+
+    return sortConfig.direction === 'asc' ? comparison : -comparison;
+  });
+};
+
+/**
+ * Sort opportunities based on the provided configuration
+ */
+export const sortOpportunities = (opportunities: Opportunity[], sortConfig: OpportunitySortConfig): Opportunity[] => {
+  return [...opportunities].sort((a, b) => {
+    const aValue = a[sortConfig.field];
+    const bValue = b[sortConfig.field];
+
+    // Handle undefined values
+    if (aValue === undefined && bValue === undefined) return 0;
+    if (aValue === undefined) return sortConfig.direction === 'asc' ? 1 : -1;
+    if (bValue === undefined) return sortConfig.direction === 'asc' ? -1 : 1;
 
     if (aValue === bValue) return 0;
 
@@ -214,4 +240,58 @@ export const formatCurrencyCustom = (value: number, options?: {
     minimumFractionDigits: options?.minimumFractionDigits ?? 0,
     maximumFractionDigits: options?.maximumFractionDigits ?? 2,
   }).format(value);
+};
+
+/**
+ * Format number as currency without currency symbol (for use with icon)
+ */
+export const formatNumber = (value: number, options?: {
+  minimumFractionDigits?: number;
+  maximumFractionDigits?: number;
+}): string => {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: options?.minimumFractionDigits ?? 2,
+    maximumFractionDigits: options?.maximumFractionDigits ?? 2,
+  }).format(value);
+};
+
+/**
+ * Handle amount input change with validation
+ * Returns the cleaned value and numeric value
+ */
+export const handleAmountInputChange = (
+  value: string,
+  onAmountChange: (amount: number | undefined) => void,
+  onDisplayChange: (display: string) => void
+) => {
+  // Remove any non-numeric characters except dots
+  let cleanedValue = value.replace(/[^0-9.]/g, '');
+
+  // Ensure only one dot
+  const dotCount = (cleanedValue.match(/\./g) || []).length;
+  if (dotCount > 1) {
+    const firstDotIndex = cleanedValue.indexOf('.');
+    cleanedValue =
+      cleanedValue.substring(0, firstDotIndex + 1) +
+      cleanedValue.substring(firstDotIndex + 1).replace(/\./g, '');
+  }
+
+  // Limit to 2 decimal places
+  if (cleanedValue.includes('.')) {
+    const parts = cleanedValue.split('.');
+    if (parts[1] && parts[1].length > 2) {
+      cleanedValue = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+  }
+
+  // Update display value
+  onDisplayChange(cleanedValue);
+
+  // Update numeric value
+  if (cleanedValue) {
+    const numericValue = parseCurrency(cleanedValue);
+    onAmountChange(numericValue);
+  } else {
+    onAmountChange(undefined);
+  }
 };

@@ -6,13 +6,19 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useOpportunities } from '@/hooks/useOpportunities';
 import type { Opportunity, TableColumn } from '@/types';
 import { OpportunityStage } from '@/types';
-import { formatCurrency, formatDate, formatStage, getStageColor } from '@/utils/dataTransform';
-import { Calendar, DollarSign, Edit2, Trash2, Upload } from 'lucide-react';
+import {
+  formatDate,
+  formatNumber,
+  formatStage,
+  getStageColor,
+  sortOpportunities,
+} from '@/utils/dataTransform';
+import { Calendar, DollarSign, Upload } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import Filters from './Filters';
 import FormatSelectionModal from './FormatSelectionModal';
-import OpportunityFormModal from './OpportunityFormModal';
+import OpportunityDetailPanel from './OpportunityDetailPanel';
 import Pagination from './Pagination';
 import Badge from './ui/Badge';
 import Button from './ui/Button';
@@ -23,16 +29,18 @@ const OpportunitiesList: React.FC = () => {
     opportunities,
     loading,
     filters,
+    sortConfig,
     updateFilters,
     updateSearch,
+    updateSort,
     deleteOpportunity,
     exportOpportunities,
   } = useOpportunities();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
   const [opportunityToDelete, setOpportunityToDelete] = useState<Opportunity | null>(null);
-  const [editingOpportunity, setEditingOpportunity] = useState<Opportunity | null>(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -40,14 +48,9 @@ const OpportunitiesList: React.FC = () => {
   const [searchValue, setSearchValue] = useState(filters.search);
   const debouncedSearch = useDebounce(searchValue, 300);
 
-  const handleEdit = (opportunity: Opportunity) => {
-    setEditingOpportunity(opportunity);
-    setIsEditModalOpen(true);
-  };
-
-  const handleDelete = (opportunity: Opportunity) => {
-    setOpportunityToDelete(opportunity);
-    setIsDeleteModalOpen(true);
+  const handleOpportunityClick = (opportunity: Opportunity) => {
+    setSelectedOpportunity(opportunity);
+    setIsDetailPanelOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -68,6 +71,11 @@ const OpportunitiesList: React.FC = () => {
 
   const handleExportFormatSelect = (format: 'json' | 'csv') => {
     exportOpportunities({ format, includeOpportunities: true });
+  };
+
+  const handleCloseDetailPanel = () => {
+    setIsDetailPanelOpen(false);
+    setSelectedOpportunity(null);
   };
 
   // Update search filter when debounced value changes (doesn't save to localStorage)
@@ -98,16 +106,19 @@ const OpportunitiesList: React.FC = () => {
     return matchesSearch && matchesStage;
   });
 
+  // Sort filtered opportunities
+  const sortedOpportunities = sortOpportunities(filteredOpportunities, sortConfig);
+
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearch, filters.stage]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredOpportunities.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedOpportunities.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedOpportunities = filteredOpportunities.slice(startIndex, endIndex);
+  const paginatedOpportunities = sortedOpportunities.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -180,8 +191,8 @@ const OpportunitiesList: React.FC = () => {
       render: (value) => (
         <div className='flex items-center space-x-1'>
           <DollarSign className='w-4 h-4 text-gray-400' />
-          <span className='font-medium'>
-            {value ? formatCurrency(value as number) : 'Not specified'}
+          <span className={`font-medium ${value ? 'text-green-600' : 'text-gray-500'}`}>
+            {value ? formatNumber(value as number) : 'Not specified'}
           </span>
         </div>
       ),
@@ -195,27 +206,6 @@ const OpportunitiesList: React.FC = () => {
         <div className='flex items-center space-x-1'>
           <Calendar className='w-4 h-4 text-gray-400' />
           <span>{formatDate(value as Date)}</span>
-        </div>
-      ),
-    },
-    {
-      key: 'id' as keyof Opportunity,
-      label: 'Actions',
-      width: '120px',
-      render: (_, opportunity) => (
-        <div className='flex items-center space-x-2'>
-          <button
-            onClick={() => handleEdit(opportunity)}
-            className='text-primary-600 hover:text-primary-800 transition-colors mr-2'
-            title='Edit opportunity'>
-            <Edit2 className='w-4 h-4' />
-          </button>
-          <button
-            onClick={() => handleDelete(opportunity)}
-            className='text-error-600 hover:text-error-800 transition-colors'
-            title='Delete opportunity'>
-            <Trash2 className='w-4 h-4' />
-          </button>
         </div>
       ),
     },
@@ -248,35 +238,29 @@ const OpportunitiesList: React.FC = () => {
         filterValue={filters.stage}
         onFilterChange={handleStageFilterChange}
         filterOptions={stageOptions}
-        totalItems={filteredOpportunities.length}
+        totalItems={sortedOpportunities.length}
         itemLabel='opportunity'
       />
 
       <Table
         data={paginatedOpportunities}
         columns={columns}
+        onSort={(field, direction) => updateSort(field, direction)}
+        sortField={sortConfig.field}
+        sortDirection={sortConfig.direction}
         loading={loading}
         emptyMessage='No opportunities found. Convert some leads to get started.'
+        onRowClick={handleOpportunityClick}
       />
 
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        totalItems={filteredOpportunities.length}
+        totalItems={sortedOpportunities.length}
         itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
         onPreviousPage={handlePreviousPage}
         onNextPage={handleNextPage}
-      />
-
-      <OpportunityFormModal
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          setEditingOpportunity(null);
-        }}
-        mode='edit'
-        opportunity={editingOpportunity}
       />
 
       <DeleteConfirmationModal
@@ -294,6 +278,12 @@ const OpportunitiesList: React.FC = () => {
         onFormatSelect={handleExportFormatSelect}
         title='Export Opportunities'
         description='Choose the format for exporting opportunities'
+      />
+
+      <OpportunityDetailPanel
+        opportunity={selectedOpportunity}
+        isOpen={isDetailPanelOpen}
+        onClose={handleCloseDetailPanel}
       />
     </div>
   );

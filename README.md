@@ -54,7 +54,8 @@ src/
 │   ├── LeadFormModal.tsx             # Create/edit lead modal
 │   ├── LeadsList.tsx                 # Main leads management with pagination
 │   ├── OpportunitiesList.tsx         # Opportunities management
-│   ├── OpportunityFormModal.tsx      # Create/edit opportunity modal
+│   ├── OpportunityDetailPanel.tsx    # Opportunity details with inline editing
+│   ├── OpportunityFormModal.tsx      # Converting leads to opportunities
 │   └── Pagination.tsx                # Pagination component
 ├── context/                       # React Context providers
 │   ├── AppContext.tsx            # Global state management

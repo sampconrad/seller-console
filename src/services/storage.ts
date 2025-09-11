@@ -2,7 +2,7 @@
  * Local storage service for persisting application state
  */
 
-import type { Lead, LeadFilters, LeadStatus, Opportunity, OpportunityFilters, OpportunityStage, SortConfig } from '@/types';
+import type { Lead, LeadFilters, LeadStatus, Opportunity, OpportunityFilters, OpportunitySortConfig, OpportunityStage, SortConfig } from '@/types';
 
 const STORAGE_KEYS = {
   LEADS: 'coverpin_leads',
@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
   FILTERS: 'coverpin_filters',
   OPPORTUNITY_FILTERS: 'coverpin_opportunity_filters',
   SORT_CONFIG: 'coverpin_sort_config',
+  OPPORTUNITY_SORT_CONFIG: 'coverpin_opportunity_sort_config',
   SAMPLE_DATA_LOADED: 'coverpin_sample_data_loaded',
 } as const;
 
@@ -103,6 +104,18 @@ class StorageService {
 
   setSortConfig(sortConfig: SortConfig): void {
     this.setItem(STORAGE_KEYS.SORT_CONFIG, sortConfig);
+  }
+
+  // Opportunity sort config
+  getOpportunitySortConfig(): OpportunitySortConfig {
+    return this.getItem(STORAGE_KEYS.OPPORTUNITY_SORT_CONFIG, {
+      field: 'createdAt',
+      direction: 'desc',
+    });
+  }
+
+  setOpportunitySortConfig(sortConfig: OpportunitySortConfig): void {
+    this.setItem(STORAGE_KEYS.OPPORTUNITY_SORT_CONFIG, sortConfig);
   }
 
   // Sample data flag methods

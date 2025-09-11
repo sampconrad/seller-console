@@ -1,12 +1,11 @@
 /**
- * Unified modal for creating and editing opportunities
+ * Modal for converting leads to opportunities
  */
 
 import { useLeads } from '@/hooks/useLeads';
-import { useOpportunities } from '@/hooks/useOpportunities';
-import type { Lead, Opportunity, OpportunityFormData } from '@/types';
+import type { Lead, OpportunityFormData } from '@/types';
 import { OpportunityStage } from '@/types';
-import { formatCurrencyCustom, parseCurrency } from '@/utils/dataTransform';
+import { handleAmountInputChange } from '@/utils/dataTransform';
 import { convertValidationErrorsToMap, validateOpportunity } from '@/utils/validation';
 import { DollarSign, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -19,21 +18,16 @@ interface OpportunityFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  mode: 'create' | 'edit';
-  lead?: Lead | null;
-  opportunity?: Opportunity | null;
+  lead: Lead | null;
 }
 
 const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
-  mode,
   lead,
-  opportunity,
 }) => {
   const { convertToOpportunity } = useLeads();
-  const { updateOpportunity } = useOpportunities();
 
   const [formData, setFormData] = useState<OpportunityFormData>({
     name: '',
@@ -47,24 +41,14 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
 
   // Reset form when modal opens/closes or data changes
   useEffect(() => {
-    if (isOpen) {
-      if (mode === 'create' && lead) {
-        setFormData({
-          name: lead.name,
-          stage: OpportunityStage.PROSPECTING,
-          amount: undefined,
-          accountName: lead.company,
-        });
-        setAmountDisplay('');
-      } else if (mode === 'edit' && opportunity) {
-        setFormData({
-          name: opportunity.name,
-          stage: opportunity.stage,
-          amount: opportunity.amount,
-          accountName: opportunity.accountName,
-        });
-        setAmountDisplay(opportunity.amount ? formatCurrencyCustom(opportunity.amount) : '');
-      }
+    if (isOpen && lead) {
+      setFormData({
+        name: lead.name,
+        stage: OpportunityStage.PROSPECTING,
+        amount: undefined,
+        accountName: lead.company,
+      });
+      setAmountDisplay('');
       setErrors({});
     } else {
       setFormData({
@@ -76,7 +60,7 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
       setAmountDisplay('');
       setErrors({});
     }
-  }, [isOpen, mode, lead, opportunity]);
+  }, [isOpen, lead]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,11 +74,9 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
 
     setIsSubmitting(true);
     try {
-      if (mode === 'create' && lead) {
+      if (lead) {
         await convertToOpportunity(lead.id, formData);
         onSuccess?.(); // Call success callback for conversion
-      } else if (mode === 'edit' && opportunity) {
-        await updateOpportunity(opportunity.id, formData);
       }
       onClose();
     } catch (error) {
@@ -113,36 +95,11 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-
-    // Remove any non-numeric characters except dots
-    value = value.replace(/[^0-9.]/g, '');
-
-    // Ensure only one dot
-    const dotCount = (value.match(/\./g) || []).length;
-    if (dotCount > 1) {
-      const firstDotIndex = value.indexOf('.');
-      value =
-        value.substring(0, firstDotIndex + 1) +
-        value.substring(firstDotIndex + 1).replace(/\./g, '');
-    }
-
-    // Limit to 2 decimal places
-    if (value.includes('.')) {
-      const parts = value.split('.');
-      if (parts[1] && parts[1].length > 2) {
-        value = parts[0] + '.' + parts[1].substring(0, 2);
-      }
-    }
-
-    setAmountDisplay(value);
-
-    if (value) {
-      const numericValue = parseCurrency(value);
-      handleFieldChange('amount', numericValue);
-    } else {
-      handleFieldChange('amount', undefined);
-    }
+    handleAmountInputChange(
+      e.target.value,
+      (amount) => handleFieldChange('amount', amount),
+      setAmountDisplay
+    );
   };
 
   const handleCancel = () => {
@@ -166,8 +123,8 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
     { value: OpportunityStage.CLOSED_LOST, label: 'Closed Lost' },
   ];
 
-  const title = mode === 'create' ? 'Convert Lead to Opportunity' : 'Edit Opportunity';
-  const submitText = mode === 'create' ? 'Convert Lead' : 'Save Changes';
+  const title = 'Convert Lead to Opportunity';
+  const submitText = 'Convert Lead';
 
   return (
     <Modal
@@ -210,14 +167,12 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>
-            Amount {mode === 'create' ? '(Optional)' : ''}
-          </label>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>Amount (Optional)</label>
           <Input
             type='text'
             value={amountDisplay}
             onChange={handleAmountChange}
-            placeholder='$0.00'
+            placeholder='0.00'
             error={errors.amount}
             leftIcon={<DollarSign className='w-4 h-4 text-gray-400' />}
           />

@@ -50,6 +50,7 @@ export interface AppState {
   filters: LeadFilters;
   opportunityFilters: OpportunityFilters;
   sortConfig: SortConfig;
+  opportunitySortConfig: OpportunitySortConfig;
 }
 
 export interface LeadFilters {
@@ -64,6 +65,11 @@ export interface OpportunityFilters {
 
 export interface SortConfig {
   field: keyof Lead;
+  direction: 'asc' | 'desc';
+}
+
+export interface OpportunitySortConfig {
+  field: keyof Opportunity;
   direction: 'asc' | 'desc';
 }
 
@@ -172,8 +178,10 @@ export interface UseOpportunitiesReturn {
   loading: boolean;
   error: string | null;
   filters: OpportunityFilters;
+  sortConfig: OpportunitySortConfig;
   updateFilters: (filters: Partial<OpportunityFilters>) => void;
   updateSearch: (search: string) => void;
+  updateSort: (field: keyof Opportunity, direction: 'asc' | 'desc') => void;
   updateOpportunity: (id: string, updates: Partial<Opportunity>) => Promise<void>;
   deleteOpportunity: (id: string) => Promise<void>;
 }

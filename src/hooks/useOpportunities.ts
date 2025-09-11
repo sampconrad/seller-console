@@ -29,6 +29,14 @@ export const useOpportunities = () => {
     [dispatch]
   );
 
+  // Update sort configuration
+  const updateSort = useCallback(
+    (field: keyof Opportunity, direction: 'asc' | 'desc') => {
+      dispatch({ type: 'UPDATE_OPPORTUNITY_SORT', payload: { field, direction } });
+    },
+    [dispatch]
+  );
+
   // Update opportunity with optimistic updates
   const updateOpportunity = useCallback(
     async (id: string, updates: Partial<Opportunity>) => {
@@ -119,8 +127,10 @@ export const useOpportunities = () => {
     loading: state.isLoading,
     error: state.error,
     filters: state.opportunityFilters,
+    sortConfig: state.opportunitySortConfig,
     updateFilters,
     updateSearch,
+    updateSort,
     updateOpportunity,
     deleteOpportunity,
     exportOpportunities,

@@ -1,21 +1,20 @@
 /**
- * Slide-over panel for lead details with inline editing
+ * Slide-over panel for opportunity details with inline editing
  */
 
-import { useLeads } from '@/hooks/useLeads';
-import type { Lead } from '@/types';
-import { LeadStatus } from '@/types';
-import { formatDateTime, formatSource, getScoreColor, getStatusColor } from '@/utils/dataTransform';
-import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
+import { useOpportunities } from '@/hooks/useOpportunities';
+import type { Opportunity } from '@/types';
+import { OpportunityStage } from '@/types';
+import { formatDateTime, formatNumber, formatStage, getStageColor, handleAmountInputChange } from '@/utils/dataTransform';
+import { convertValidationErrorsToMap, validateOpportunity } from '@/utils/validation';
 import {
   Building,
   Calendar,
   X as Cancel,
+  DollarSign,
   Edit2,
   GripVertical,
-  Mail,
   Save,
-  Star,
   Trash2,
   X,
 } from 'lucide-react';
@@ -24,23 +23,26 @@ import DeleteConfirmationModal from './DeleteConfirmationModal';
 import Badge from './ui/Badge';
 import Button from './ui/Button';
 import Input from './ui/Input';
-import ScoreDial from './ui/ScoreDial';
 import Select from './ui/Select';
 
-interface LeadDetailPanelProps {
-  lead: Lead | null;
+interface OpportunityDetailPanelProps {
+  opportunity: Opportunity | null;
   isOpen: boolean;
   onClose: () => void;
-  onConvert: (lead: Lead) => void;
 }
 
-const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose, onConvert }) => {
-  const { updateLead, deleteLead } = useLeads();
+const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({ 
+  opportunity, 
+  isOpen, 
+  onClose 
+}) => {
+  const { updateOpportunity, deleteOpportunity } = useOpportunities();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<Lead>>({});
+  const [formData, setFormData] = useState<Partial<Opportunity>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [amountDisplay, setAmountDisplay] = useState('');
 
   // Drag functionality
   const panelRef = useRef<HTMLDivElement>(null);
@@ -49,14 +51,15 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
   const [dragStartTransform, setDragStartTransform] = useState(0);
   const [currentTransform, setCurrentTransform] = useState(0);
 
-  // Reset form when lead changes
+  // Reset form when opportunity changes
   useEffect(() => {
-    if (lead) {
-      setFormData(lead);
+    if (opportunity) {
+      setFormData(opportunity);
+      setAmountDisplay(opportunity.amount ? opportunity.amount.toString() : '');
       setErrors({});
       setIsEditing(false);
     }
-  }, [lead]);
+  }, [opportunity]);
 
   // Reset transform when panel opens/closes
   useEffect(() => {
@@ -124,16 +127,16 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
   };
 
   const handleCancel = () => {
-    setFormData(lead || {});
+    // Don't reset formData - keep the current state (which includes any saved changes)
     setErrors({});
     setIsEditing(false);
   };
 
   const handleSave = async () => {
-    if (!lead) return;
+    if (!opportunity) return;
 
     // Validate form data
-    const validationErrors = validateLead(formData);
+    const validationErrors = validateOpportunity(formData);
     if (validationErrors.length > 0) {
       setErrors(convertValidationErrorsToMap(validationErrors));
       return;
@@ -141,7 +144,7 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
 
     setIsSaving(true);
     try {
-      await updateLead(lead.id, formData);
+      await updateOpportunity(opportunity.id, formData);
       // Update formData with the saved values to reflect changes immediately
       setFormData(formData);
       setIsEditing(false);
@@ -158,10 +161,10 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
   };
 
   const handleDeleteConfirm = async () => {
-    if (!lead) return;
+    if (!opportunity) return;
 
     try {
-      await deleteLead(lead.id);
+      await deleteOpportunity(opportunity.id);
       setIsDeleteModalOpen(false);
       onClose(); // Close the panel after successful deletion
     } catch (error) {
@@ -169,7 +172,7 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
     }
   };
 
-  const handleFieldChange = (field: keyof Lead, value: any) => {
+  const handleFieldChange = (field: keyof Opportunity, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error for this field
     if (errors[field]) {
@@ -177,22 +180,21 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
     }
   };
 
-  const statusOptions = [
-    { value: LeadStatus.NEW, label: 'New' },
-    { value: LeadStatus.CONTACTED, label: 'Contacted' },
-    { value: LeadStatus.QUALIFIED, label: 'Qualified' },
-    { value: LeadStatus.UNQUALIFIED, label: 'Unqualified' },
-    { value: LeadStatus.CONVERTED, label: 'Converted' },
-  ];
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleAmountInputChange(
+      e.target.value,
+      (amount) => handleFieldChange('amount', amount),
+      setAmountDisplay
+    );
+  };
 
-  const sourceOptions = [
-    { value: 'website', label: 'Website' },
-    { value: 'referral', label: 'Referral' },
-    { value: 'cold_call', label: 'Cold Call' },
-    { value: 'email', label: 'Email' },
-    { value: 'social_media', label: 'Social Media' },
-    { value: 'advertisement', label: 'Advertisement' },
-    { value: 'other', label: 'Other' },
+  const stageOptions = [
+    { value: OpportunityStage.PROSPECTING, label: 'Prospecting' },
+    { value: OpportunityStage.QUALIFICATION, label: 'Qualification' },
+    { value: OpportunityStage.PROPOSAL, label: 'Proposal' },
+    { value: OpportunityStage.NEGOTIATION, label: 'Negotiation' },
+    { value: OpportunityStage.CLOSED_WON, label: 'Closed Won' },
+    { value: OpportunityStage.CLOSED_LOST, label: 'Closed Lost' },
   ];
 
   return (
@@ -279,31 +281,24 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
 
           {/* Content */}
           <div className='flex-1 overflow-y-auto p-6 space-y-6'>
-            {!lead ? (
+            {!opportunity ? (
               <div className='flex items-center justify-center h-full'>
-                <div className='text-gray-500'>No lead selected</div>
+                <div className='text-gray-500'>No opportunity selected</div>
               </div>
             ) : (
               <>
-                {/* Lead ID */}
+                {/* Opportunity ID */}
                 <div className='pb-2 border-b border-gray-200'>
-                  <div className='text-sm text-gray-500'>Lead ID</div>
-                  <div className='text-lg font-mono text-gray-900'>{lead.id}</div>
+                  <div className='text-sm text-gray-500'>Opportunity ID</div>
+                  <div className='text-lg font-mono text-gray-900'>{opportunity.id}</div>
                 </div>
 
-                {/* Status and Score */}
+                {/* Stage */}
                 {!isEditing && (
                   <div className='flex items-center justify-between'>
-                    <Badge className={getStatusColor(formData.status || lead.status)}>
-                      {(formData.status || lead.status).toUpperCase()}
+                    <Badge className={getStageColor(formData.stage || opportunity.stage)}>
+                      {formatStage(formData.stage || opportunity.stage).toUpperCase()}
                     </Badge>
-                    <div className='flex items-center space-x-1'>
-                      <Star className='w-4 h-4 text-yellow-500' />
-                      <span
-                        className={`font-medium ${getScoreColor(formData.score || lead.score)}`}>
-                        {formData.score || lead.score}%
-                      </span>
-                    </div>
                   </div>
                 )}
 
@@ -318,86 +313,63 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
                         error={errors.name}
                       />
                     ) : (
-                      <p className='text-gray-900'>{formData.name || lead.name}</p>
+                      <p className='text-gray-900'>{formData.name || opportunity.name}</p>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>Company</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>Account Name</label>
                     {isEditing ? (
                       <Input
-                        value={formData.company || ''}
-                        onChange={(e) => handleFieldChange('company', e.target.value)}
-                        error={errors.company}
+                        value={formData.accountName || ''}
+                        onChange={(e) => handleFieldChange('accountName', e.target.value)}
+                        error={errors.accountName}
                       />
                     ) : (
                       <div className='flex items-center space-x-2'>
                         <Building className='w-4 h-4 text-gray-400' />
-                        <p className='text-gray-900'>{formData.company || lead.company}</p>
+                        <p className='text-gray-900'>{formData.accountName || opportunity.accountName}</p>
                       </div>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>Email</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>Amount</label>
                     {isEditing ? (
-                      <Input
-                        type='email'
-                        value={formData.email || ''}
-                        onChange={(e) => handleFieldChange('email', e.target.value)}
-                        error={errors.email}
-                      />
+                      <div className='relative'>
+                        <Input
+                          type='text'
+                          value={amountDisplay}
+                          onChange={handleAmountChange}
+                          placeholder='0.00'
+                          error={errors.amount}
+                          leftIcon={<DollarSign className='w-4 h-4 text-gray-400' />}
+                        />
+                      </div>
                     ) : (
                       <div className='flex items-center space-x-2'>
-                        <Mail className='w-4 h-4 text-gray-400' />
-                        <p className='text-gray-900'>{formData.email || lead.email}</p>
+                        <DollarSign className='w-4 h-4 text-gray-400' />
+                        <p className={`font-medium ${(formData.amount || opportunity.amount) ? 'text-green-600' : 'text-gray-500'}`}>
+                          {formData.amount || opportunity.amount 
+                            ? formatNumber(formData.amount || opportunity.amount!)
+                            : 'Not specified'
+                          }
+                        </p>
                       </div>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>Source</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>Stage</label>
                     {isEditing ? (
                       <Select
-                        value={formData.source || ''}
-                        onChange={(e) => handleFieldChange('source', e.target.value)}
-                        error={errors.source}
-                        options={sourceOptions}
-                        placeholder='Select source'
+                        value={formData.stage || opportunity.stage}
+                        onChange={(e) => handleFieldChange('stage', e.target.value)}
+                        options={stageOptions}
+                        error={errors.stage}
                       />
                     ) : (
-                      <p className='text-gray-900'>
-                        {formatSource(formData.source || lead.source)}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    {isEditing && (
-                      <>
-                        <label className='block text-sm font-medium text-gray-700 mb-1'>
-                          Status
-                        </label>
-                        <Select
-                          value={formData.status || lead.status}
-                          onChange={(e) => handleFieldChange('status', e.target.value)}
-                          options={statusOptions}
-                          error={errors.status}
-                        />
-                      </>
-                    )}
-                  </div>
-
-                  <div>
-                    {isEditing && (
-                      <ScoreDial
-                        label='Score'
-                        value={formData.score || lead.score}
-                        onChange={(value) => handleFieldChange('score', value)}
-                        error={errors.score}
-                        min={1}
-                        max={100}
-                      />
+                      <p className='text-gray-900'>{formatStage(formData.stage || opportunity.stage)}</p>
                     )}
                   </div>
                 </div>
@@ -406,29 +378,16 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
                 <div className='pt-4 border-t border-gray-200 space-y-2'>
                   <div className='flex items-center space-x-2 text-sm text-gray-500'>
                     <Calendar className='w-4 h-4' />
-                    <span>Created: {formatDateTime(lead.createdAt)}</span>
+                    <span>Created: {formatDateTime(opportunity.createdAt)}</span>
                   </div>
                   <div className='flex items-center space-x-2 text-sm text-gray-500'>
                     <Calendar className='w-4 h-4' />
-                    <span>Updated: {formatDateTime(lead.updatedAt)}</span>
+                    <span>Updated: {formatDateTime(opportunity.updatedAt)}</span>
                   </div>
                 </div>
               </>
             )}
           </div>
-
-          {/* Footer */}
-          {lead && (formData.status || lead.status) !== LeadStatus.CONVERTED && (
-            <div className='px-6 py-4 border-t border-gray-200'>
-              <Button
-                variant='primary'
-                onClick={() => onConvert({ ...lead, ...formData })}
-                disabled={isEditing}
-                className='w-full sm:w-auto'>
-                Convert to Opportunity
-              </Button>
-            </div>
-          )}
         </div>
       </div>
 
@@ -436,12 +395,12 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        title='Delete Lead'
-        message='Are you sure you want to delete the lead'
-        itemName={lead?.name}
+        title='Delete Opportunity'
+        message='Are you sure you want to delete the opportunity'
+        itemName={opportunity?.name}
       />
     </div>
   );
 };
 
-export default LeadDetailPanel;
+export default OpportunityDetailPanel;

@@ -23,6 +23,7 @@ type AppAction =
   | { type: 'UPDATE_SEARCH'; payload: string }
   | { type: 'UPDATE_OPPORTUNITY_SEARCH'; payload: string }
   | { type: 'UPDATE_SORT'; payload: SortConfig }
+  | { type: 'UPDATE_OPPORTUNITY_SORT'; payload: OpportunitySortConfig }
   | { type: 'ADD_NOTIFICATION'; payload: Notification }
   | { type: 'REMOVE_NOTIFICATION'; payload: string }
   | { type: 'UPDATE_LEAD'; payload: Lead }
@@ -46,6 +47,10 @@ const initialState: AppState = {
   },
   sortConfig: {
     field: 'score',
+    direction: 'desc',
+  },
+  opportunitySortConfig: {
+    field: 'createdAt',
     direction: 'desc',
   },
 };
@@ -92,6 +97,10 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case 'UPDATE_SORT':
       storageService.setSortConfig(action.payload);
       return { ...state, sortConfig: action.payload };
+
+    case 'UPDATE_OPPORTUNITY_SORT':
+      storageService.setOpportunitySortConfig(action.payload);
+      return { ...state, opportunitySortConfig: action.payload };
 
     case 'ADD_NOTIFICATION':
       return { ...state };
@@ -149,10 +158,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const savedFilters = storageService.getFilters();
         const savedOpportunityFilters = storageService.getOpportunityFilters();
         const savedSortConfig = storageService.getSortConfig();
+        const savedOpportunitySortConfig = storageService.getOpportunitySortConfig();
 
         dispatch({ type: 'UPDATE_FILTERS', payload: savedFilters });
         dispatch({ type: 'UPDATE_OPPORTUNITY_FILTERS', payload: savedOpportunityFilters });
         dispatch({ type: 'UPDATE_SORT', payload: savedSortConfig });
+        dispatch({ type: 'UPDATE_OPPORTUNITY_SORT', payload: savedOpportunitySortConfig });
 
         // Load data from API
         const [leadsResponse, opportunitiesResponse] = await Promise.all([
