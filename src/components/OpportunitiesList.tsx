@@ -186,7 +186,7 @@ const OpportunitiesList: React.FC = () => {
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
         onSearchClear={handleSearchClear}
-        searchPlaceholder='Search opportunities...'
+        searchPlaceholder='Search opportunities by name or company...'
         totalItems={sortedOpportunities.length}
         itemLabel='opportunity'
         currentPage={currentPage}

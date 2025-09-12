@@ -160,7 +160,7 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onNewLeadRef }) => 
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
         onSearchClear={handleSearchClear}
-        searchPlaceholder='Search leads...'
+        searchPlaceholder='Search leads by name or company...'
         totalItems={leads.length}
         itemLabel='lead'
         currentPage={currentPage}
