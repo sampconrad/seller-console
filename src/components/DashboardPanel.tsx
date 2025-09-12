@@ -6,7 +6,7 @@ import { useFilterOptions } from '@/hooks/useFilterOptions';
 import { useLeads } from '@/hooks/useLeads';
 import { useOpportunities } from '@/hooks/useOpportunities';
 import { LeadStatus, OpportunityStage } from '@/types';
-import { CircleDollarSign, Menu, Pin, TrendingUp, Users, X } from 'lucide-react';
+import { CircleDollarSign, Menu, TrendingUp, Users, X } from 'lucide-react';
 import React, { useState } from 'react';
 import FormatSelectionModal from './FormatSelectionModal';
 import DataManagementSection from './ui/DataManagementSection';
