@@ -9,8 +9,6 @@ import Button from './ui/Button';
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  totalItems: number;
-  itemsPerPage: number;
   onPageChange: (page: number) => void;
   onPreviousPage: () => void;
   onNextPage: () => void;
@@ -19,40 +17,43 @@ interface PaginationProps {
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
-  totalItems,
-  itemsPerPage,
   onPageChange,
   onPreviousPage,
   onNextPage,
 }) => {
-  // Calculate display range
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
   // Generate page numbers for pagination
   const getPageNumbers = () => {
     const pages = [];
-    const maxVisiblePages = 5;
 
-    if (totalPages <= maxVisiblePages) {
+    if (totalPages <= 5) {
+      // If total pages is 5 or less, show all pages
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      const startPage = Math.max(1, currentPage - 2);
-      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      // Always show first page
+      pages.push(1);
 
-      if (startPage > 1) {
-        pages.push(1);
-        if (startPage > 2) pages.push('...');
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) pages.push('...');
+      if (currentPage <= 3) {
+        // Near the beginning: 1 2 3 4 5 ... last
+        for (let i = 2; i <= 5; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        // Near the end: 1 ... last-4 last-3 last-2 last-1 last
+        pages.push('...');
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        // In the middle: 1 ... current-1 current current+1 ... last
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
         pages.push(totalPages);
       }
     }
@@ -65,7 +66,7 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <div className='bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6'>
+    <div className='px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6'>
       {/* Mobile pagination */}
       <div className='flex-1 flex justify-between sm:hidden'>
         <Button
@@ -85,14 +86,7 @@ const Pagination: React.FC<PaginationProps> = ({
       </div>
 
       {/* Desktop pagination */}
-      <div className='hidden sm:flex-1 sm:flex sm:items-center sm:justify-between'>
-        <div>
-          <p className='text-sm text-gray-700'>
-            Showing <span className='font-medium'>{startIndex + 1}</span> to{' '}
-            <span className='font-medium'>{Math.min(endIndex, totalItems)}</span> of{' '}
-            <span className='font-medium'>{totalItems}</span> results
-          </p>
-        </div>
+      <div className='hidden sm:flex-1 sm:flex sm:items-center sm:justify-center'>
         <div>
           <nav
             className='relative z-0 inline-flex rounded-md space-x-1'
@@ -107,14 +101,14 @@ const Pagination: React.FC<PaginationProps> = ({
             {getPageNumbers().map((page, index) => (
               <React.Fragment key={index}>
                 {page === '...' ? (
-                  <span className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700'>
+                  <span className='relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 w-10 min-w-10 justify-center'>
                     ...
                   </span>
                 ) : (
                   <Button
                     variant={currentPage === page ? 'primary' : 'ghost'}
                     onClick={() => onPageChange(page as number)}
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium ${
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium w-10 justify-center min-w-10 ${
                       currentPage === page
                         ? 'z-10 bg-blue-50 text-blue-500 hover:text-white'
                         : 'text-gray-500 hover:bg-gray-50'

@@ -63,18 +63,18 @@ const Table = <T,>({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow overflow-hidden ${className}`}>
-      <div className='overflow-x-auto'>
+    <div className={`bg-white rounded-lg shadow overflow-hidden flex flex-col ${className}`}>
+      <div className='flex-1 overflow-auto'>
         <table
           className='w-full divide-y divide-gray-200 table-fixed'
           style={{ width: '100%', tableLayout: 'fixed' }}>
-          <thead className='bg-gray-50'>
+          <thead className='bg-gray-100 sticky top-0 z-10'>
             <tr>
               {columns.map((column) => (
                 <th
                   key={String(column.key)}
                   className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden ${
-                    column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
+                    column.sortable ? 'cursor-pointer hover:bg-gray-200' : ''
                   }`}
                   style={{ width: column.width, maxWidth: column.width }}
                   onClick={() => column.sortable && handleSort(column.key)}>

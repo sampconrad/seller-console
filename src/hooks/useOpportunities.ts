@@ -5,8 +5,7 @@
 import { useApp } from '@/context/AppContext';
 import { useNotifications } from '@/context/NotificationContext';
 import { apiService } from '@/services/api';
-import { fileService } from '@/services/fileService';
-import type { ExportOptions, Opportunity, OpportunityFilters } from '@/types';
+import type { Opportunity, OpportunityFilters } from '@/types';
 import { useCallback } from 'react';
 
 export const useOpportunities = () => {
@@ -95,33 +94,6 @@ export const useOpportunities = () => {
     [dispatch, addNotification]
   );
 
-  // Export opportunities
-  const exportOpportunities = useCallback(
-    async (options: ExportOptions) => {
-      try {
-        dispatch({ type: 'SET_LOADING', payload: true });
-
-        const response = await apiService.exportOpportunities();
-        fileService.exportData(response.data, options);
-
-        addNotification({
-          type: 'success',
-          title: 'Export Successful',
-          message: 'Opportunities have been exported successfully.',
-        });
-      } catch (error) {
-        addNotification({
-          type: 'error',
-          title: 'Export Failed',
-          message: error instanceof Error ? error.message : 'Failed to export opportunities',
-        });
-      } finally {
-        dispatch({ type: 'SET_LOADING', payload: false });
-      }
-    },
-    [dispatch, addNotification]
-  );
-
   return {
     opportunities: state.opportunities,
     loading: state.isLoading,
@@ -133,6 +105,5 @@ export const useOpportunities = () => {
     updateSort,
     updateOpportunity,
     deleteOpportunity,
-    exportOpportunities,
   };
 };

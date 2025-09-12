@@ -7,7 +7,7 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 ## 🚀 Features
 
 ### Lead Management
-- **Import/Export**: Support for JSON and CSV file formats with complete data including IDs
+- **Import/Export**: Support for JSON and CSV file formats with complete data including IDs (leads only)
 - **Search & Filter**: Real-time search by name/company and filter by status
 - **Sorting**: Sort leads by any field (default: score descending)
 - **Pagination**: Display 20 leads per page with smart pagination controls
@@ -17,9 +17,10 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 
 ### Opportunity Conversion
 - **Lead to Opportunity**: Convert qualified leads into opportunities
-- **Opportunity Management**: Full CRUD operations for opportunities
+- **Opportunity Management**: Full CRUD operations for opportunities (view, edit, delete)
 - **Stage Tracking**: Monitor opportunity progression through sales stages
 - **Amount Tracking**: Optional monetary value tracking
+- **Note**: Opportunities cannot be imported/exported - only leads support file operations
 
 ### User Experience
 - **Responsive Design**: Mobile-first approach with desktop optimization
@@ -38,35 +39,38 @@ src/
 │   ├── ui/                       # Reusable UI primitives
 │   │   ├── Badge.tsx            # Status/stage badge component
 │   │   ├── Button.tsx           # Button component with variants
-│   │   ├── Footer.tsx           # Application footer
+│   │   ├── DataManagementSection.tsx  # Reusable data management UI
+│   │   ├── Footer.tsx           # Application footer component
 │   │   ├── Input.tsx            # Form input component
 │   │   ├── Modal.tsx            # Modal dialog component
+│   │   ├── QuickFilter.tsx      # Reusable quick filter component
 │   │   ├── ScoreDial.tsx        # Interactive lead scoring component
 │   │   ├── Select.tsx           # Dropdown select component
 │   │   ├── Table.tsx            # Data table component
 │   │   ├── Toast.tsx            # Toast notification component
 │   │   └── ToastContainer.tsx   # Toast notification container
-│   ├── DeleteConfirmationModal.tsx    # Delete confirmation dialog
-│   ├── FormatSelectionModal.tsx       # Import/export format selection
-│   ├── Filters.tsx                    # Filters component for search and filter functionality
-│   ├── Header.tsx                     # Application header component
-│   ├── LeadDetailPanel.tsx           # Lead details with inline editing
-│   ├── LeadFormModal.tsx             # Create/edit lead modal
-│   ├── LeadsList.tsx                 # Main leads management with pagination
-│   ├── OpportunitiesList.tsx         # Opportunities management
-│   ├── OpportunityDetailPanel.tsx    # Opportunity details with inline editing
-│   ├── OpportunityFormModal.tsx      # Converting leads to opportunities
-│   └── Pagination.tsx                # Pagination component
+│   ├── DashboardPanel.tsx            # Left sidebar with navigation and filters
+│   ├── DeleteConfirmationModal.tsx  # Delete confirmation dialog
+│   ├── FormatSelectionModal.tsx     # Import/export format selection
+│   ├── LeadDetailPanel.tsx          # Lead details with inline editing
+│   ├── LeadFormModal.tsx            # Create/edit lead modal
+│   ├── LeadsList.tsx                # Main leads management with pagination
+│   ├── OpportunitiesList.tsx        # Opportunities management
+│   ├── OpportunityDetailPanel.tsx   # Opportunity details with inline editing
+│   ├── OpportunityFormModal.tsx     # Converting leads to opportunities
+│   ├── Pagination.tsx               # Pagination component
+│   └── Searchbox.tsx                # Search input component
 ├── context/                       # React Context providers
 │   ├── AppContext.tsx            # Global state management
 │   └── NotificationContext.tsx   # Toast notification context
 ├── hooks/                         # Custom React hooks
 │   ├── useDebounce.ts            # Debounced input hook
+│   ├── useFilterOptions.ts       # Filter options generation hook
 │   ├── useLeads.ts               # Lead management logic
 │   └── useOpportunities.ts       # Opportunity management logic
 ├── services/                      # Business logic layer
 │   ├── api.ts                    # Mock API with latency simulation
-│   ├── fileService.ts            # File import/export functionality
+│   ├── fileService.ts            # File import/export functionality (leads only)
 │   └── storage.ts                # Local storage management
 ├── utils/                         # Utility functions
 │   ├── dataTransform.ts          # Data manipulation and formatting

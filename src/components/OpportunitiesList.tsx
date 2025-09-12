@@ -5,7 +5,6 @@
 import { useDebounce } from '@/hooks/useDebounce';
 import { useOpportunities } from '@/hooks/useOpportunities';
 import type { Opportunity, TableColumn } from '@/types';
-import { OpportunityStage } from '@/types';
 import {
   formatDate,
   formatNumber,
@@ -13,16 +12,14 @@ import {
   getStageColor,
   sortOpportunities,
 } from '@/utils/dataTransform';
-import { Calendar, DollarSign, Upload } from 'lucide-react';
+import { Calendar, DollarSign, TrendingUp } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
-import Filters from './Filters';
-import FormatSelectionModal from './FormatSelectionModal';
 import OpportunityDetailPanel from './OpportunityDetailPanel';
 import Pagination from './Pagination';
 import Badge from './ui/Badge';
-import Button from './ui/Button';
 import Table from './ui/Table';
+import Searchbox from './Searchbox';
 
 const OpportunitiesList: React.FC = () => {
   const {
@@ -30,14 +27,11 @@ const OpportunitiesList: React.FC = () => {
     loading,
     filters,
     sortConfig,
-    updateFilters,
     updateSearch,
     updateSort,
     deleteOpportunity,
-    exportOpportunities,
   } = useOpportunities();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
   const [opportunityToDelete, setOpportunityToDelete] = useState<Opportunity | null>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
@@ -65,14 +59,6 @@ const OpportunitiesList: React.FC = () => {
     }
   };
 
-  const handleExport = () => {
-    setIsExportModalOpen(true);
-  };
-
-  const handleExportFormatSelect = (format: 'json' | 'csv') => {
-    exportOpportunities({ format, includeOpportunities: true });
-  };
-
   const handleCloseDetailPanel = () => {
     setIsDetailPanelOpen(false);
     setSelectedOpportunity(null);
@@ -89,10 +75,6 @@ const OpportunitiesList: React.FC = () => {
 
   const handleSearchClear = () => {
     setSearchValue('');
-  };
-
-  const handleStageFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateFilters({ stage: e.target.value as OpportunityStage | 'all' });
   };
 
   // Filter opportunities based on search and stage
@@ -136,39 +118,17 @@ const OpportunitiesList: React.FC = () => {
     }
   };
 
-  const stageOptions = [
-    { value: 'all', label: 'All Stages' },
-    { value: OpportunityStage.PROSPECTING, label: 'Prospecting' },
-    { value: OpportunityStage.QUALIFICATION, label: 'Qualification' },
-    { value: OpportunityStage.PROPOSAL, label: 'Proposal' },
-    { value: OpportunityStage.NEGOTIATION, label: 'Negotiation' },
-    { value: OpportunityStage.CLOSED_WON, label: 'Closed Won' },
-    { value: OpportunityStage.CLOSED_LOST, label: 'Closed Lost' },
-  ];
-
   const columns: TableColumn<Opportunity>[] = [
     {
       key: 'name',
       label: 'Opportunity',
       sortable: true,
-      width: '300px',
+      width: '200px',
       render: (value, opportunity) => (
-        <div className='w-full min-w-0'>
-          <div
-            className='font-medium text-gray-900 truncate'
-            title={value as string}>
-            {value}
-          </div>
-          <div
-            className='text-sm text-gray-500 truncate'
-            title={opportunity.accountName}>
-            {opportunity.accountName}
-          </div>
-          <div
-            className='text-xs text-gray-400 font-mono truncate'
-            title={`#${opportunity.id}`}>
-            #{opportunity.id}
-          </div>
+        <div className='w-full'>
+          <div className='font-medium text-gray-900'>{value}</div>
+          <div className='text-sm text-gray-500'>{opportunity.accountName}</div>
+          <div className='text-xs text-gray-400 font-mono'>#{opportunity.id}</div>
         </div>
       ),
     },
@@ -176,7 +136,7 @@ const OpportunitiesList: React.FC = () => {
       key: 'stage',
       label: 'Stage',
       sortable: true,
-      width: '160px',
+      width: '200px',
       render: (value) => (
         <Badge className={getStageColor(value as string)}>
           {formatStage(value as string).toUpperCase()}
@@ -187,7 +147,7 @@ const OpportunitiesList: React.FC = () => {
       key: 'amount',
       label: 'Amount',
       sortable: true,
-      width: '170px',
+      width: '200px',
       render: (value) => (
         <div className='flex items-center space-x-1'>
           <DollarSign className='w-4 h-4 text-gray-400' />
@@ -205,59 +165,54 @@ const OpportunitiesList: React.FC = () => {
       render: (value) => (
         <div className='flex items-center space-x-1'>
           <Calendar className='w-4 h-4 text-gray-400' />
-          <span>{formatDate(value as Date)}</span>
+          <span className='inline'>{formatDate(value as Date)}</span>
         </div>
       ),
     },
   ];
 
   return (
-    <div className='space-y-6'>
-      {/* Header */}
-      <div className='w-full text-center sm:text-left'>
-        <h1 className='text-2xl font-bold text-gray-900'>Opportunities</h1>
-        <p className='text-gray-600'>Manage your converted opportunities</p>
+    <div className='h-full flex flex-col max-w-full'>
+      {/* Header - Hidden on mobile, shown on lg+ */}
+      <div className='hidden lg:block w-full text-left mb-6'>
+        <div className='flex items-center space-x-3 mb-2'>
+          <TrendingUp className='w-8 h-8 text-green-600' />
+          <h1 className='text-2xl font-bold text-gray-900'>Opportunities</h1>
+        </div>
+        <p className='text-base text-gray-600'>Manage your converted opportunities</p>
       </div>
 
-      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 w-full'>
-        <Button
-          variant='secondary'
-          onClick={handleExport}
-          disabled={opportunities.length === 0}
-          className='w-full sm:w-auto'>
-          <Upload className='w-4 h-4 mr-2' />
-          Export Opps
-        </Button>
-      </div>
-
-      <Filters
+      <Searchbox
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
         onSearchClear={handleSearchClear}
         searchPlaceholder='Search opportunities...'
-        filterValue={filters.stage}
-        onFilterChange={handleStageFilterChange}
-        filterOptions={stageOptions}
         totalItems={sortedOpportunities.length}
         itemLabel='opportunity'
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
       />
 
-      <Table
-        data={paginatedOpportunities}
-        columns={columns}
-        onSort={(field, direction) => updateSort(field, direction)}
-        sortField={sortConfig.field}
-        sortDirection={sortConfig.direction}
-        loading={loading}
-        emptyMessage='No opportunities found. Convert some leads to get started.'
-        onRowClick={handleOpportunityClick}
-      />
+      {/* Table Container - Takes remaining space */}
+      <div className='flex-1 min-h-0 flex flex-col'>
+        <div className='flex-1 overflow-hidden'>
+          <Table
+            data={paginatedOpportunities}
+            columns={columns}
+            onSort={(field, direction) => updateSort(field, direction)}
+            sortField={sortConfig.field}
+            sortDirection={sortConfig.direction}
+            loading={loading}
+            emptyMessage='No opportunities found. Convert some leads to get started.'
+            onRowClick={handleOpportunityClick}
+            className='h-full'
+          />
+        </div>
+      </div>
 
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        totalItems={sortedOpportunities.length}
-        itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
         onPreviousPage={handlePreviousPage}
         onNextPage={handleNextPage}
@@ -270,14 +225,6 @@ const OpportunitiesList: React.FC = () => {
         title='Delete Opportunity'
         message='Are you sure you want to delete the opportunity'
         itemName={opportunityToDelete?.name}
-      />
-
-      <FormatSelectionModal
-        isOpen={isExportModalOpen}
-        onClose={() => setIsExportModalOpen(false)}
-        onFormatSelect={handleExportFormatSelect}
-        title='Export Opportunities'
-        description='Choose the format for exporting opportunities'
       />
 
       <OpportunityDetailPanel

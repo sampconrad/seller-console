@@ -124,31 +124,123 @@ export const formatDateTime = (date: Date | string): string => {
  * Get status badge color class
  */
 export const getStatusColor = (status: string): string => {
-  const statusColors: Record<string, string> = {
-    new: 'bg-blue-100 text-blue-800',
-    contacted: 'bg-yellow-100 text-yellow-800',
-    qualified: 'bg-green-100 text-green-800',
-    unqualified: 'bg-red-100 text-red-800',
-    converted: 'bg-purple-100 text-purple-800',
-  };
-
-  return statusColors[status] || 'bg-gray-100 text-gray-800';
+  return STATUS_COLORS[status as keyof typeof STATUS_COLORS] || STATUS_COLORS.default;
 };
 
 /**
  * Get stage badge color class
  */
 export const getStageColor = (stage: string): string => {
-  const stageColors: Record<string, string> = {
-    prospecting: 'bg-blue-100 text-blue-800',
-    qualification: 'bg-yellow-100 text-yellow-800',
-    proposal: 'bg-orange-100 text-orange-800',
-    negotiation: 'bg-purple-100 text-purple-800',
-    closed_won: 'bg-green-100 text-green-800',
-    closed_lost: 'bg-red-100 text-red-800',
-  };
+  return STAGE_COLORS[stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.default;
+};
 
-  return stageColors[stage] || 'bg-gray-100 text-gray-800';
+// Pre-defined color objects to avoid creating new objects on every call
+const INACTIVE_COLORS = {
+  button: 'text-gray-700 hover:bg-gray-50 border border-transparent',
+  count: 'bg-gray-100 text-gray-600',
+};
+
+const STATUS_COLORS = {
+  new: 'bg-blue-100 text-blue-800',
+  contacted: 'bg-yellow-100 text-yellow-800',
+  qualified: 'bg-green-100 text-green-800',
+  unqualified: 'bg-red-100 text-red-800',
+  converted: 'bg-purple-100 text-purple-800',
+  default: 'bg-gray-100 text-gray-800',
+};
+
+const STAGE_COLORS = {
+  prospecting: 'bg-blue-100 text-blue-800',
+  qualification: 'bg-yellow-100 text-yellow-800',
+  proposal: 'bg-orange-100 text-orange-800',
+  negotiation: 'bg-purple-100 text-purple-800',
+  closed_won: 'bg-green-100 text-green-800',
+  closed_lost: 'bg-red-100 text-red-800',
+  default: 'bg-gray-100 text-gray-800',
+};
+
+const SCORE_COLORS = {
+  high: 'text-green-600', // >= 80
+  medium: 'text-yellow-600', // >= 60
+  low: 'text-orange-600', // >= 40
+  veryLow: 'text-red-600', // < 40
+};
+
+const LEAD_COLORS = {
+  new: {
+    button: 'bg-gray-50 text-gray-700 border border-gray-200',
+    count: 'bg-gray-100 text-gray-600',
+  },
+  contacted: {
+    button: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
+    count: 'bg-yellow-100 text-yellow-600',
+  },
+  qualified: {
+    button: 'bg-green-50 text-green-700 border border-green-200',
+    count: 'bg-green-100 text-green-600',
+  },
+  unqualified: {
+    button: 'bg-red-50 text-red-700 border border-red-200',
+    count: 'bg-red-100 text-red-600',
+  },
+  converted: {
+    button: 'bg-purple-50 text-purple-700 border border-purple-200',
+    count: 'bg-purple-100 text-purple-600',
+  },
+  all: {
+    button: 'bg-blue-50 text-blue-700 border border-blue-200',
+    count: 'bg-blue-100 text-blue-600',
+  },
+};
+
+const OPPORTUNITY_COLORS = {
+  prospecting: {
+    button: 'bg-gray-50 text-gray-700 border border-gray-200',
+    count: 'bg-gray-100 text-gray-600',
+  },
+  qualification: {
+    button: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
+    count: 'bg-yellow-100 text-yellow-600',
+  },
+  proposal: {
+    button: 'bg-orange-50 text-orange-700 border border-orange-200',
+    count: 'bg-orange-100 text-orange-600',
+  },
+  negotiation: {
+    button: 'bg-purple-50 text-purple-700 border border-purple-200',
+    count: 'bg-purple-100 text-purple-600',
+  },
+  closed_won: {
+    button: 'bg-green-50 text-green-700 border border-green-200',
+    count: 'bg-green-100 text-green-600',
+  },
+  closed_lost: {
+    button: 'bg-red-50 text-red-700 border border-red-200',
+    count: 'bg-red-100 text-red-600',
+  },
+  all: {
+    button: 'bg-blue-50 text-blue-700 border border-blue-200',
+    count: 'bg-blue-100 text-blue-600',
+  },
+};
+
+/**
+ * Get quick filter button and count colors for leads and opportunities
+ */
+export const getQuickFilterColors = (
+  type: 'lead' | 'opportunity',
+  value: string,
+  isActive: boolean
+) => {
+  if (!isActive) {
+    return INACTIVE_COLORS;
+  }
+
+  if (type === 'lead') {
+    return LEAD_COLORS[value as keyof typeof LEAD_COLORS] || LEAD_COLORS.all;
+  } else {
+    return OPPORTUNITY_COLORS[value as keyof typeof OPPORTUNITY_COLORS] || OPPORTUNITY_COLORS.all;
+  }
 };
 
 /**
@@ -184,10 +276,10 @@ export const truncateText = (text: string, maxLength: number): string => {
  * Calculate lead score color based on value
  */
 export const getScoreColor = (score: number): string => {
-  if (score >= 80) return 'text-green-600';
-  if (score >= 60) return 'text-yellow-600';
-  if (score >= 40) return 'text-orange-600';
-  return 'text-red-600';
+  if (score >= 80) return SCORE_COLORS.high;
+  if (score >= 60) return SCORE_COLORS.medium;
+  if (score >= 40) return SCORE_COLORS.low;
+  return SCORE_COLORS.veryLow;
 };
 
 /**

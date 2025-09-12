@@ -39,7 +39,7 @@
     "email": "ethan.gregory@resonancecorp.com",
     "source": "referral",
     "score": 3,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-03T21:38:00.000Z",
     "updatedAt": "2024-01-10T21:16:20.264Z"
   },
@@ -83,7 +83,7 @@
     "email": "kimberly.steven@qualificationsolutions.com",
     "source": "social_media",
     "score": 96,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-12T13:13:00.000Z",
     "updatedAt": "2024-01-16T12:06:53.934Z"
   },
@@ -182,7 +182,7 @@
     "email": "larry.gary@gammasystems.com",
     "source": "other",
     "score": 27,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-15T06:48:00.000Z",
     "updatedAt": "2024-01-21T13:15:45.856Z"
   },
@@ -215,7 +215,7 @@
     "email": "noah.jacob@thoughttechnologies.com",
     "source": "other",
     "score": 64,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-10T20:04:00.000Z",
     "updatedAt": "2024-01-16T10:42:33.535Z"
   },
@@ -248,7 +248,7 @@
     "email": "david.justin@simplicitysolutions.com",
     "source": "other",
     "score": 1,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-21T04:51:00.000Z",
     "updatedAt": "2024-01-24T21:18:10.313Z"
   },
@@ -281,7 +281,7 @@
     "email": "dennis.jeffrey@diplabs.com",
     "source": "social_media",
     "score": 98,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-11T16:50:00.000Z",
     "updatedAt": "2024-01-15T00:21:24.354Z"
   },
@@ -358,7 +358,7 @@
     "email": "emily.david@stage corp.com",
     "source": "other",
     "score": 52,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-25T16:12:00.000Z",
     "updatedAt": "2024-01-31T12:56:29.333Z"
   },
@@ -402,7 +402,7 @@
     "email": "donna.alan@openness corp.com",
     "source": "advertisement",
     "score": 70,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-20T21:44:00.000Z",
     "updatedAt": "2024-01-26T18:31:25.195Z"
   },
@@ -424,7 +424,7 @@
     "email": "edward.michelle@street industries.com",
     "source": "email",
     "score": 11,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-24T02:40:00.000Z",
     "updatedAt": "2024-01-28T22:40:03.734Z"
   },
@@ -435,7 +435,7 @@
     "email": "gregory.paul@outlook industries.com",
     "source": "referral",
     "score": 72,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-21T03:21:00.000Z",
     "updatedAt": "2024-01-23T08:51:30.054Z"
   },
@@ -468,7 +468,7 @@
     "email": "jeremy.tyler@sector corp.com",
     "source": "email",
     "score": 33,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-30T03:51:00.000Z",
     "updatedAt": "2024-02-01T00:42:19.529Z"
   },
@@ -501,7 +501,7 @@
     "email": "michael.edward@architecture corp.com",
     "source": "cold_call",
     "score": 1,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-09T17:46:00.000Z",
     "updatedAt": "2024-01-10T20:41:38.812Z"
   },
@@ -512,7 +512,7 @@
     "email": "elizabeth.jessica@loop industries.com",
     "source": "other",
     "score": 11,
-    "status": "converted",
+    "status": "contacted",
     "createdAt": "2024-01-21T05:12:00.000Z",
     "updatedAt": "2024-01-27T19:41:20.611Z"
   },
@@ -655,7 +655,7 @@
     "email": "patrick.mark@certainty solutions.com",
     "source": "website",
     "score": 55,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-30T09:06:00.000Z",
     "updatedAt": "2024-02-04T04:46:14.340Z"
   },
@@ -732,7 +732,7 @@
     "email": "samuel.elizabeth@tactic systems.com",
     "source": "website",
     "score": 69,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-08T21:56:00.000Z",
     "updatedAt": "2024-01-12T12:04:29.179Z"
   },
@@ -798,7 +798,7 @@
     "email": "jacob.ronald@opening industries.com",
     "source": "email",
     "score": 26,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-16T21:33:00.000Z",
     "updatedAt": "2024-01-22T12:36:08.449Z"
   },
@@ -820,7 +820,7 @@
     "email": "emily.matthew@module solutions.com",
     "source": "social_media",
     "score": 46,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-06T09:38:00.000Z",
     "updatedAt": "2024-01-09T21:39:47.817Z"
   },
@@ -853,7 +853,7 @@
     "email": "zachary.sharon@competence industries.com",
     "source": "email",
     "score": 96,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-05T16:39:00.000Z",
     "updatedAt": "2024-01-07T00:17:04.643Z"
   },
@@ -908,7 +908,7 @@
     "email": "eric.nicholas@dip labs.com",
     "source": "social_media",
     "score": 60,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-05T23:50:00.000Z",
     "updatedAt": "2024-01-09T13:41:46.140Z"
   },
@@ -919,7 +919,7 @@
     "email": "sharon.dennis@apex solutions.com",
     "source": "advertisement",
     "score": 80,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-21T04:42:00.000Z",
     "updatedAt": "2024-01-27T01:08:56.415Z"
   },
@@ -941,7 +941,7 @@
     "email": "jacob.brandon@rho labs.com",
     "source": "social_media",
     "score": 93,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-05T23:42:00.000Z",
     "updatedAt": "2024-01-09T18:21:57.881Z"
   },
@@ -996,7 +996,7 @@
     "email": "brian.justin@cliff solutions.com",
     "source": "advertisement",
     "score": 73,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-08T15:23:00.000Z",
     "updatedAt": "2024-01-09T14:21:38.196Z"
   },
@@ -1084,7 +1084,7 @@
     "email": "jessica.donna@hittechnologies.com",
     "source": "email",
     "score": 49,
-    "status": "converted",
+    "status": "unqualified",
     "createdAt": "2024-01-12T23:08:00.000Z",
     "updatedAt": "2024-01-15T03:50:05.710Z"
   },

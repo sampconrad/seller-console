@@ -424,7 +424,7 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
                 variant='primary'
                 onClick={() => onConvert({ ...lead, ...formData })}
                 disabled={isEditing}
-                className='w-full sm:w-auto'>
+                className='w-full'>
                 Convert to Opportunity
               </Button>
             </div>
