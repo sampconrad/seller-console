@@ -4,7 +4,7 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 
 🌐 **Live Demo**: [https://sampconrad-coverpin.netlify.app/](https://sampconrad-coverpin.netlify.app/)
 
-![Seller Console Preview](preview.png)
+![Seller Console Preview](preview.webp)
 
 ## 🚀 Features
 

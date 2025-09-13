@@ -3,9 +3,21 @@
  */
 
 import { act, renderHook } from '@testing-library/react';
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import React from 'react';
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
+import { AppProvider } from '../context/AppContext';
+import { NotificationProvider } from '../context/NotificationContext';
 import { useDebounce } from '../hooks/useDebounce';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
+import { useSidebar } from '../hooks/useSidebar';
 
 // Mock timers
 beforeAll(() => {
@@ -124,5 +136,98 @@ describe('useKeyboardNavigation', () => {
     });
 
     expect(onEnter).not.toHaveBeenCalled();
+  });
+});
+
+describe('useSidebar', () => {
+  const mockProps = {
+    activeTab: 'leads' as const,
+    onTabChange: vi.fn(),
+    onImportLeads: vi.fn(),
+    onExportLeads: vi.fn(),
+    onNewLead: vi.fn(),
+    onGenerateReport: vi.fn(),
+  };
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => {
+    return React.createElement(NotificationProvider, {
+      children: React.createElement(AppProvider, { children }),
+    });
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should initialize with correct default values', () => {
+    const { result } = renderHook(() => useSidebar(mockProps), { wrapper });
+
+    expect(result.current.isImportModalOpen).toBe(false);
+    expect(result.current.isExportModalOpen).toBe(false);
+    expect(result.current.isMobileMenuOpen).toBe(false);
+    expect(result.current.sidebarContentProps).toBeDefined();
+  });
+
+  it('should handle import format selection', () => {
+    const { result } = renderHook(() => useSidebar(mockProps), { wrapper });
+
+    act(() => {
+      result.current.handleImportFormatSelect('json');
+    });
+
+    expect(mockProps.onImportLeads).toHaveBeenCalledWith('json');
+    expect(result.current.isImportModalOpen).toBe(false);
+  });
+
+  it('should handle export format selection', () => {
+    const { result } = renderHook(() => useSidebar(mockProps), { wrapper });
+
+    act(() => {
+      result.current.handleExportFormatSelect('csv');
+    });
+
+    expect(mockProps.onExportLeads).toHaveBeenCalledWith('csv');
+    expect(result.current.isExportModalOpen).toBe(false);
+  });
+
+  it('should toggle mobile menu', () => {
+    const { result } = renderHook(() => useSidebar(mockProps), { wrapper });
+
+    expect(result.current.isMobileMenuOpen).toBe(false);
+
+    act(() => {
+      result.current.toggleMobileMenu();
+    });
+
+    expect(result.current.isMobileMenuOpen).toBe(true);
+  });
+
+  it('should close mobile menu', () => {
+    const { result } = renderHook(() => useSidebar(mockProps), { wrapper });
+
+    // First open the menu
+    act(() => {
+      result.current.toggleMobileMenu();
+    });
+
+    expect(result.current.isMobileMenuOpen).toBe(true);
+
+    // Then close it
+    act(() => {
+      result.current.closeMobileMenu();
+    });
+
+    expect(result.current.isMobileMenuOpen).toBe(false);
+  });
+
+  it('should provide sidebar content props', () => {
+    const { result } = renderHook(() => useSidebar(mockProps), { wrapper });
+
+    expect(result.current.sidebarContentProps).toMatchObject({
+      activeTab: 'leads',
+      onTabChange: mockProps.onTabChange,
+      onNewLead: mockProps.onNewLead,
+      onGenerateReport: mockProps.onGenerateReport,
+    });
   });
 });

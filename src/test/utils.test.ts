@@ -8,6 +8,8 @@ import {
   formatCurrency,
   formatDate,
   generateId,
+  getStageChartColor,
+  getStatusChartColor,
   sortLeads,
 } from '@/utils/dataTransform';
 import {
@@ -195,6 +197,28 @@ describe('Data Transform Utils', () => {
       expect(id1).not.toBe(id2);
       expect(typeof id1).toBe('string');
       expect(id1.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('getStatusChartColor', () => {
+    it('should return correct colors for lead statuses', () => {
+      expect(getStatusChartColor('new')).toBe('#3B82F6');
+      expect(getStatusChartColor('contacted')).toBe('#EAB308');
+      expect(getStatusChartColor('qualified')).toBe('#22C55E');
+      expect(getStatusChartColor('unqualified')).toBe('#EF4444');
+      expect(getStatusChartColor('unknown')).toBe('#6B7280');
+    });
+  });
+
+  describe('getStageChartColor', () => {
+    it('should return correct colors for opportunity stages', () => {
+      expect(getStageChartColor('prospecting')).toBe('#3B82F6');
+      expect(getStageChartColor('qualification')).toBe('#EAB308');
+      expect(getStageChartColor('proposal')).toBe('#F97316');
+      expect(getStageChartColor('negotiation')).toBe('#8B5CF6');
+      expect(getStageChartColor('closed_won')).toBe('#22C55E');
+      expect(getStageChartColor('closed_lost')).toBe('#EF4444');
+      expect(getStageChartColor('unknown')).toBe('#6B7280');
     });
   });
 });
