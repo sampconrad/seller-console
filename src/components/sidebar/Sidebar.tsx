@@ -2,7 +2,7 @@
  * Main sidebar component with navigation, filters, and data management
  */
 
-import FormatSelectionModal from '@/components/modals/FormatSelectionModal';
+import ImportExportModal from '@/components/modals/ImportExportModal';
 import SidebarContent from '@/components/sidebar/SidebarContent';
 import SidebarHeader from '@/components/sidebar/SidebarHeader';
 import MobileHeader from '@/components/ui/MobileHeader';
@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
       </SidebarWrapper>
 
       {/* Modals */}
-      <FormatSelectionModal
+      <ImportExportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         onFormatSelect={handleImportFormatSelect}
@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = props => {
         description='Select the format for importing leads data.'
       />
 
-      <FormatSelectionModal
+      <ImportExportModal
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
         onFormatSelect={handleExportFormatSelect}

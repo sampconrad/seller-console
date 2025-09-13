@@ -53,6 +53,12 @@ const FilterChart: React.FC<FilterChartProps> = ({
     responsive: true,
     maintainAspectRatio: false,
     cutout: '60%',
+    animation: {
+      duration: 800,
+      easing: 'easeInOutQuart',
+      animateRotate: true,
+      animateScale: true,
+    },
     layout: {
       padding: {
         top: 10,
@@ -101,27 +107,37 @@ const FilterChart: React.FC<FilterChartProps> = ({
           : 'default';
       }
     },
+    elements: {
+      arc: {
+        hoverOffset: 8,
+        borderWidth: 2,
+        hoverBorderWidth: 3,
+      },
+    },
   };
 
   const totalCount = chartData.reduce((sum, option) => sum + option.count, 0);
 
   if (totalCount === 0) {
     return (
-      <div className='p-4 text-center text-gray-500'>
+      <div className='p-4 text-center text-gray-500 transition-all duration-300 ease-in-out'>
         <div className='text-sm'>No data available for chart</div>
       </div>
     );
   }
 
   return (
-    <div className='p-4'>
+    <div className='p-4 transition-all duration-300 ease-in-out'>
       <h3 className='text-sm font-medium text-gray-500 uppercase tracking-wide mb-3'>
         {title}
       </h3>
-      <div className='relative' style={{ height: '200px' }}>
+      <div
+        className='relative transition-all duration-300 ease-in-out'
+        style={{ height: '200px' }}
+      >
         <Doughnut data={data} options={chartOptions} />
       </div>
-      <div className='mt-2 text-center text-xs text-gray-500'>
+      <div className='mt-2 text-center text-xs text-gray-500 transition-all duration-300 ease-in-out'>
         <span className='font-bold'>Total:</span> {totalCount} items
       </div>
     </div>

@@ -4,11 +4,11 @@
 
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
-import { ConfirmationModalProps } from '@/types';
+import { DeleteModalProps } from '@/types';
 import { AlertTriangle } from 'lucide-react';
 import React from 'react';
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+const DeleteModal: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -21,8 +21,31 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     onConfirm();
   };
 
+  const footer = (
+    <div className='p-6 flex flex-col'>
+      <Button
+        type='button'
+        variant='secondary'
+        onClick={onClose}
+        disabled={isLoading}
+        className='w-full order-2 mt-3'
+      >
+        Cancel
+      </Button>
+      <Button
+        type='button'
+        variant='danger'
+        onClick={handleConfirm}
+        loading={isLoading}
+        className='w-full order-1'
+      >
+        Delete
+      </Button>
+    </div>
+  );
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+    <Modal isOpen={isOpen} onClose={onClose} title={title} footer={footer}>
       <div className='space-y-4'>
         <div className='flex items-start space-x-3'>
           <div className='flex-shrink-0'>
@@ -38,28 +61,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             </p>
           </div>
         </div>
-
-        <div className='flex flex-col-reverse sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4'>
-          <Button
-            variant='secondary'
-            onClick={onClose}
-            disabled={isLoading}
-            className='w-full sm:w-auto mt-3 sm:mt-0'
-          >
-            Cancel
-          </Button>
-          <Button
-            variant='danger'
-            onClick={handleConfirm}
-            loading={isLoading}
-            className='w-full sm:w-auto'
-          >
-            Delete
-          </Button>
-        </div>
       </div>
     </Modal>
   );
 };
 
-export default ConfirmationModal;
+export default DeleteModal;

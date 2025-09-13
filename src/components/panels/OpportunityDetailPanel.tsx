@@ -2,7 +2,7 @@
  * Slide-over panel for opportunity details with inline editing
  */
 
-import ConfirmationModal from '@/components/modals/ConfirmationModal';
+import DeleteModal from '@/components/modals/DeleteModal';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -456,7 +456,7 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
         </div>
       </div>
 
-      <ConfirmationModal
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}

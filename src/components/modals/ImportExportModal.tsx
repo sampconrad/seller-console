@@ -4,11 +4,11 @@
 
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
-import { FormatSelectionModalProps } from '@/types';
+import { ImportExportModalProps } from '@/types';
 import { FileText, Table } from 'lucide-react';
 import React from 'react';
 
-const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
+const ImportExportModal: React.FC<ImportExportModalProps> = ({
   isOpen,
   onClose,
   onFormatSelect,
@@ -20,8 +20,21 @@ const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
     onClose();
   };
 
+  const footer = (
+    <div className='p-6 flex flex-col'>
+      <Button
+        type='button'
+        variant='secondary'
+        onClick={onClose}
+        className='w-full order-1'
+      >
+        Cancel
+      </Button>
+    </div>
+  );
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+    <Modal isOpen={isOpen} onClose={onClose} title={title} footer={footer}>
       <div className='space-y-4'>
         <p className='text-gray-600'>{description}</p>
 
@@ -58,15 +71,9 @@ const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
             </div>
           </button>
         </div>
-
-        <div className='flex justify-end pt-4'>
-          <Button variant='secondary' onClick={onClose}>
-            Cancel
-          </Button>
-        </div>
       </div>
     </Modal>
   );
 };
 
-export default FormatSelectionModal;
+export default ImportExportModal;

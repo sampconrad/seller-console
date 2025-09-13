@@ -17,6 +17,7 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 - **Inline Editing**: Edit lead details directly in the slide-over panel with ScoreDial component
 - **Status Management**: Track lead progression through different stages
 - **Lead Scoring**: Interactive dial component for scoring leads (1-100)
+- **Unified Modal System**: Consistent form and confirmation modals with mobile-first design
 
 ### Opportunity Conversion
 
@@ -26,13 +27,10 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 - **Amount Tracking**: Optional monetary value tracking
 - **Note**: Opportunities cannot be imported/exported - only leads support file operations
 
-### Data Visualization
+### Data Visualization w/ Report Generation
 
 - **Interactive Charts**: Doughnut charts in sidebar showing distribution of leads/opportunities by status/stage
 - **Real-time Updates**: Charts automatically update when data changes
-
-### Report Generation
-
 - **PDF Reports**: Generate comprehensive PDF reports with charts and detailed data tables
 
 ## 📱 Responsive Design
@@ -79,8 +77,9 @@ src/
 │   │   ├── Pagination.tsx             # Pagination component
 │   │   └── Searchbox.tsx              # Search input component
 │   ├── modals/                        # Modal components
-│   │   ├── ConfirmationModal.tsx      # Delete confirmation dialog
-│   │   └── FormatSelectionModal.tsx   # Import/export format selection
+│   │   ├── DeleteModal.tsx            # Delete confirmation dialog
+│   │   ├── FormModal.tsx              # Reusable form modal with fixed footer
+│   │   └── ImportExportModal.tsx      # Import/export format selection
 │   ├── panels/                        # Detail panel components
 │   │   ├── LeadDetailPanel.tsx        # Lead details with inline editing
 │   │   └── OpportunityDetailPanel.tsx # Opportunity details with inline editing

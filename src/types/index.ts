@@ -155,6 +155,7 @@ export interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   'aria-labelledby'?: string;
   'aria-describedby'?: string;
 }
@@ -264,7 +265,7 @@ export interface SidebarProps {
   onGenerateReport?: () => void;
 }
 
-export interface ConfirmationModalProps {
+export interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -274,7 +275,7 @@ export interface ConfirmationModalProps {
   isLoading?: boolean;
 }
 
-export interface FormatSelectionModalProps {
+export interface ImportExportModalProps {
   isOpen: boolean;
   onClose: () => void;
   onFormatSelect: (format: 'json' | 'csv') => void;

@@ -2,17 +2,14 @@
  * Modal for creating and editing leads
  */
 
-import Button from '@/components/ui/Button';
+import FormModal from '@/components/modals/FormModal';
 import Input from '@/components/ui/Input';
-import Modal from '@/components/ui/Modal';
 import ScoreDial from '@/components/ui/ScoreDial';
 import Select from '@/components/ui/Select';
-import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useLeads } from '@/hooks/useLeads';
 import type { Lead, LeadFormProps } from '@/types';
 import { LeadStatus } from '@/types';
 import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
-import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, lead, mode }) => {
@@ -98,18 +95,6 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, lead, mode }) => {
     onClose();
   };
 
-  // Keyboard navigation for form
-  useKeyboardNavigation({
-    onEscape: handleCancel,
-    onEnter: () => {
-      // Submit form when Enter is pressed (but not in input fields)
-      if (!isSubmitting) {
-        handleSubmit({ preventDefault: () => {} } as React.FormEvent);
-      }
-    },
-    enabled: isOpen,
-  });
-
   const statusOptions = [
     { value: LeadStatus.NEW, label: 'New' },
     { value: LeadStatus.CONTACTED, label: 'Contacted' },
@@ -129,123 +114,97 @@ const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, lead, mode }) => {
   ];
 
   return (
-    <Modal
+    <FormModal
       isOpen={isOpen}
-      onClose={handleCancel}
       title={mode === 'create' ? 'Create New Lead' : 'Edit Lead'}
+      onSubmit={handleSubmit}
+      onCancel={handleCancel}
+      submitText={mode === 'create' ? 'Create Lead' : 'Save Changes'}
+      isSubmitting={isSubmitting}
     >
-      <form onSubmit={handleSubmit} className='space-y-6'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          {/* Name */}
-          <div className='md:col-span-2'>
-            <Input
-              id='name'
-              label='Name'
-              value={formData.name || ''}
-              onChange={e => handleInputChange('name', e.target.value)}
-              error={errors.name}
-              placeholder='Enter lead name'
-              required
-            />
-          </div>
-
-          {/* Company */}
-          <div className='md:col-span-2'>
-            <Input
-              id='company'
-              label='Company'
-              value={formData.company || ''}
-              onChange={e => handleInputChange('company', e.target.value)}
-              error={errors.company}
-              placeholder='Enter company name'
-              required
-            />
-          </div>
-
-          {/* Email */}
-          <div className='md:col-span-2'>
-            <Input
-              id='email'
-              label='Email'
-              type='email'
-              value={formData.email || ''}
-              onChange={e => handleInputChange('email', e.target.value)}
-              error={errors.email}
-              placeholder='Enter email address'
-              required
-            />
-          </div>
-
-          {/* Source */}
-          <div>
-            <Select
-              id='source'
-              label='Source'
-              value={formData.source || ''}
-              onChange={e => handleInputChange('source', e.target.value)}
-              error={errors.source}
-              options={sourceOptions}
-              placeholder='Select source'
-              required
-            />
-          </div>
-
-          {/* Status */}
-          <div>
-            <Select
-              id='status'
-              label='Status'
-              value={formData.status || LeadStatus.NEW}
-              onChange={e =>
-                handleInputChange('status', e.target.value as LeadStatus)
-              }
-              error={errors.status}
-              options={statusOptions}
-              required
-            />
-          </div>
-
-          {/* Score */}
-          <div className='md:col-span-2'>
-            <ScoreDial
-              label='Score'
-              value={formData.score || 1}
-              onChange={value => handleInputChange('score', value)}
-              error={errors.score}
-              min={1}
-              max={100}
-            />
-          </div>
+      <div className='grid grid-cols-2 gap-4'>
+        {/* Name */}
+        <div className='col-span-2'>
+          <Input
+            id='name'
+            label='Name'
+            value={formData.name || ''}
+            onChange={e => handleInputChange('name', e.target.value)}
+            error={errors.name}
+            placeholder='Enter lead name'
+            required
+          />
         </div>
 
-        {/* Actions */}
-        <div className='flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200'>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={handleCancel}
-            disabled={isSubmitting}
-            className='w-full sm:w-auto order-2 sm:order-1 mt-3 sm:mt-0'
-          >
-            <X className='w-4 h-4 mr-2' />
-            Cancel
-          </Button>
-          <Button
-            type='submit'
-            variant='primary'
-            disabled={isSubmitting}
-            loading={isSubmitting}
-            className='w-full sm:w-auto order-1 sm:order-2'
-          >
-            {isSubmitting
-              ? 'Saving...'
-              : mode === 'create'
-                ? 'Create Lead'
-                : 'Save Changes'}
-          </Button>
+        {/* Company */}
+        <div className='col-span-2'>
+          <Input
+            id='company'
+            label='Company'
+            value={formData.company || ''}
+            onChange={e => handleInputChange('company', e.target.value)}
+            error={errors.company}
+            placeholder='Enter company name'
+            required
+          />
         </div>
-      </form>
-    </Modal>
+
+        {/* Email */}
+        <div className='col-span-2'>
+          <Input
+            id='email'
+            label='Email'
+            type='email'
+            value={formData.email || ''}
+            onChange={e => handleInputChange('email', e.target.value)}
+            error={errors.email}
+            placeholder='Enter email address'
+            required
+          />
+        </div>
+
+        {/* Source */}
+        <div className='col-span-2 xxs:col-span-1'>
+          <Select
+            id='source'
+            label='Source'
+            value={formData.source || ''}
+            onChange={e => handleInputChange('source', e.target.value)}
+            error={errors.source}
+            options={sourceOptions}
+            placeholder='Select source'
+            required
+          />
+        </div>
+
+        {/* Status */}
+        <div className='col-span-2 xxs:col-span-1'>
+          <Select
+            id='status'
+            label='Status'
+            value={formData.status || LeadStatus.NEW}
+            onChange={e =>
+              handleInputChange('status', e.target.value as LeadStatus)
+            }
+            error={errors.status}
+            options={statusOptions}
+            required
+          />
+        </div>
+
+        {/* Score */}
+        <div className='col-span-2'>
+          <ScoreDial
+            label='Score'
+            value={formData.score || 1}
+            onChange={value => handleInputChange('score', value)}
+            error={errors.score}
+            min={1}
+            max={100}
+          />
+        </div>
+      </div>
+    </FormModal>
   );
 };
 

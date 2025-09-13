@@ -4,7 +4,7 @@
 
 import Pagination from '@/components/layout/Pagination';
 import Searchbox from '@/components/layout/Searchbox';
-import ConfirmationModal from '@/components/modals/ConfirmationModal';
+import DeleteModal from '@/components/modals/DeleteModal';
 import OpportunityDetailPanel from '@/components/panels/OpportunityDetailPanel';
 import Badge from '@/components/ui/Badge';
 import Table from '@/components/ui/Table';
@@ -235,7 +235,7 @@ const OpportunitiesTable: React.FC = memo(() => {
         onNextPage={handleNextPage}
       />
 
-      <ConfirmationModal
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}

@@ -2,7 +2,7 @@
  * Slide-over panel for lead details with inline editing
  */
 
-import ConfirmationModal from '@/components/modals/ConfirmationModal';
+import DeleteModal from '@/components/modals/DeleteModal';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -473,7 +473,7 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
           {/* Footer */}
           {lead &&
             (formData.status || lead.status) !== LeadStatus.CONVERTED && (
-              <div className='px-6 py-4 border-t border-gray-200'>
+              <div className='p-6 border-t border-gray-200'>
                 <Button
                   variant='primary'
                   onClick={() => onConvert({ ...lead, ...formData })}
@@ -487,7 +487,7 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
         </div>
       </div>
 
-      <ConfirmationModal
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}

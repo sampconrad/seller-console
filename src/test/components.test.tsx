@@ -2,7 +2,7 @@
  * Unit tests for React components
  */
 
-import ConfirmationModal from '@/components/modals/ConfirmationModal';
+import DeleteModal from '@/components/modals/DeleteModal';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -111,7 +111,7 @@ describe('UI Components', () => {
     });
   });
 
-  describe('ConfirmationModal', () => {
+  describe('DeleteModal', () => {
     const defaultProps = {
       isOpen: true,
       onClose: vi.fn(),
@@ -122,20 +122,21 @@ describe('UI Components', () => {
     };
 
     it('should render modal when open', () => {
-      render(<ConfirmationModal {...defaultProps} />);
+      render(<DeleteModal {...defaultProps} />);
       expect(screen.getByText('Delete Item')).toBeInTheDocument();
       expect(screen.getByText('Delete')).toBeInTheDocument();
       expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('should not render modal when closed', () => {
-      render(<ConfirmationModal {...defaultProps} isOpen={false} />);
-      expect(screen.queryByText('Delete Item')).not.toBeInTheDocument();
+      render(<DeleteModal {...defaultProps} isOpen={false} />);
+      const modal = screen.queryByText('Delete Item');
+      expect(modal).not.toBeVisible();
     });
 
     it('should call onConfirm when delete button is clicked', () => {
       const onConfirm = vi.fn();
-      render(<ConfirmationModal {...defaultProps} onConfirm={onConfirm} />);
+      render(<DeleteModal {...defaultProps} onConfirm={onConfirm} />);
 
       fireEvent.click(screen.getByText('Delete'));
       expect(onConfirm).toHaveBeenCalledTimes(1);
@@ -143,14 +144,14 @@ describe('UI Components', () => {
 
     it('should call onClose when cancel button is clicked', () => {
       const onClose = vi.fn();
-      render(<ConfirmationModal {...defaultProps} onClose={onClose} />);
+      render(<DeleteModal {...defaultProps} onClose={onClose} />);
 
       fireEvent.click(screen.getByText('Cancel'));
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should show loading state when isLoading is true', () => {
-      render(<ConfirmationModal {...defaultProps} isLoading={true} />);
+      render(<DeleteModal {...defaultProps} isLoading={true} />);
       expect(screen.getByText('Delete')).toBeDisabled();
       expect(screen.getByText('Cancel')).toBeDisabled();
     });

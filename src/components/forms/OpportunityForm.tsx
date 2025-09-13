@@ -2,11 +2,9 @@
  * Modal for converting leads to opportunities
  */
 
-import Button from '@/components/ui/Button';
+import FormModal from '@/components/modals/FormModal';
 import Input from '@/components/ui/Input';
-import Modal from '@/components/ui/Modal';
 import Select from '@/components/ui/Select';
-import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useLeads } from '@/hooks/useLeads';
 import type { OpportunityFormData, OpportunityFormProps } from '@/types';
 import { OpportunityStage } from '@/types';
@@ -15,7 +13,7 @@ import {
   convertValidationErrorsToMap,
   validateOpportunity,
 } from '@/utils/validation';
-import { DollarSign, X } from 'lucide-react';
+import { DollarSign } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 const OpportunityForm: React.FC<OpportunityFormProps> = ({
@@ -111,18 +109,6 @@ const OpportunityForm: React.FC<OpportunityFormProps> = ({
     onClose();
   };
 
-  // Keyboard navigation for form
-  useKeyboardNavigation({
-    onEscape: handleCancel,
-    onEnter: () => {
-      // Submit form when Enter is pressed (but not in input fields)
-      if (!isSubmitting) {
-        handleSubmit({ preventDefault: () => {} } as React.FormEvent);
-      }
-    },
-    enabled: isOpen,
-  });
-
   const stageOptions = [
     { value: OpportunityStage.PROSPECTING, label: 'Prospecting' },
     { value: OpportunityStage.QUALIFICATION, label: 'Qualification' },
@@ -132,12 +118,16 @@ const OpportunityForm: React.FC<OpportunityFormProps> = ({
     { value: OpportunityStage.CLOSED_LOST, label: 'Closed Lost' },
   ];
 
-  const title = 'Convert Lead to Opportunity';
-  const submitText = 'Convert Lead';
-
   return (
-    <Modal isOpen={isOpen} onClose={handleCancel} title={title}>
-      <form onSubmit={handleSubmit} className='space-y-4'>
+    <FormModal
+      isOpen={isOpen}
+      title='Convert Lead to Opportunity'
+      onSubmit={handleSubmit}
+      onCancel={handleCancel}
+      submitText='Convert Lead'
+      isSubmitting={isSubmitting}
+    >
+      <div className='space-y-4'>
         <div>
           <label className='block text-sm font-medium text-gray-700 mb-1'>
             Opportunity Name
@@ -189,29 +179,8 @@ const OpportunityForm: React.FC<OpportunityFormProps> = ({
             leftIcon={<DollarSign className='w-4 h-4 text-gray-400' />}
           />
         </div>
-
-        <div className='flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200'>
-          <Button
-            type='button'
-            variant='secondary'
-            onClick={handleCancel}
-            className='w-full sm:w-auto order-2 sm:order-1 mt-3 sm:mt-0'
-          >
-            <X className='w-4 h-4 mr-2' />
-            Cancel
-          </Button>
-          <Button
-            type='submit'
-            variant='primary'
-            loading={isSubmitting}
-            disabled={isSubmitting}
-            className='w-full sm:w-auto order-1 sm:order-2'
-          >
-            {isSubmitting ? 'Saving...' : submitText}
-          </Button>
-        </div>
-      </form>
-    </Modal>
+      </div>
+    </FormModal>
   );
 };
 
