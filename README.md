@@ -24,14 +24,20 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 - **Amount Tracking**: Optional monetary value tracking
 - **Note**: Opportunities cannot be imported/exported - only leads support file operations
 
-### User Experience
+## 📱 Responsive Design
 
-- **Responsive Design**: Mobile-first approach with desktop optimization
-- **Real-time Updates**: Optimistic updates with rollback on failure
-- **Toast Notifications**: User feedback for all actions
-- **Loading States**: Proper loading indicators throughout the app
-- **Error Handling**: Comprehensive error handling with user-friendly messages
-- **Interactive Components**: ScoreDial for lead scoring, responsive pagination controls
+The application is built with a mobile-first approach:
+
+- **Mobile**: Single column layout, touch-friendly interactions
+- **Tablet**: Optimized spacing and navigation
+- **Desktop**: Full feature set with side panels and advanced layouts
+
+## ♿ Accessibility
+
+- **Keyboard Navigation**: Full keyboard support for all interactive elements
+- **ARIA Labels**: Proper labeling for screen readers
+- **Focus Management**: Clear focus indicators and logical tab order
+- **Color Contrast**: WCAG compliant color combinations
 
 ## 🏗️ Architecture
 
@@ -111,51 +117,15 @@ src/
 └── main.tsx                           # Application entry point
 ```
 
-### Design Principles
-
-#### SOLID Principles Implementation
-
-- **Single Responsibility**: Each component/service has one clear purpose
-- **Open/Closed**: Components are open for extension, closed for modification
-- **Liskov Substitution**: All UI components follow consistent interfaces
-- **Interface Segregation**: Focused, specific interfaces for different concerns
-- **Dependency Inversion**: High-level modules depend on abstractions
-
-#### Key Architectural Decisions
+### Key Architectural Decisions
 
 1. **Context API for State Management**: Chosen over Redux for simplicity and built-in React support
-2. **Custom Hooks for Logic**: Reusable business logic separated from UI components
+2. **Custom Hooks for Logic**: Business logic separated from UI components using custom hooks
 3. **Service Layer with Dependency Injection**: Clean separation between UI and data operations using ServiceContainer pattern
 4. **Component Composition**: Modular components with reusable UI primitives
-5. **Error Boundaries**: React Error Boundaries for graceful error handling
 6. **Accessibility-First**: Focus management, keyboard navigation, and ARIA attributes throughout
 7. **Optimistic Updates**: Immediate UI feedback with rollback on failure
 8. **TypeScript Throughout**: Full type safety across the entire application
-9. **Custom Hooks for Logic**: Business logic separated from UI components using custom hooks
-
-## 🛠️ Tech Stack
-
-### Core
-
-- **React 18** - UI library with hooks and concurrent features
-- **TypeScript** - Type-safe JavaScript
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Utility-first CSS framework
-
-### Development & Testing
-
-- **Vitest** - Unit testing framework
-- **@testing-library/react** - Component testing utilities
-- **ESLint** - Code linting with TypeScript and React plugins
-- **Lucide React** - SVG icon library
-
-### Architecture
-
-- **React Context API** - State management
-- **Custom Hooks** - Reusable stateful logic
-- **Service Container** - Dependency injection
-- **Local Storage** - Client-side persistence
-- **Mock API** - Simulated backend with latency
 
 ## 🛠️ Setup Instructions
 
@@ -196,6 +166,10 @@ src/
 - `npm run test` - Run unit tests
 - `npm run test:ui` - Run tests with UI
 - `npm run lint` - Run ESLint
+- `npm run format` - Format all files with Prettier
+- `npm run format:check` - Check if files are formatted correctly
+- `npm run format:src` - Format source files only
+- `npm run format:staged` - Format only staged files
 
 ## 📊 Data Models
 
@@ -248,50 +222,18 @@ Run tests with:
 npm run test
 ```
 
-## 📱 Responsive Design
-
-The application is built with a mobile-first approach:
-
-- **Mobile**: Single column layout, touch-friendly interactions
-- **Tablet**: Optimized spacing and navigation
-- **Desktop**: Full feature set with side panels and advanced layouts
-
-## ♿ Accessibility
-
-- **Keyboard Navigation**: Full keyboard support for all interactive elements
-- **ARIA Labels**: Proper labeling for screen readers
-- **Focus Management**: Clear focus indicators and logical tab order
-- **Color Contrast**: WCAG compliant color combinations
-
-## 🚀 Performance
-
-- **Code Splitting**: Automatic code splitting with Vite
-- **Lazy Loading**: Components loaded on demand
-- **Optimistic Updates**: Immediate UI feedback
-- **Debounced Search**: Efficient search with 300ms debounce
-- **Pagination**: Efficient data loading with 20 items per page
-- **Memoization**: React.memo and useMemo for expensive operations
-- **Component Composition**: Reusable components reducing bundle size
-- **Dependency Injection**: ServiceContainer pattern for efficient service management
-- **Custom Hooks**: Logic separation and reusability
-
-## 🔒 Error Handling
-
-- **Validation**: Client-side validation with clear error messages
-- **Network Errors**: Graceful handling of API failures
-- **Rollback**: Automatic rollback of optimistic updates on failure
-- **User Feedback**: Toast notifications for all user actions
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## 🛠️ Tech Stack
 
-- **React** - UI library
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling framework
-- **Vite** - Build tool
-- **Vitest** - Testing framework
+- **React 18** - UI library with hooks and context
+- **TypeScript** - Type safety and developer experience
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vite** - Fast build tool and dev server
+- **Vitest** - Fast unit testing framework
+- **React Testing Library** - React component testing utilities
 - **Lucide React** - Icon library
-- **Node.js** - Runtime environment
+- **ESLint** - Code linting and best practices
+- **Prettier** - Code formatting
