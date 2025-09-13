@@ -10,14 +10,25 @@ import type { ExportOptions, ImportResult, Lead, Opportunity } from '@/types';
 const parseCSV = (csvContent: string): Lead[] => {
   const lines = csvContent.trim().split('\n');
   if (lines.length < 2) {
-    throw new Error('CSV file must contain at least a header row and one data row');
+    throw new Error(
+      'CSV file must contain at least a header row and one data row'
+    );
   }
 
-  const headers = lines[0].split(',').map((h) => h.trim().toLowerCase());
-  const requiredFields = ['name', 'company', 'email', 'source', 'score', 'status'];
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+  const requiredFields = [
+    'name',
+    'company',
+    'email',
+    'source',
+    'score',
+    'status',
+  ];
 
   // Validate required fields are present
-  const missingFields = requiredFields.filter((field) => !headers.includes(field));
+  const missingFields = requiredFields.filter(
+    field => !headers.includes(field)
+  );
   if (missingFields.length > 0) {
     throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
   }
@@ -27,7 +38,7 @@ const parseCSV = (csvContent: string): Lead[] => {
 
   for (let i = 1; i < lines.length; i++) {
     try {
-      const values = lines[i].split(',').map((v) => v.trim());
+      const values = lines[i].split(',').map(v => v.trim());
       if (values.length !== headers.length) {
         errors.push(`Row ${i + 1}: Column count mismatch`);
         continue;
@@ -64,7 +75,9 @@ const parseCSV = (csvContent: string): Lead[] => {
 
       leads.push(lead);
     } catch (error) {
-      errors.push(`Row ${i + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      errors.push(
+        `Row ${i + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -88,7 +101,9 @@ const parseJSON = (jsonContent: string): Lead[] => {
       }
 
       return {
-        id: item.id || Math.random().toString(36).substr(2, 9) + Date.now().toString(36),
+        id:
+          item.id ||
+          Math.random().toString(36).substr(2, 9) + Date.now().toString(36),
         name: item.name,
         company: item.company,
         email: item.email,
@@ -110,8 +125,17 @@ const parseJSON = (jsonContent: string): Lead[] => {
  * Convert Lead objects to CSV format
  */
 const leadsToCSV = (leads: Lead[]): string => {
-  const headers = ['ID', 'Name', 'Company', 'Email', 'Source', 'Score', 'Status', 'Created At'];
-  const rows = leads.map((lead) => [
+  const headers = [
+    'ID',
+    'Name',
+    'Company',
+    'Email',
+    'Source',
+    'Score',
+    'Status',
+    'Created At',
+  ];
+  const rows = leads.map(lead => [
     lead.id,
     lead.name,
     lead.company,
@@ -122,15 +146,23 @@ const leadsToCSV = (leads: Lead[]): string => {
     lead.createdAt.toISOString(),
   ]);
 
-  return [headers, ...rows].map((row) => row.join(',')).join('\n');
+  return [headers, ...rows].map(row => row.join(',')).join('\n');
 };
 
 /**
  * Convert Opportunity objects to CSV format
  */
 const opportunitiesToCSV = (opportunities: Opportunity[]): string => {
-  const headers = ['ID', 'Name', 'Stage', 'Amount', 'Account Name', 'Lead ID', 'Created At'];
-  const rows = opportunities.map((opp) => [
+  const headers = [
+    'ID',
+    'Name',
+    'Stage',
+    'Amount',
+    'Account Name',
+    'Lead ID',
+    'Created At',
+  ];
+  const rows = opportunities.map(opp => [
     opp.id,
     opp.name,
     opp.stage,
@@ -140,7 +172,7 @@ const opportunitiesToCSV = (opportunities: Opportunity[]): string => {
     opp.createdAt.toISOString(),
   ]);
 
-  return [headers, ...rows].map((row) => row.join(',')).join('\n');
+  return [headers, ...rows].map(row => row.join(',')).join('\n');
 };
 
 /**
@@ -164,13 +196,17 @@ class FileService {
         } else if (fileExtension === 'json') {
           leads = parseJSON(content);
         } else {
-          throw new Error('Unsupported file format. Please use CSV or JSON files.');
+          throw new Error(
+            'Unsupported file format. Please use CSV or JSON files.'
+          );
         }
       } catch (parseError) {
         return {
           success: false,
           data: [],
-          errors: [parseError instanceof Error ? parseError.message : 'Parse error'],
+          errors: [
+            parseError instanceof Error ? parseError.message : 'Parse error',
+          ],
           importedCount: 0,
         };
       }
@@ -230,7 +266,7 @@ class FileService {
   private readFileContent(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         resolve(e.target?.result as string);
       };
       reader.onerror = () => {
@@ -243,7 +279,11 @@ class FileService {
   /**
    * Download file to user's device
    */
-  private downloadFile(content: string, filename: string, mimeType: string): void {
+  private downloadFile(
+    content: string,
+    filename: string,
+    mimeType: string
+  ): void {
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

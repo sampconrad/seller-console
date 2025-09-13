@@ -1,4 +1,4 @@
-import { BadgeProps } from "@/types";
+import { BadgeProps } from '@/types';
 import React from 'react';
 
 const Badge: React.FC<BadgeProps> = ({

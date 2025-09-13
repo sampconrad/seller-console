@@ -10,7 +10,13 @@ import type {
   OpportunitySortConfig,
   SortConfig,
 } from '@/types';
-import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 
 type AppAction =
   | { type: 'SET_LOADING'; payload: boolean }
@@ -78,7 +84,10 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     }
 
     case 'UPDATE_OPPORTUNITY_FILTERS': {
-      const newOpportunityFilters = { ...state.opportunityFilters, ...action.payload };
+      const newOpportunityFilters = {
+        ...state.opportunityFilters,
+        ...action.payload,
+      };
       return { ...state, opportunityFilters: newOpportunityFilters };
     }
 
@@ -91,7 +100,10 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case 'UPDATE_OPPORTUNITY_SEARCH':
       return {
         ...state,
-        opportunityFilters: { ...state.opportunityFilters, search: action.payload },
+        opportunityFilters: {
+          ...state.opportunityFilters,
+          search: action.payload,
+        },
       };
 
     case 'UPDATE_SORT':
@@ -107,7 +119,7 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       return { ...state };
 
     case 'UPDATE_LEAD': {
-      const updatedLeads = state.leads.map((lead) =>
+      const updatedLeads = state.leads.map(lead =>
         lead.id === action.payload.id ? action.payload : lead
       );
       return { ...state, leads: updatedLeads };
@@ -119,14 +131,16 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     }
 
     case 'UPDATE_OPPORTUNITY': {
-      const updatedOpportunities = state.opportunities.map((opp) =>
+      const updatedOpportunities = state.opportunities.map(opp =>
         opp.id === action.payload.id ? action.payload : opp
       );
       return { ...state, opportunities: updatedOpportunities };
     }
 
     case 'DELETE_OPPORTUNITY': {
-      const filteredOpportunities = state.opportunities.filter((opp) => opp.id !== action.payload);
+      const filteredOpportunities = state.opportunities.filter(
+        opp => opp.id !== action.payload
+      );
       return { ...state, opportunities: filteredOpportunities };
     }
 
@@ -140,7 +154,9 @@ const AppContext = createContext<{
   dispatch: React.Dispatch<AppAction>;
 } | null>(null);
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const [isInitialized, setIsInitialized] = useState(false);
   const { apiService, storageService } = useServices();
@@ -157,12 +173,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const savedFilters = storageService.getFilters();
         const savedOpportunityFilters = storageService.getOpportunityFilters();
         const savedSortConfig = storageService.getSortConfig();
-        const savedOpportunitySortConfig = storageService.getOpportunitySortConfig();
+        const savedOpportunitySortConfig =
+          storageService.getOpportunitySortConfig();
 
         dispatch({ type: 'UPDATE_FILTERS', payload: savedFilters });
-        dispatch({ type: 'UPDATE_OPPORTUNITY_FILTERS', payload: savedOpportunityFilters });
+        dispatch({
+          type: 'UPDATE_OPPORTUNITY_FILTERS',
+          payload: savedOpportunityFilters,
+        });
         dispatch({ type: 'UPDATE_SORT', payload: savedSortConfig });
-        dispatch({ type: 'UPDATE_OPPORTUNITY_SORT', payload: savedOpportunitySortConfig });
+        dispatch({
+          type: 'UPDATE_OPPORTUNITY_SORT',
+          payload: savedOpportunitySortConfig,
+        });
 
         // Load data from API
         const [leadsResponse, opportunitiesResponse] = await Promise.all([
@@ -171,10 +194,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         ]);
 
         // If no leads exist and sample data hasn't been loaded yet, load sample data
-        if (leadsResponse.data.length === 0 && !storageService.hasSampleDataBeenLoaded()) {
+        if (
+          leadsResponse.data.length === 0 &&
+          !storageService.hasSampleDataBeenLoaded()
+        ) {
           try {
             const sampleData = await import('@/data/sampleLeads.json');
-            const sampleLeads = sampleData.default.map((lead) => ({
+            const sampleLeads = sampleData.default.map(lead => ({
               ...lead,
               status: lead.status as LeadStatus,
               createdAt: new Date(lead.createdAt),
@@ -191,11 +217,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           dispatch({ type: 'SET_LEADS', payload: leadsResponse.data });
         }
 
-        dispatch({ type: 'SET_OPPORTUNITIES', payload: opportunitiesResponse.data });
+        dispatch({
+          type: 'SET_OPPORTUNITIES',
+          payload: opportunitiesResponse.data,
+        });
       } catch (error) {
         dispatch({
           type: 'SET_ERROR',
-          payload: error instanceof Error ? error.message : 'Failed to load data',
+          payload:
+            error instanceof Error ? error.message : 'Failed to load data',
         });
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false });
@@ -237,7 +267,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     storageService.setOpportunities(state.opportunities);
   }, [state.opportunities, isInitialized, storageService]);
 
-  return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={{ state, dispatch }}>
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export const useApp = () => {

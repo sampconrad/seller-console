@@ -1,20 +1,17 @@
-import type { Notification } from '@/types';
+import type { Notification, NotificationContextType } from '@/types';
 import React, { createContext, useCallback, useContext, useState } from 'react';
-
-interface NotificationContextType {
-  notifications: Notification[];
-  addNotification: (notification: Omit<Notification, 'id'>) => void;
-  removeNotification: (id: string) => void;
-  clearAllNotifications: () => void;
-}
 
 const NotificationContext = createContext<NotificationContextType | null>(null);
 
-export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const removeNotification = useCallback((id: string) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+    setNotifications(prev =>
+      prev.filter(notification => notification.id !== id)
+    );
   }, []);
 
   const addNotification = useCallback(
@@ -26,7 +23,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         duration: notification.duration || 5000,
       };
 
-      setNotifications((prev) => [...prev, newNotification]);
+      setNotifications(prev => [...prev, newNotification]);
 
       if (newNotification.duration && newNotification.duration > 0) {
         setTimeout(() => {
@@ -48,7 +45,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         addNotification,
         removeNotification,
         clearAllNotifications,
-      }}>
+      }}
+    >
       {children}
     </NotificationContext.Provider>
   );
@@ -57,7 +55,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
   if (!context) {
-    throw new Error('useNotifications must be used within a NotificationProvider');
+    throw new Error(
+      'useNotifications must be used within a NotificationProvider'
+    );
   }
   return context;
 };

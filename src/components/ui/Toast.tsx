@@ -3,7 +3,9 @@ import type { Notification } from '@/types';
 import { AlertTriangle, CheckCircle, Info, X, XCircle } from 'lucide-react';
 import React from 'react';
 
-const Toast: React.FC<{ notification: Notification }> = ({ notification }) => {
+const ToastContent: React.FC<{ notification: Notification }> = ({
+  notification,
+}) => {
   const { removeNotification } = useNotifications();
 
   const getIcon = () => {
@@ -39,23 +41,45 @@ const Toast: React.FC<{ notification: Notification }> = ({ notification }) => {
   return (
     <div
       className={`max-w-2xl w-full min-w-96 ${getBackgroundColor()} border rounded-lg shadow-lg pointer-events-auto animate-fade-in`}
-      role='alert'>
+      role='alert'
+    >
       <div className='p-4'>
         <div className='flex items-start'>
           <div className='flex-shrink-0'>{getIcon()}</div>
           <div className='ml-3 w-0 flex-1'>
-            <p className='text-sm font-medium text-gray-900'>{notification.title}</p>
+            <p className='text-sm font-medium text-gray-900'>
+              {notification.title}
+            </p>
             <p className='mt-1 text-sm text-gray-500'>{notification.message}</p>
           </div>
           <div className='ml-4 flex-shrink-0 flex'>
             <button
               className='inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 transition-colors'
-              onClick={() => removeNotification(notification.id)}>
+              onClick={() => removeNotification(notification.id)}
+            >
               <X className='w-4 h-4' />
             </button>
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const Toast: React.FC = () => {
+  const { notifications } = useNotifications();
+
+  if (notifications.length === 0) return null;
+
+  return (
+    <div
+      className='fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2'
+      aria-live='polite'
+      aria-label='Notifications'
+    >
+      {notifications.map(notification => (
+        <ToastContent key={notification.id} notification={notification} />
+      ))}
     </div>
   );
 };

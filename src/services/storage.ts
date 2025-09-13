@@ -91,7 +91,9 @@ class StorageService {
 
   // Opportunity Filters (only save stage, not search)
   getOpportunityFilters(): OpportunityFilters {
-    const savedFilters = this.getItem(STORAGE_KEYS.OPPORTUNITY_FILTERS, { stage: 'all' });
+    const savedFilters = this.getItem(STORAGE_KEYS.OPPORTUNITY_FILTERS, {
+      stage: 'all',
+    });
     return {
       search: '', // Always start with empty search
       stage: savedFilters.stage as OpportunityStage | 'all',
@@ -138,7 +140,7 @@ class StorageService {
 
   // Clear all data
   clearAll(): void {
-    Object.values(STORAGE_KEYS).forEach((key) => {
+    Object.values(STORAGE_KEYS).forEach(key => {
       localStorage.removeItem(key);
     });
   }

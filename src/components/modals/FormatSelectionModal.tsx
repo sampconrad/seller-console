@@ -2,11 +2,11 @@
  * Modal for selecting export/import format
  */
 
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import { FormatSelectionModalProps } from '@/types';
 import { FileText, Table } from 'lucide-react';
 import React from 'react';
-import Button from './ui/Button';
-import Modal from './ui/Modal';
-import { FormatSelectionModalProps } from '@/types';
 
 const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
   isOpen,
@@ -21,10 +21,7 @@ const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}>
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <div className='space-y-4'>
         <p className='text-gray-600'>{description}</p>
 
@@ -32,7 +29,8 @@ const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
           {/* JSON Option */}
           <button
             onClick={() => handleFormatSelect('json')}
-            className='p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors text-left'>
+            className='p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors text-left'
+          >
             <div className='flex items-center space-x-3'>
               <div className='p-2 bg-blue-100 rounded-lg'>
                 <FileText className='w-6 h-6 text-blue-600' />
@@ -47,7 +45,8 @@ const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
           {/* CSV Option */}
           <button
             onClick={() => handleFormatSelect('csv')}
-            className='p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors text-left'>
+            className='p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors text-left'
+          >
             <div className='flex items-center space-x-3'>
               <div className='p-2 bg-green-100 rounded-lg'>
                 <Table className='w-6 h-6 text-green-600' />
@@ -61,9 +60,7 @@ const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
         </div>
 
         <div className='flex justify-end pt-4'>
-          <Button
-            variant='secondary'
-            onClick={onClose}>
+          <Button variant='secondary' onClick={onClose}>
             Cancel
           </Button>
         </div>

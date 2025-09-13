@@ -7,7 +7,9 @@ export const validateEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
-export const validateRequired = (value: string | number | undefined): boolean => {
+export const validateRequired = (
+  value: string | number | undefined
+): boolean => {
   if (typeof value === 'string') {
     return value.trim().length > 0;
   }
@@ -37,7 +39,10 @@ export const validateLead = (lead: Partial<Lead>): ValidationError[] => {
   if (!validateRequired(lead.email)) {
     errors.push({ field: 'email', message: 'Email is required' });
   } else if (lead.email && !validateEmail(lead.email)) {
-    errors.push({ field: 'email', message: 'Please enter a valid email address' });
+    errors.push({
+      field: 'email',
+      message: 'Please enter a valid email address',
+    });
   }
 
   if (!validateRequired(lead.source)) {
@@ -45,13 +50,18 @@ export const validateLead = (lead: Partial<Lead>): ValidationError[] => {
   }
 
   if (lead.score !== undefined && !validateScore(lead.score)) {
-    errors.push({ field: 'score', message: 'Score must be an integer between 0 and 100' });
+    errors.push({
+      field: 'score',
+      message: 'Score must be an integer between 0 and 100',
+    });
   }
 
   return errors;
 };
 
-export const validateOpportunity = (opportunity: Partial<Opportunity>): ValidationError[] => {
+export const validateOpportunity = (
+  opportunity: Partial<Opportunity>
+): ValidationError[] => {
   const errors: ValidationError[] = [];
 
   if (!validateRequired(opportunity.name)) {
@@ -63,7 +73,10 @@ export const validateOpportunity = (opportunity: Partial<Opportunity>): Validati
   }
 
   if (opportunity.amount !== undefined && !validateAmount(opportunity.amount)) {
-    errors.push({ field: 'amount', message: 'Amount must be a positive number' });
+    errors.push({
+      field: 'amount',
+      message: 'Amount must be a positive number',
+    });
   }
 
   return errors;
@@ -72,9 +85,11 @@ export const validateOpportunity = (opportunity: Partial<Opportunity>): Validati
 /**
  * Convert validation errors array to error map for form handling
  */
-export const convertValidationErrorsToMap = (errors: ValidationError[]): Record<string, string> => {
+export const convertValidationErrorsToMap = (
+  errors: ValidationError[]
+): Record<string, string> => {
   const errorMap: Record<string, string> = {};
-  errors.forEach((error) => {
+  errors.forEach(error => {
     errorMap[error.field] = error.message;
   });
   return errorMap;

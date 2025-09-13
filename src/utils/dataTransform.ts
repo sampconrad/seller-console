@@ -2,7 +2,13 @@
  * Data transformation utilities for sorting, filtering, and formatting
  */
 
-import type { Lead, LeadFilters, Opportunity, OpportunitySortConfig, SortConfig } from '@/types';
+import type {
+  Lead,
+  LeadFilters,
+  Opportunity,
+  OpportunitySortConfig,
+  SortConfig,
+} from '@/types';
 
 /**
  * Sort leads based on the provided configuration
@@ -58,7 +64,7 @@ export const sortOpportunities = (
  * Filter leads based on search and status filters
  */
 export const filterLeads = (leads: Lead[], filters: LeadFilters): Lead[] => {
-  return leads.filter((lead) => {
+  return leads.filter(lead => {
     // Search filter (name or company)
     const searchMatch =
       !filters.search ||
@@ -66,7 +72,8 @@ export const filterLeads = (leads: Lead[], filters: LeadFilters): Lead[] => {
       lead.company.toLowerCase().includes(filters.search.toLowerCase());
 
     // Status filter
-    const statusMatch = filters.status === 'all' || lead.status === filters.status;
+    const statusMatch =
+      filters.status === 'all' || lead.status === filters.status;
 
     return searchMatch && statusMatch;
   });
@@ -124,14 +131,18 @@ export const formatDateTime = (date: Date | string): string => {
  * Get status badge color class
  */
 export const getStatusColor = (status: string): string => {
-  return STATUS_COLORS[status as keyof typeof STATUS_COLORS] || STATUS_COLORS.default;
+  return (
+    STATUS_COLORS[status as keyof typeof STATUS_COLORS] || STATUS_COLORS.default
+  );
 };
 
 /**
  * Get stage badge color class
  */
 export const getStageColor = (stage: string): string => {
-  return STAGE_COLORS[stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.default;
+  return (
+    STAGE_COLORS[stage as keyof typeof STAGE_COLORS] || STAGE_COLORS.default
+  );
 };
 
 // Pre-defined color objects to avoid creating new objects on every call
@@ -239,7 +250,10 @@ export const getFilterColors = (
   if (type === 'lead') {
     return LEAD_COLORS[value as keyof typeof LEAD_COLORS] || LEAD_COLORS.all;
   } else {
-    return OPPORTUNITY_COLORS[value as keyof typeof OPPORTUNITY_COLORS] || OPPORTUNITY_COLORS.all;
+    return (
+      OPPORTUNITY_COLORS[value as keyof typeof OPPORTUNITY_COLORS] ||
+      OPPORTUNITY_COLORS.all
+    );
   }
 };
 

@@ -1,21 +1,7 @@
-/**
- * Error Boundary component for catching and handling React errors
- */
-
+import Button from '@/components/ui/Button';
+import { Props, State } from '@/types';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
-import { Component, ErrorInfo, ReactNode } from 'react';
-import Button from './Button';
-
-interface Props {
-  children: ReactNode;
-  fallback?: ReactNode;
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
-}
-
-interface State {
-  hasError: boolean;
-  error?: Error;
-}
+import { Component, ErrorInfo } from 'react';
 
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
@@ -53,22 +39,25 @@ class ErrorBoundary extends Component<Props, State> {
               <AlertTriangle className='w-16 h-16 text-red-500' />
             </div>
 
-            <h2 className='text-xl font-semibold text-gray-900 mb-2'>Something went wrong</h2>
+            <h2 className='text-xl font-semibold text-gray-900 mb-2'>
+              Something went wrong
+            </h2>
 
             <p className='text-gray-600 mb-6'>
-              We're sorry, but something unexpected happened. Please try refreshing the page.
+              We're sorry, but something unexpected happened. Please try
+              refreshing the page.
             </p>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <div className='mb-4 p-3 bg-red-50 border border-red-200 rounded text-left'>
-                <p className='text-sm text-red-800 font-mono'>{this.state.error.message}</p>
+                <p className='text-sm text-red-800 font-mono'>
+                  {this.state.error.message}
+                </p>
               </div>
             )}
 
             <div className='space-y-3'>
-              <Button
-                onClick={this.handleRetry}
-                className='w-full'>
+              <Button onClick={this.handleRetry} className='w-full'>
                 <RefreshCw className='w-4 h-4 mr-2' />
                 Try Again
               </Button>
@@ -76,7 +65,8 @@ class ErrorBoundary extends Component<Props, State> {
               <Button
                 variant='secondary'
                 onClick={() => window.location.reload()}
-                className='w-full'>
+                className='w-full'
+              >
                 Refresh Page
               </Button>
             </div>

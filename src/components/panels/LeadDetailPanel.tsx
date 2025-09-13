@@ -1,49 +1,50 @@
 /**
- * Slide-over panel for opportunity details with inline editing
+ * Slide-over panel for lead details with inline editing
  */
 
+import ConfirmationModal from '@/components/modals/ConfirmationModal';
+import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import ScoreDial from '@/components/ui/ScoreDial';
+import Select from '@/components/ui/Select';
 import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
-import { useOpportunities } from '@/hooks/useOpportunities';
-import type { Opportunity, OpportunityDetailPanelProps } from '@/types';
-import { OpportunityStage } from '@/types';
+import { useLeads } from '@/hooks/useLeads';
+import type { Lead } from '@/types';
+import { LeadDetailPanelProps, LeadStatus } from '@/types';
 import {
   formatDateTime,
-  formatNumber,
-  formatStage,
-  getStageColor,
-  handleAmountInputChange,
+  formatSource,
+  getScoreColor,
+  getStatusColor,
 } from '@/utils/dataTransform';
-import { convertValidationErrorsToMap, validateOpportunity } from '@/utils/validation';
+import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
 import {
   Building,
   Calendar,
   X as Cancel,
-  DollarSign,
   Edit2,
   GripVertical,
+  Mail,
   Save,
+  Star,
   Trash2,
   X,
 } from 'lucide-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import DeleteConfirmationModal from './DeleteConfirmationModal';
-import Badge from './ui/Badge';
-import Button from './ui/Button';
-import Input from './ui/Input';
-import Select from './ui/Select';
 
-const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
-  opportunity,
+const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
+  lead,
   isOpen,
   onClose,
+  onConvert,
 }) => {
-  const { updateOpportunity, deleteOpportunity } = useOpportunities();
+  const { updateLead, deleteLead } = useLeads();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<Opportunity>>({});
+  const [formData, setFormData] = useState<Partial<Lead>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [amountDisplay, setAmountDisplay] = useState('');
 
   // Drag functionality
   const panelRef = useRef<HTMLDivElement>(null);
@@ -52,15 +53,14 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
   const [dragStartTransform, setDragStartTransform] = useState(0);
   const [currentTransform, setCurrentTransform] = useState(0);
 
-  // Reset form when opportunity changes
+  // Reset form when lead changes
   useEffect(() => {
-    if (opportunity) {
-      setFormData(opportunity);
-      setAmountDisplay(opportunity.amount ? opportunity.amount.toString() : '');
+    if (lead) {
+      setFormData(lead);
       setErrors({});
       setIsEditing(false);
     }
-  }, [opportunity]);
+  }, [lead]);
 
   // Reset transform when panel opens/closes
   useEffect(() => {
@@ -89,7 +89,10 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
       if (!isDragging || !panelRef.current) return;
 
       const deltaX = e.clientX - dragStartX;
-      const newTransform = Math.max(0, Math.min(384, dragStartTransform + deltaX)); // 384px is panel width
+      const newTransform = Math.max(
+        0,
+        Math.min(384, dragStartTransform + deltaX)
+      ); // 384px is panel width
       setCurrentTransform(newTransform);
     },
     [isDragging, dragStartX, dragStartTransform]
@@ -145,16 +148,16 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
   };
 
   const handleCancel = () => {
-    // Don't reset formData - keep the current state (which includes any saved changes)
+    setFormData(lead || {});
     setErrors({});
     setIsEditing(false);
   };
 
   const handleSave = async () => {
-    if (!opportunity) return;
+    if (!lead) return;
 
     // Validate form data
-    const validationErrors = validateOpportunity(formData);
+    const validationErrors = validateLead(formData);
     if (validationErrors.length > 0) {
       setErrors(convertValidationErrorsToMap(validationErrors));
       return;
@@ -162,7 +165,7 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
 
     setIsSaving(true);
     try {
-      await updateOpportunity(opportunity.id, formData);
+      await updateLead(lead.id, formData);
       // Update formData with the saved values to reflect changes immediately
       setFormData(formData);
       setIsEditing(false);
@@ -179,10 +182,10 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
   };
 
   const handleDeleteConfirm = async () => {
-    if (!opportunity) return;
+    if (!lead) return;
 
     try {
-      await deleteOpportunity(opportunity.id);
+      await deleteLead(lead.id);
       setIsDeleteModalOpen(false);
       onClose(); // Close the panel after successful deletion
     } catch (error) {
@@ -190,36 +193,38 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
     }
   };
 
-  const handleFieldChange = (field: keyof Opportunity, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleFieldChange = (field: keyof Lead, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error for this field
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleAmountInputChange(
-      e.target.value,
-      (amount) => handleFieldChange('amount', amount),
-      setAmountDisplay
-    );
-  };
+  const statusOptions = [
+    { value: LeadStatus.NEW, label: 'New' },
+    { value: LeadStatus.CONTACTED, label: 'Contacted' },
+    { value: LeadStatus.QUALIFIED, label: 'Qualified' },
+    { value: LeadStatus.UNQUALIFIED, label: 'Unqualified' },
+    { value: LeadStatus.CONVERTED, label: 'Converted' },
+  ];
 
-  const stageOptions = [
-    { value: OpportunityStage.PROSPECTING, label: 'Prospecting' },
-    { value: OpportunityStage.QUALIFICATION, label: 'Qualification' },
-    { value: OpportunityStage.PROPOSAL, label: 'Proposal' },
-    { value: OpportunityStage.NEGOTIATION, label: 'Negotiation' },
-    { value: OpportunityStage.CLOSED_WON, label: 'Closed Won' },
-    { value: OpportunityStage.CLOSED_LOST, label: 'Closed Lost' },
+  const sourceOptions = [
+    { value: 'website', label: 'Website' },
+    { value: 'referral', label: 'Referral' },
+    { value: 'cold_call', label: 'Cold Call' },
+    { value: 'email', label: 'Email' },
+    { value: 'social_media', label: 'Social Media' },
+    { value: 'advertisement', label: 'Advertisement' },
+    { value: 'other', label: 'Other' },
   ];
 
   return (
     <div
       className={`fixed inset-0 z-50 overflow-hidden ${
         isOpen ? 'pointer-events-auto' : 'pointer-events-none'
-      }`}>
+      }`}
+    >
       {/* Overlay */}
       <div
         className={`fixed inset-0 bg-black transition-opacity duration-300 ${
@@ -236,13 +241,15 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
         style={{
           transform: `translateX(${isDragging ? currentTransform : isOpen ? 0 : 384}px)`,
           transition: isDragging ? 'none' : 'transform 300ms ease-in-out',
-        }}>
+        }}
+      >
         {/* Draggable Lip - Hidden on mobile and when panel is closed */}
         <div
           className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 w-8 h-24 bg-gray-200 hover:bg-gray-300 rounded-l-lg cursor-grab active:cursor-grabbing items-center justify-center group transition-colors duration-200 hidden sm:flex ${
             !isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
-          onMouseDown={handleDragStart}>
+          onMouseDown={handleDragStart}
+        >
           <GripVertical className='w-4 h-4 text-gray-500 group-hover:text-gray-700' />
         </div>
         <div className='h-full flex flex-col'>
@@ -256,24 +263,19 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                     <Button
                       variant='ghost'
                       size='sm'
-                      onClick={handleDeleteClick}>
+                      onClick={handleDeleteClick}
+                    >
                       <Trash2 className='w-4 h-4 mr-2' />
                       Delete
                     </Button>
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      onClick={handleEdit}>
+                    <Button variant='ghost' size='sm' onClick={handleEdit}>
                       <Edit2 className='w-4 h-4 mr-2' />
                       Edit
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      onClick={handleCancel}>
+                    <Button variant='ghost' size='sm' onClick={handleCancel}>
                       <Cancel className='w-4 h-4 mr-2' />
                       Cancel
                     </Button>
@@ -282,7 +284,8 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                       size='sm'
                       onClick={handleSave}
                       loading={isSaving}
-                      disabled={isSaving}>
+                      disabled={isSaving}
+                    >
                       {!isSaving && <Save className='w-4 h-4 mr-2' />}
                       {isSaving ? 'Saving' : 'Save'}
                     </Button>
@@ -290,7 +293,8 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                 )}
                 <button
                   onClick={onClose}
-                  className='text-gray-400 hover:text-gray-600 transition-colors'>
+                  className='text-gray-400 hover:text-gray-600 transition-colors'
+                >
                   <X className='w-6 h-6' />
                 </button>
               </div>
@@ -299,105 +303,154 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
 
           {/* Content */}
           <div className='flex-1 overflow-y-auto p-6 space-y-6'>
-            {!opportunity ? (
+            {!lead ? (
               <div className='flex items-center justify-center h-full'>
-                <div className='text-gray-500'>No opportunity selected</div>
+                <div className='text-gray-500'>No lead selected</div>
               </div>
             ) : (
               <>
-                {/* Opportunity ID */}
+                {/* Lead ID */}
                 <div className='pb-2 border-b border-gray-200'>
-                  <div className='text-sm text-gray-500'>Opportunity ID</div>
-                  <div className='text-lg font-mono text-gray-900'>{opportunity.id}</div>
+                  <div className='text-sm text-gray-500'>Lead ID</div>
+                  <div className='text-lg font-mono text-gray-900'>
+                    {lead.id}
+                  </div>
                 </div>
 
-                {/* Stage */}
+                {/* Status and Score */}
                 {!isEditing && (
                   <div className='flex items-center justify-between'>
-                    <Badge className={getStageColor(formData.stage || opportunity.stage)}>
-                      {formatStage(formData.stage || opportunity.stage).toUpperCase()}
+                    <Badge
+                      className={getStatusColor(formData.status || lead.status)}
+                    >
+                      {(formData.status || lead.status).toUpperCase()}
                     </Badge>
+                    <div className='flex items-center space-x-1'>
+                      <Star className='w-4 h-4 text-yellow-500' />
+                      <span
+                        className={`font-medium ${getScoreColor(formData.score || lead.score)}`}
+                      >
+                        {formData.score || lead.score}%
+                      </span>
+                    </div>
                   </div>
                 )}
 
                 {/* Basic Information */}
                 <div className='space-y-4'>
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>Name</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Name
+                    </label>
                     {isEditing ? (
                       <Input
                         value={formData.name || ''}
-                        onChange={(e) => handleFieldChange('name', e.target.value)}
+                        onChange={e =>
+                          handleFieldChange('name', e.target.value)
+                        }
                         error={errors.name}
                       />
                     ) : (
-                      <p className='text-gray-900'>{formData.name || opportunity.name}</p>
+                      <p className='text-gray-900'>
+                        {formData.name || lead.name}
+                      </p>
                     )}
                   </div>
 
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Account Name
+                      Company
                     </label>
                     {isEditing ? (
                       <Input
-                        value={formData.accountName || ''}
-                        onChange={(e) => handleFieldChange('accountName', e.target.value)}
-                        error={errors.accountName}
+                        value={formData.company || ''}
+                        onChange={e =>
+                          handleFieldChange('company', e.target.value)
+                        }
+                        error={errors.company}
                       />
                     ) : (
                       <div className='flex items-center space-x-2'>
                         <Building className='w-4 h-4 text-gray-400' />
                         <p className='text-gray-900'>
-                          {formData.accountName || opportunity.accountName}
+                          {formData.company || lead.company}
                         </p>
                       </div>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>Amount</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Email
+                    </label>
                     {isEditing ? (
-                      <div className='relative'>
-                        <Input
-                          type='text'
-                          value={amountDisplay}
-                          onChange={handleAmountChange}
-                          placeholder='0.00'
-                          error={errors.amount}
-                          leftIcon={<DollarSign className='w-4 h-4 text-gray-400' />}
-                        />
-                      </div>
+                      <Input
+                        type='email'
+                        value={formData.email || ''}
+                        onChange={e =>
+                          handleFieldChange('email', e.target.value)
+                        }
+                        error={errors.email}
+                      />
                     ) : (
                       <div className='flex items-center space-x-2'>
-                        <DollarSign className='w-4 h-4 text-gray-400' />
-                        <p
-                          className={`font-medium ${
-                            formData.amount || opportunity.amount
-                              ? 'text-green-600'
-                              : 'text-gray-500'
-                          }`}>
-                          {formData.amount || opportunity.amount
-                            ? formatNumber(formData.amount || opportunity.amount!)
-                            : 'Not specified'}
+                        <Mail className='w-4 h-4 text-gray-400' />
+                        <p className='text-gray-900'>
+                          {formData.email || lead.email}
                         </p>
                       </div>
                     )}
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>Stage</label>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Source
+                    </label>
                     {isEditing ? (
                       <Select
-                        value={formData.stage || opportunity.stage}
-                        onChange={(e) => handleFieldChange('stage', e.target.value)}
-                        options={stageOptions}
-                        error={errors.stage}
+                        value={formData.source || ''}
+                        onChange={e =>
+                          handleFieldChange('source', e.target.value)
+                        }
+                        error={errors.source}
+                        options={sourceOptions}
+                        placeholder='Select source'
                       />
                     ) : (
                       <p className='text-gray-900'>
-                        {formatStage(formData.stage || opportunity.stage)}
+                        {formatSource(formData.source || lead.source)}
                       </p>
+                    )}
+                  </div>
+
+                  <div>
+                    {isEditing && (
+                      <>
+                        <label className='block text-sm font-medium text-gray-700 mb-1'>
+                          Status
+                        </label>
+                        <Select
+                          value={formData.status || lead.status}
+                          onChange={e =>
+                            handleFieldChange('status', e.target.value)
+                          }
+                          options={statusOptions}
+                          error={errors.status}
+                        />
+                      </>
+                    )}
+                  </div>
+
+                  <div>
+                    {isEditing && (
+                      <ScoreDial
+                        label='Score'
+                        value={formData.score || lead.score}
+                        onChange={value => handleFieldChange('score', value)}
+                        error={errors.score}
+                        min={1}
+                        max={100}
+                      />
                     )}
                   </div>
                 </div>
@@ -406,29 +459,44 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
                 <div className='pt-4 border-t border-gray-200 space-y-2'>
                   <div className='flex items-center space-x-2 text-sm text-gray-500'>
                     <Calendar className='w-4 h-4' />
-                    <span>Created: {formatDateTime(opportunity.createdAt)}</span>
+                    <span>Created: {formatDateTime(lead.createdAt)}</span>
                   </div>
                   <div className='flex items-center space-x-2 text-sm text-gray-500'>
                     <Calendar className='w-4 h-4' />
-                    <span>Updated: {formatDateTime(opportunity.updatedAt)}</span>
+                    <span>Updated: {formatDateTime(lead.updatedAt)}</span>
                   </div>
                 </div>
               </>
             )}
           </div>
+
+          {/* Footer */}
+          {lead &&
+            (formData.status || lead.status) !== LeadStatus.CONVERTED && (
+              <div className='px-6 py-4 border-t border-gray-200'>
+                <Button
+                  variant='primary'
+                  onClick={() => onConvert({ ...lead, ...formData })}
+                  disabled={isEditing}
+                  className='w-full'
+                >
+                  Convert to Opportunity
+                </Button>
+              </div>
+            )}
         </div>
       </div>
 
-      <DeleteConfirmationModal
+      <ConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        title='Delete Opportunity'
-        message='Are you sure you want to delete the opportunity'
-        itemName={opportunity?.name}
+        title='Delete Lead'
+        message='Are you sure you want to delete the lead'
+        itemName={lead?.name}
       />
     </div>
   );
 };
 
-export default OpportunityDetailPanel;
+export default LeadDetailPanel;

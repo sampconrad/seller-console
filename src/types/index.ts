@@ -1,6 +1,19 @@
-import { ReactNode } from 'react';
+import { apiService } from '@/services/api';
+import { fileService } from '@/services/fileService';
+import { storageService } from '@/services/storage';
+import { ErrorInfo, ReactNode } from 'react';
 
 // Core entity types
+export interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
+}
+
+export interface State {
+  hasError: boolean;
+  error?: Error;
+}
 export interface Lead {
   id: string;
   name: string;
@@ -180,7 +193,8 @@ export interface FooterProps {
   className?: string;
 }
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helperText?: string;
@@ -218,7 +232,8 @@ interface SelectOption {
   label: string;
 }
 
-export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+export interface SelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
   helperText?: string;
@@ -239,7 +254,7 @@ export interface TableProps<T> {
   className?: string;
 }
 
-export interface DashboardPanelProps {
+export interface SidebarProps {
   activeTab: 'leads' | 'opportunities';
   onTabChange: (tab: 'leads' | 'opportunities') => void;
   onImportLeads: (format: 'json' | 'csv') => void;
@@ -247,7 +262,7 @@ export interface DashboardPanelProps {
   onNewLead: () => void;
 }
 
-export interface DeleteConfirmationModalProps {
+export interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -272,14 +287,14 @@ export interface LeadDetailPanelProps {
   onConvert: (lead: Lead) => void;
 }
 
-export interface LeadFormModalProps {
+export interface LeadFormProps {
   isOpen: boolean;
   onClose: () => void;
   lead?: Lead | null;
   mode: 'create' | 'edit';
 }
 
-export interface LeadsListProps {
+export interface LeadsTableProps {
   onLeadSelect: (lead: Lead) => void;
   onNewLeadRef?: React.MutableRefObject<(() => void) | null>;
 }
@@ -290,7 +305,7 @@ export interface OpportunityDetailPanelProps {
   onClose: () => void;
 }
 
-export interface OpportunityFormModalProps {
+export interface OpportunityFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
@@ -360,9 +375,52 @@ export interface SidebarNavigationProps {
   onMobileClose?: () => void;
 }
 
+export interface SidebarWrapperProps {
+  variant: 'mobile' | 'desktop';
+  children: React.ReactNode;
+  isMobileMenuOpen?: boolean;
+  onCloseMobileMenu?: () => void;
+}
+
+interface TabConfig {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  bgColor: string;
+  iconColor: string;
+}
+
+export interface MobileHeaderProps {
+  activeTab: string;
+  tabs: TabConfig[];
+  isMobileMenuOpen: boolean;
+  onToggleMobileMenu: () => void;
+  className?: string;
+}
+
+export interface NotificationContextType {
+  notifications: Notification[];
+  addNotification: (notification: Omit<Notification, 'id'>) => void;
+  removeNotification: (id: string) => void;
+  clearAllNotifications: () => void;
+}
+
+export interface FocusManagementOptions {
+  enabled?: boolean;
+  trapFocus?: boolean;
+  restoreFocus?: boolean;
+  initialFocusRef?: React.RefObject<HTMLElement>;
+}
+
 export interface ValidationError {
   field: string;
   message: string;
+}
+
+export interface ServiceContainer {
+  apiService: typeof apiService;
+  fileService: typeof fileService;
+  storageService: typeof storageService;
 }
 
 // Hook return types
@@ -375,7 +433,10 @@ export interface UseLeadsReturn {
   updateFilters: (filters: Partial<LeadFilters>) => void;
   updateSort: (field: keyof Lead, direction: 'asc' | 'desc') => void;
   updateLead: (id: string, updates: Partial<Lead>) => Promise<void>;
-  convertToOpportunity: (leadId: string, opportunityData: OpportunityFormData) => Promise<void>;
+  convertToOpportunity: (
+    leadId: string,
+    opportunityData: OpportunityFormData
+  ) => Promise<void>;
   importLeads: (file: File) => Promise<ImportResult>;
   exportLeads: (options: ExportOptions) => void;
 }
@@ -389,7 +450,10 @@ export interface UseOpportunitiesReturn {
   updateFilters: (filters: Partial<OpportunityFilters>) => void;
   updateSearch: (search: string) => void;
   updateSort: (field: keyof Opportunity, direction: 'asc' | 'desc') => void;
-  updateOpportunity: (id: string, updates: Partial<Opportunity>) => Promise<void>;
+  updateOpportunity: (
+    id: string,
+    updates: Partial<Opportunity>
+  ) => Promise<void>;
   deleteOpportunity: (id: string) => Promise<void>;
 }
 

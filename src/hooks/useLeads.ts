@@ -5,7 +5,13 @@
 import { useApp } from '@/context/AppContext';
 import { useNotifications } from '@/context/NotificationContext';
 import { useServices } from '@/services/ServiceContainer';
-import type { ExportOptions, ImportResult, Lead, LeadFilters, OpportunityFormData } from '@/types';
+import type {
+  ExportOptions,
+  ImportResult,
+  Lead,
+  LeadFilters,
+  OpportunityFormData,
+} from '@/types';
 import { filterLeads, sortLeads } from '@/utils/dataTransform';
 import { useCallback, useMemo } from 'react';
 
@@ -47,11 +53,15 @@ export const useLeads = () => {
   // Update lead with optimistic updates
   const updateLead = useCallback(
     async (id: string, updates: Partial<Lead>) => {
-      const originalLead = state.leads.find((lead) => lead.id === id);
+      const originalLead = state.leads.find(lead => lead.id === id);
       if (!originalLead) return;
 
       // Optimistic update
-      const optimisticLead = { ...originalLead, ...updates, updatedAt: new Date() };
+      const optimisticLead = {
+        ...originalLead,
+        ...updates,
+        updatedAt: new Date(),
+      };
       dispatch({ type: 'UPDATE_LEAD', payload: optimisticLead });
 
       try {
@@ -68,7 +78,8 @@ export const useLeads = () => {
         addNotification({
           type: 'error',
           title: 'Update Failed',
-          message: error instanceof Error ? error.message : 'Failed to update lead',
+          message:
+            error instanceof Error ? error.message : 'Failed to update lead',
         });
       }
     },
@@ -81,7 +92,10 @@ export const useLeads = () => {
       try {
         dispatch({ type: 'SET_LOADING', payload: true });
 
-        const response = await apiService.createOpportunity(leadId, opportunityData);
+        const response = await apiService.createOpportunity(
+          leadId,
+          opportunityData
+        );
 
         dispatch({ type: 'ADD_OPPORTUNITY', payload: response.data });
 
@@ -98,7 +112,8 @@ export const useLeads = () => {
         addNotification({
           type: 'error',
           title: 'Conversion Failed',
-          message: error instanceof Error ? error.message : 'Failed to convert lead',
+          message:
+            error instanceof Error ? error.message : 'Failed to convert lead',
         });
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false });
@@ -113,7 +128,7 @@ export const useLeads = () => {
       try {
         dispatch({ type: 'SET_LOADING', payload: true });
 
-        const leads = state.leads.filter((lead) => lead.id !== id);
+        const leads = state.leads.filter(lead => lead.id !== id);
         storageService.setLeads(leads);
         dispatch({ type: 'SET_LEADS', payload: leads });
 
@@ -126,7 +141,8 @@ export const useLeads = () => {
         addNotification({
           type: 'error',
           title: 'Delete Failed',
-          message: error instanceof Error ? error.message : 'Failed to delete lead',
+          message:
+            error instanceof Error ? error.message : 'Failed to delete lead',
         });
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false });
@@ -167,7 +183,8 @@ export const useLeads = () => {
         addNotification({
           type: 'error',
           title: 'Import Failed',
-          message: error instanceof Error ? error.message : 'Failed to import leads',
+          message:
+            error instanceof Error ? error.message : 'Failed to import leads',
         });
         return {
           success: false,
@@ -200,7 +217,8 @@ export const useLeads = () => {
         addNotification({
           type: 'error',
           title: 'Export Failed',
-          message: error instanceof Error ? error.message : 'Failed to export leads',
+          message:
+            error instanceof Error ? error.message : 'Failed to export leads',
         });
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false });
@@ -232,7 +250,8 @@ export const useLeads = () => {
         addNotification({
           type: 'error',
           title: 'Creation Failed',
-          message: error instanceof Error ? error.message : 'Failed to create lead',
+          message:
+            error instanceof Error ? error.message : 'Failed to create lead',
         });
         throw error;
       } finally {

@@ -1,6 +1,6 @@
+import Filter from '@/components/ui/Filter';
 import { LeadStatus, OpportunityStage, SidebarFiltersProps } from '@/types';
 import React from 'react';
-import Filter from './Filter';
 
 const SidebarFilters: React.FC<SidebarFiltersProps> = ({
   activeTab,
@@ -24,7 +24,9 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({
 
   return (
     <div className='p-6 space-y-4'>
-      <h2 className='text-sm font-medium text-gray-500 uppercase tracking-wide'>Filters</h2>
+      <h2 className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+        Filters
+      </h2>
 
       {activeTab === 'leads' ? (
         <Filter

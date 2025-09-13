@@ -2,20 +2,23 @@
  * Modal for converting leads to opportunities
  */
 
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Modal from '@/components/ui/Modal';
+import Select from '@/components/ui/Select';
 import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useLeads } from '@/hooks/useLeads';
-import type { OpportunityFormData, OpportunityFormModalProps } from '@/types';
+import type { OpportunityFormData, OpportunityFormProps } from '@/types';
 import { OpportunityStage } from '@/types';
 import { handleAmountInputChange } from '@/utils/dataTransform';
-import { convertValidationErrorsToMap, validateOpportunity } from '@/utils/validation';
+import {
+  convertValidationErrorsToMap,
+  validateOpportunity,
+} from '@/utils/validation';
 import { DollarSign, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import Button from './ui/Button';
-import Input from './ui/Input';
-import Modal from './ui/Modal';
-import Select from './ui/Select';
 
-const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
+const OpportunityForm: React.FC<OpportunityFormProps> = ({
   isOpen,
   onClose,
   onSuccess,
@@ -81,17 +84,17 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   };
 
   const handleFieldChange = (field: keyof OpportunityFormData, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error for this field
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleAmountInputChange(
       e.target.value,
-      (amount) => handleFieldChange('amount', amount),
+      amount => handleFieldChange('amount', amount),
       setAmountDisplay
     );
   };
@@ -133,18 +136,15 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   const submitText = 'Convert Lead';
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={handleCancel}
-      title={title}>
-      <form
-        onSubmit={handleSubmit}
-        className='space-y-4'>
+    <Modal isOpen={isOpen} onClose={handleCancel} title={title}>
+      <form onSubmit={handleSubmit} className='space-y-4'>
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Opportunity Name</label>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>
+            Opportunity Name
+          </label>
           <Input
             value={formData.name}
-            onChange={(e) => handleFieldChange('name', e.target.value)}
+            onChange={e => handleFieldChange('name', e.target.value)}
             placeholder='Enter opportunity name'
             error={errors.name}
             required
@@ -152,10 +152,12 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Account Name</label>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>
+            Account Name
+          </label>
           <Input
             value={formData.accountName}
-            onChange={(e) => handleFieldChange('accountName', e.target.value)}
+            onChange={e => handleFieldChange('accountName', e.target.value)}
             placeholder='Enter account name'
             error={errors.accountName}
             required
@@ -163,17 +165,21 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Stage</label>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>
+            Stage
+          </label>
           <Select
             value={formData.stage}
-            onChange={(e) => handleFieldChange('stage', e.target.value)}
+            onChange={e => handleFieldChange('stage', e.target.value)}
             options={stageOptions}
             error={errors.stage}
           />
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>Amount (Optional)</label>
+          <label className='block text-sm font-medium text-gray-700 mb-1'>
+            Amount (Optional)
+          </label>
           <Input
             type='text'
             value={amountDisplay}
@@ -189,7 +195,8 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
             type='button'
             variant='secondary'
             onClick={handleCancel}
-            className='w-full sm:w-auto order-2 sm:order-1 mt-3 sm:mt-0'>
+            className='w-full sm:w-auto order-2 sm:order-1 mt-3 sm:mt-0'
+          >
             <X className='w-4 h-4 mr-2' />
             Cancel
           </Button>
@@ -198,7 +205,8 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
             variant='primary'
             loading={isSubmitting}
             disabled={isSubmitting}
-            className='w-full sm:w-auto order-1 sm:order-2'>
+            className='w-full sm:w-auto order-1 sm:order-2'
+          >
             {isSubmitting ? 'Saving...' : submitText}
           </Button>
         </div>
@@ -207,4 +215,4 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   );
 };
 
-export default OpportunityFormModal;
+export default OpportunityForm;

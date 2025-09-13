@@ -2,10 +2,10 @@
  * Pagination component for table data
  */
 
+import Button from '@/components/ui/Button';
+import { PaginationProps } from '@/types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
-import Button from './ui/Button';
-import { PaginationProps } from '@/types';
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
@@ -66,14 +66,16 @@ const Pagination: React.FC<PaginationProps> = ({
           variant='secondary'
           onClick={onPreviousPage}
           disabled={currentPage === 1}
-          className='relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'>
+          className='relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'
+        >
           Previous
         </Button>
         <Button
           variant='secondary'
           onClick={onNextPage}
           disabled={currentPage === totalPages}
-          className='ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'>
+          className='ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'
+        >
           Next
         </Button>
       </div>
@@ -83,12 +85,14 @@ const Pagination: React.FC<PaginationProps> = ({
         <div>
           <nav
             className='relative z-0 inline-flex rounded-md space-x-1'
-            aria-label='Pagination'>
+            aria-label='Pagination'
+          >
             <Button
               variant='ghost'
               onClick={onPreviousPage}
               disabled={currentPage === 1}
-              className='relative inline-flex items-center px-2 py-2 rounded-l-md text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'>
+              className='relative inline-flex items-center px-2 py-2 rounded-l-md text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+            >
               <ChevronLeft className='h-5 w-5' />
             </Button>
             {getPageNumbers().map((page, index) => (
@@ -105,7 +109,8 @@ const Pagination: React.FC<PaginationProps> = ({
                       currentPage === page
                         ? 'z-10 bg-blue-50 text-blue-500 hover:text-white'
                         : 'text-gray-500 hover:bg-gray-50'
-                    }`}>
+                    }`}
+                  >
                     {page}
                   </Button>
                 )}
@@ -115,7 +120,8 @@ const Pagination: React.FC<PaginationProps> = ({
               variant='ghost'
               onClick={onNextPage}
               disabled={currentPage === totalPages}
-              className='relative inline-flex items-center px-2 py-2 rounded-r-md text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'>
+              className='relative inline-flex items-center px-2 py-2 rounded-r-md text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+            >
               <ChevronRight className='h-5 w-5' />
             </Button>
           </nav>

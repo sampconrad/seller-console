@@ -13,7 +13,7 @@ const Filter: React.FC<FilterProps> = memo(
 
     return (
       <div className={`space-y-2 ${className}`}>
-        {options.map((option) => {
+        {options.map(option => {
           const isActive = activeValue === option.value;
           const colors = getFilterColors(type, option.value, isActive);
 
@@ -21,9 +21,12 @@ const Filter: React.FC<FilterProps> = memo(
             <button
               key={option.value}
               onClick={() => handleFilterChange(option.value)}
-              className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${colors.button}`}>
+              className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${colors.button}`}
+            >
               <span>{option.label}</span>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors.count}`}>
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${colors.count}`}
+              >
                 {option.count}
               </span>
             </button>

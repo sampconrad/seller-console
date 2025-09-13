@@ -58,12 +58,14 @@ const Modal: React.FC<ModalProps> = ({
           aria-modal='true'
           aria-labelledby={ariaLabelledBy}
           aria-describedby={ariaDescribedBy}
-          tabIndex={-1}>
+          tabIndex={-1}
+        >
           {/* Header */}
           <div className='flex items-center justify-between p-6 border-b border-gray-200'>
             <h3
               id={ariaLabelledBy}
-              className='text-lg font-semibold text-gray-900'>
+              className='text-lg font-semibold text-gray-900'
+            >
               {title}
             </h3>
             <button
@@ -71,16 +73,16 @@ const Modal: React.FC<ModalProps> = ({
               onClick={onClose}
               className='text-gray-400 hover:text-gray-600 transition-colors'
               aria-label='Close modal'
-              type='button'>
-              <X
-                className='w-6 h-6'
-                aria-hidden='true'
-              />
+              type='button'
+            >
+              <X className='w-6 h-6' aria-hidden='true' />
             </button>
           </div>
 
           {/* Content */}
-          <div className='p-6 overflow-y-auto max-h-[calc(90vh-120px)]'>{children}</div>
+          <div className='p-6 overflow-y-auto max-h-[calc(90vh-120px)]'>
+            {children}
+          </div>
         </div>
       </div>
     </div>

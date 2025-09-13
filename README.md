@@ -7,6 +7,7 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 ## 🚀 Features
 
 ### Lead Management
+
 - **Import/Export**: Support for JSON and CSV file formats with complete data including IDs (leads only)
 - **Search & Filter**: Real-time search by name/company and filter by status
 - **Sorting**: Sort leads by any field (default: score descending)
@@ -16,6 +17,7 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 - **Lead Scoring**: Interactive dial component for scoring leads (1-100)
 
 ### Opportunity Conversion
+
 - **Lead to Opportunity**: Convert qualified leads into opportunities
 - **Opportunity Management**: Full CRUD operations for opportunities (view, edit, delete)
 - **Stage Tracking**: Monitor opportunity progression through sales stages
@@ -23,6 +25,7 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 - **Note**: Opportunities cannot be imported/exported - only leads support file operations
 
 ### User Experience
+
 - **Responsive Design**: Mobile-first approach with desktop optimization
 - **Real-time Updates**: Optimistic updates with rollback on failure
 - **Toast Notifications**: User feedback for all actions
@@ -33,38 +36,47 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 ## 🏗️ Architecture
 
 ### Project Structure
+
 ```
 src/
 ├── components/                        # UI components
 │   ├── ui/                            # Reusable UI primitives
 │   │   ├── Badge.tsx                  # Status/stage badge component
 │   │   ├── Button.tsx                 # Button component with variants
-│   │   ├── ErrorBoundary.tsx          # React error boundary component
 │   │   ├── Filter.tsx                 # Reusable quick filter component
 │   │   ├── Footer.tsx                 # Application footer component
 │   │   ├── Input.tsx                  # Form input component
+│   │   ├── MobileHeader.tsx           # Generic mobile header with tab switching
 │   │   ├── Modal.tsx                  # Modal dialog component
 │   │   ├── ScoreDial.tsx              # Interactive lead scoring component
 │   │   ├── Select.tsx                 # Dropdown select component
-│   │   ├── SidebarContent.tsx         # Reusable sidebar content wrapper
-│   │   ├── SidebarDataManagement.tsx  # Reusable data management UI
-│   │   ├── SidebarFilters.tsx         # Sidebar filter section
-│   │   ├── SidebarHeader.tsx          # Sidebar header with branding
-│   │   ├── SidebarNavigation.tsx      # Sidebar navigation section
 │   │   ├── Table.tsx                  # Data table component
-│   │   ├── Toast.tsx                  # Toast notification component
-│   │   └── ToastContainer.tsx         # Toast notification container
-│   ├── DashboardPanel.tsx             # Left sidebar with navigation and filters
-│   ├── DeleteConfirmationModal.tsx    # Delete confirmation dialog
-│   ├── FormatSelectionModal.tsx       # Import/export format selection
-│   ├── LeadDetailPanel.tsx            # Lead details with inline editing
-│   ├── LeadFormModal.tsx              # Create/edit lead modal
-│   ├── LeadsList.tsx                  # Main leads management with pagination
-│   ├── OpportunitiesList.tsx          # Opportunities management
-│   ├── OpportunityDetailPanel.tsx     # Opportunity details with inline editing
-│   ├── OpportunityFormModal.tsx       # Converting leads to opportunities
-│   ├── Pagination.tsx                 # Pagination component
-│   └── Searchbox.tsx                  # Search input component
+│   │   └── Toast.tsx                  # Toast notification system
+│   ├── error/                         # Error handling components
+│   │   └── ErrorBoundary.tsx          # React error boundary component
+│   ├── forms/                         # Form components
+│   │   ├── LeadForm.tsx               # Create/edit lead modal
+│   │   └── OpportunityForm.tsx        # Converting leads to opportunities
+│   ├── layout/                        # Layout components
+│   │   ├── Pagination.tsx             # Pagination component
+│   │   └── Searchbox.tsx              # Search input component
+│   ├── modals/                        # Modal components
+│   │   ├── ConfirmationModal.tsx      # Delete confirmation dialog
+│   │   └── FormatSelectionModal.tsx   # Import/export format selection
+│   ├── panels/                        # Detail panel components
+│   │   ├── LeadDetailPanel.tsx        # Lead details with inline editing
+│   │   └── OpportunityDetailPanel.tsx # Opportunity details with inline editing
+│   ├── sidebar/                       # Sidebar components
+│   │   ├── Sidebar.tsx                # Main sidebar component with navigation and filters
+│   │   ├── SidebarContent.tsx         # Main sidebar content wrapper
+│   │   ├── SidebarDataManagement.tsx  # Data management section
+│   │   ├── SidebarFilters.tsx         # Filter section
+│   │   ├── SidebarHeader.tsx          # Sidebar header with branding
+│   │   ├── SidebarNavigation.tsx      # Navigation section
+│   │   └── SidebarWrapper.tsx         # Reusable wrapper for mobile/desktop variants
+│   └── tables/                        # Table components
+│       ├── LeadsTable.tsx             # Main leads management with pagination
+│       └── OpportunitiesTable.tsx     # Opportunities management
 ├── context/                           # React Context providers
 │   ├── AppContext.tsx                 # Global state management
 │   └── NotificationContext.tsx        # Toast notification context
@@ -74,7 +86,8 @@ src/
 │   ├── useFocusManagement.ts          # Focus management hook
 │   ├── useKeyboardNavigation.ts       # Keyboard navigation hook
 │   ├── useLeads.ts                    # Lead management logic
-│   └── useOpportunities.ts            # Opportunity management logic
+│   ├── useOpportunities.ts            # Opportunity management logic
+│   └── useSidebar.ts                  # Sidebar state management and handlers
 ├── services/                          # Business logic layer
 │   ├── api.ts                         # Mock API with latency simulation
 │   ├── fileService.ts                 # File import/export functionality (leads only)
@@ -101,6 +114,7 @@ src/
 ### Design Principles
 
 #### SOLID Principles Implementation
+
 - **Single Responsibility**: Each component/service has one clear purpose
 - **Open/Closed**: Components are open for extension, closed for modification
 - **Liskov Substitution**: All UI components follow consistent interfaces
@@ -112,27 +126,31 @@ src/
 1. **Context API for State Management**: Chosen over Redux for simplicity and built-in React support
 2. **Custom Hooks for Logic**: Reusable business logic separated from UI components
 3. **Service Layer with Dependency Injection**: Clean separation between UI and data operations using ServiceContainer pattern
-4. **Component Composition**: Modular sidebar components
+4. **Component Composition**: Modular components with reusable UI primitives
 5. **Error Boundaries**: React Error Boundaries for graceful error handling
 6. **Accessibility-First**: Focus management, keyboard navigation, and ARIA attributes throughout
 7. **Optimistic Updates**: Immediate UI feedback with rollback on failure
 8. **TypeScript Throughout**: Full type safety across the entire application
+9. **Custom Hooks for Logic**: Business logic separated from UI components using custom hooks
 
 ## 🛠️ Tech Stack
 
 ### Core
+
 - **React 18** - UI library with hooks and concurrent features
 - **TypeScript** - Type-safe JavaScript
 - **Vite** - Build tool and dev server
 - **Tailwind CSS** - Utility-first CSS framework
 
 ### Development & Testing
+
 - **Vitest** - Unit testing framework
 - **@testing-library/react** - Component testing utilities
 - **ESLint** - Code linting with TypeScript and React plugins
 - **Lucide React** - SVG icon library
 
 ### Architecture
+
 - **React Context API** - State management
 - **Custom Hooks** - Reusable stateful logic
 - **Service Container** - Dependency injection
@@ -142,23 +160,27 @@ src/
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd coverpin-seller-console
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -178,6 +200,7 @@ src/
 ## 📊 Data Models
 
 ### Lead
+
 ```typescript
 interface Lead {
   id: string;
@@ -193,6 +216,7 @@ interface Lead {
 ```
 
 ### Opportunity
+
 ```typescript
 interface Opportunity {
   id: string;
@@ -211,12 +235,15 @@ interface Opportunity {
 The application includes comprehensive unit tests using Vitest:
 
 - **Utility Functions**: Validation, data transformation, formatting
-- **Custom Hooks**: useDebounce, useKeyboardNavigation, and other custom hooks
+- **Custom Hooks**: useDebounce, useKeyboardNavigation, useSidebar, and other custom hooks
 - **Services**: API, file service, and storage service testing
 - **React Components**: UI component behavior and interactions
 - **Integration Tests**: End-to-end component integration
+- **Error Handling**: ErrorBoundary component testing
+- **Component Organization**: Tests ensure proper component structure and imports
 
 Run tests with:
+
 ```bash
 npm run test
 ```
@@ -246,6 +273,7 @@ The application is built with a mobile-first approach:
 - **Memoization**: React.memo and useMemo for expensive operations
 - **Component Composition**: Reusable components reducing bundle size
 - **Dependency Injection**: ServiceContainer pattern for efficient service management
+- **Custom Hooks**: Logic separation and reusability
 
 ## 🔒 Error Handling
 
@@ -253,7 +281,6 @@ The application is built with a mobile-first approach:
 - **Network Errors**: Graceful handling of API failures
 - **Rollback**: Automatic rollback of optimistic updates on failure
 - **User Feedback**: Toast notifications for all user actions
-
 
 ## 📄 License
 

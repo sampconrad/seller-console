@@ -99,9 +99,9 @@ describe('Validation Utils', () => {
 
       const errors = validateLead(invalidLead);
       expect(errors).toHaveLength(3);
-      expect(errors.some((e) => e.field === 'name')).toBe(true);
-      expect(errors.some((e) => e.field === 'email')).toBe(true);
-      expect(errors.some((e) => e.field === 'score')).toBe(true);
+      expect(errors.some(e => e.field === 'name')).toBe(true);
+      expect(errors.some(e => e.field === 'email')).toBe(true);
+      expect(errors.some(e => e.field === 'score')).toBe(true);
     });
   });
 });
@@ -134,13 +134,19 @@ describe('Data Transform Utils', () => {
 
   describe('sortLeads', () => {
     it('should sort leads by score descending', () => {
-      const sorted = sortLeads(sampleLeads, { field: 'score', direction: 'desc' });
+      const sorted = sortLeads(sampleLeads, {
+        field: 'score',
+        direction: 'desc',
+      });
       expect(sorted[0].score).toBe(90);
       expect(sorted[1].score).toBe(80);
     });
 
     it('should sort leads by score ascending', () => {
-      const sorted = sortLeads(sampleLeads, { field: 'score', direction: 'asc' });
+      const sorted = sortLeads(sampleLeads, {
+        field: 'score',
+        direction: 'asc',
+      });
       expect(sorted[0].score).toBe(80);
       expect(sorted[1].score).toBe(90);
     });
@@ -148,13 +154,19 @@ describe('Data Transform Utils', () => {
 
   describe('filterLeads', () => {
     it('should filter leads by search term', () => {
-      const filtered = filterLeads(sampleLeads, { search: 'alice', status: 'all' });
+      const filtered = filterLeads(sampleLeads, {
+        search: 'alice',
+        status: 'all',
+      });
       expect(filtered).toHaveLength(1);
       expect(filtered[0].name).toBe('Alice');
     });
 
     it('should filter leads by status', () => {
-      const filtered = filterLeads(sampleLeads, { search: '', status: LeadStatus.CONTACTED });
+      const filtered = filterLeads(sampleLeads, {
+        search: '',
+        status: LeadStatus.CONTACTED,
+      });
       expect(filtered).toHaveLength(1);
       expect(filtered[0].status).toBe(LeadStatus.CONTACTED);
     });

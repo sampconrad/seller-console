@@ -20,7 +20,8 @@ const Table = <T,>({
   const handleSort = (field: keyof T) => {
     if (!onSort) return;
 
-    const direction = sortField === field && sortDirection === 'asc' ? 'desc' : 'asc';
+    const direction =
+      sortField === field && sortDirection === 'asc' ? 'desc' : 'asc';
     onSort(field, direction);
   };
 
@@ -28,11 +29,11 @@ const Table = <T,>({
   useKeyboardNavigation({
     onArrowUp: () => {
       if (data.length === 0) return;
-      setSelectedIndex((prev) => Math.max(0, prev - 1));
+      setSelectedIndex(prev => Math.max(0, prev - 1));
     },
     onArrowDown: () => {
       if (data.length === 0) return;
-      setSelectedIndex((prev) => Math.min(data.length - 1, prev + 1));
+      setSelectedIndex(prev => Math.min(data.length - 1, prev + 1));
     },
     onEnter: () => {
       if (selectedIndex >= 0 && selectedIndex < data.length && onRowClick) {
@@ -50,7 +51,9 @@ const Table = <T,>({
   // Auto-scroll to keep selected row visible
   useEffect(() => {
     if (selectedIndex >= 0 && tableRef.current) {
-      const scrollContainer = tableRef.current.querySelector('.flex-1.overflow-auto');
+      const scrollContainer = tableRef.current.querySelector(
+        '.flex-1.overflow-auto'
+      );
       const tableBody = tableRef.current.querySelector('tbody');
 
       if (scrollContainer && tableBody) {
@@ -61,7 +64,8 @@ const Table = <T,>({
 
           // Check if row is fully visible
           const isRowFullyVisible =
-            rowRect.top >= containerRect.top && rowRect.bottom <= containerRect.bottom;
+            rowRect.top >= containerRect.top &&
+            rowRect.bottom <= containerRect.bottom;
 
           if (!isRowFullyVisible) {
             // Calculate scroll position to center the row
@@ -117,21 +121,26 @@ const Table = <T,>({
       className={`bg-white rounded-lg shadow overflow-hidden flex flex-col ${className}`}
       tabIndex={onRowClick ? 0 : undefined}
       role={onRowClick ? 'grid' : undefined}
-      aria-label={onRowClick ? 'Data table with keyboard navigation' : undefined}>
+      aria-label={
+        onRowClick ? 'Data table with keyboard navigation' : undefined
+      }
+    >
       <div className='flex-1 overflow-auto'>
         <table
           className='w-full divide-y divide-gray-200 table-fixed'
-          style={{ width: '100%', tableLayout: 'fixed' }}>
+          style={{ width: '100%', tableLayout: 'fixed' }}
+        >
           <thead className='bg-gray-100 sticky top-0 z-10'>
             <tr>
-              {columns.map((column) => (
+              {columns.map(column => (
                 <th
                   key={String(column.key)}
                   className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden ${
                     column.sortable ? 'cursor-pointer hover:bg-gray-200' : ''
                   }`}
                   style={{ width: column.width, maxWidth: column.width }}
-                  onClick={() => column.sortable && handleSort(column.key)}>
+                  onClick={() => column.sortable && handleSort(column.key)}
+                >
                   <div className='flex items-center space-x-1'>
                     <span>{column.label}</span>
                     {column.sortable && getSortIcon(column.key)}
@@ -145,16 +154,20 @@ const Table = <T,>({
               <tr
                 key={index}
                 className={`hover:bg-gray-50 ${onRowClick ? 'cursor-pointer' : ''} ${
-                  selectedIndex === index ? 'bg-blue-50 ring-2 ring-blue-500' : ''
+                  selectedIndex === index
+                    ? 'bg-blue-50 ring-2 ring-blue-500'
+                    : ''
                 }`}
                 onClick={() => onRowClick?.(item)}
                 role={onRowClick ? 'row' : undefined}
-                aria-selected={selectedIndex === index}>
-                {columns.map((column) => (
+                aria-selected={selectedIndex === index}
+              >
+                {columns.map(column => (
                   <td
                     key={String(column.key)}
                     className='px-6 py-4 text-sm text-gray-900 overflow-hidden'
-                    style={{ width: column.width, maxWidth: column.width }}>
+                    style={{ width: column.width, maxWidth: column.width }}
+                  >
                     {column.render
                       ? column.render(item[column.key], item)
                       : String(item[column.key] || '')}

@@ -32,7 +32,10 @@ export const useOpportunities = () => {
   // Update sort configuration
   const updateSort = useCallback(
     (field: keyof Opportunity, direction: 'asc' | 'desc') => {
-      dispatch({ type: 'UPDATE_OPPORTUNITY_SORT', payload: { field, direction } });
+      dispatch({
+        type: 'UPDATE_OPPORTUNITY_SORT',
+        payload: { field, direction },
+      });
     },
     [dispatch]
   );
@@ -40,11 +43,17 @@ export const useOpportunities = () => {
   // Update opportunity with optimistic updates
   const updateOpportunity = useCallback(
     async (id: string, updates: Partial<Opportunity>) => {
-      const originalOpportunity = state.opportunities.find((opp) => opp.id === id);
+      const originalOpportunity = state.opportunities.find(
+        opp => opp.id === id
+      );
       if (!originalOpportunity) return;
 
       // Optimistic update
-      const optimisticOpportunity = { ...originalOpportunity, ...updates, updatedAt: new Date() };
+      const optimisticOpportunity = {
+        ...originalOpportunity,
+        ...updates,
+        updatedAt: new Date(),
+      };
       dispatch({ type: 'UPDATE_OPPORTUNITY', payload: optimisticOpportunity });
 
       try {
@@ -61,7 +70,10 @@ export const useOpportunities = () => {
         addNotification({
           type: 'error',
           title: 'Update Failed',
-          message: error instanceof Error ? error.message : 'Failed to update opportunity',
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update opportunity',
         });
       }
     },
@@ -86,7 +98,10 @@ export const useOpportunities = () => {
         addNotification({
           type: 'error',
           title: 'Delete Failed',
-          message: error instanceof Error ? error.message : 'Failed to delete opportunity',
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete opportunity',
         });
       } finally {
         dispatch({ type: 'SET_LOADING', payload: false });

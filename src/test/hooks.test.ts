@@ -18,9 +18,12 @@ afterAll(() => {
 
 describe('useDebounce', () => {
   it('should debounce value changes', () => {
-    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
-      initialProps: { value: 'initial', delay: 500 },
-    });
+    const { result, rerender } = renderHook(
+      ({ value, delay }) => useDebounce(value, delay),
+      {
+        initialProps: { value: 'initial', delay: 500 },
+      }
+    );
 
     expect(result.current).toBe('initial');
 
@@ -37,9 +40,12 @@ describe('useDebounce', () => {
   });
 
   it('should reset timer on value change', () => {
-    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
-      initialProps: { value: 'initial', delay: 500 },
-    });
+    const { result, rerender } = renderHook(
+      ({ value, delay }) => useDebounce(value, delay),
+      {
+        initialProps: { value: 'initial', delay: 500 },
+      }
+    );
 
     // Change value multiple times
     rerender({ value: 'first', delay: 500 });

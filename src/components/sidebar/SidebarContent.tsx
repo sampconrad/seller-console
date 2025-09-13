@@ -1,9 +1,9 @@
+import SidebarDataManagement from '@/components/sidebar/SidebarDataManagement';
+import SidebarFilters from '@/components/sidebar/SidebarFilters';
+import SidebarNavigation from '@/components/sidebar/SidebarNavigation';
+import Footer from '@/components/ui/Footer';
 import { SidebarContentProps } from '@/types';
 import React from 'react';
-import Footer from './Footer';
-import SidebarFilters from './SidebarFilters';
-import SidebarNavigation from './SidebarNavigation';
-import SidebarDataManagement from './SidebarDataManagement';
 
 const SidebarContent: React.FC<SidebarContentProps> = ({
   activeTab,

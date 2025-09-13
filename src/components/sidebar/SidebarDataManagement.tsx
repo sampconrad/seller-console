@@ -1,7 +1,7 @@
+import Button from '@/components/ui/Button';
 import { SidebarDataManagementProps } from '@/types';
-import { Download, Upload, Plus } from 'lucide-react';
+import { Download, Plus, Upload } from 'lucide-react';
 import React from 'react';
-import Button from './Button';
 
 const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
   activeTab,
@@ -12,7 +12,9 @@ const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
 }) => {
   return (
     <div className={`space-y-4 ${className}`}>
-      <h2 className='text-sm font-medium text-gray-500 uppercase tracking-wide'>Data Management</h2>
+      <h2 className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
+        Data Management
+      </h2>
 
       {activeTab === 'leads' ? (
         <div className='space-y-2'>
@@ -20,7 +22,8 @@ const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
             variant='primary'
             size='sm'
             onClick={onNewLead}
-            className='w-full flex items-center justify-center space-x-2'>
+            className='w-full flex items-center justify-center space-x-2'
+          >
             <Plus className='w-4 h-4' />
             <span>New Lead</span>
           </Button>
@@ -28,7 +31,8 @@ const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
             variant='secondary'
             size='sm'
             onClick={onImportClick}
-            className='w-full flex items-center justify-center space-x-2'>
+            className='w-full flex items-center justify-center space-x-2'
+          >
             <Download className='w-4 h-4' />
             <span>Import</span>
           </Button>
@@ -36,7 +40,8 @@ const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
             variant='secondary'
             size='sm'
             onClick={onExportClick}
-            className='w-full flex items-center justify-center space-x-2'>
+            className='w-full flex items-center justify-center space-x-2'
+          >
             <Upload className='w-4 h-4' />
             <span>Export</span>
           </Button>

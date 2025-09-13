@@ -1,8 +1,11 @@
-import { InputProps } from "@/types";
+import { InputProps } from '@/types';
 import { forwardRef } from 'react';
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, helperText, leftIcon, rightIcon, className = '', ...props }, ref) => {
+  (
+    { label, error, helperText, leftIcon, rightIcon, className = '', ...props },
+    ref
+  ) => {
     const baseClasses =
       'block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors';
 
@@ -17,7 +20,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={props.id}
-            className='block text-sm font-medium text-gray-700 mb-1'>
+            className='block text-sm font-medium text-gray-700 mb-1'
+          >
             {label}
           </label>
         )}
@@ -33,11 +37,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className='absolute inset-y-0 right-0 pr-3 flex items-center'>{rightIcon}</div>
+            <div className='absolute inset-y-0 right-0 pr-3 flex items-center'>
+              {rightIcon}
+            </div>
           )}
         </div>
         {error && <p className='mt-1 text-sm text-error-600'>{error}</p>}
-        {helperText && !error && <p className='mt-1 text-sm text-gray-500'>{helperText}</p>}
+        {helperText && !error && (
+          <p className='mt-1 text-sm text-gray-500'>{helperText}</p>
+        )}
       </div>
     );
   }

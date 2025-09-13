@@ -2,20 +2,20 @@
  * Modal for creating and editing leads
  */
 
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Modal from '@/components/ui/Modal';
+import ScoreDial from '@/components/ui/ScoreDial';
+import Select from '@/components/ui/Select';
 import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useLeads } from '@/hooks/useLeads';
-import type { Lead, LeadFormModalProps } from '@/types';
+import type { Lead, LeadFormProps } from '@/types';
 import { LeadStatus } from '@/types';
 import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
 import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import Button from './ui/Button';
-import Input from './ui/Input';
-import Modal from './ui/Modal';
-import ScoreDial from './ui/ScoreDial';
-import Select from './ui/Select';
 
-const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mode }) => {
+const LeadForm: React.FC<LeadFormProps> = ({ isOpen, onClose, lead, mode }) => {
   const { createLead, updateLead } = useLeads();
   const [formData, setFormData] = useState<Partial<Lead>>({
     name: '',
@@ -48,11 +48,11 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
   }, [isOpen, lead, mode]);
 
   const handleInputChange = (field: keyof Lead, value: string | number) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
 
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -70,7 +70,9 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
 
     try {
       if (mode === 'create') {
-        await createLead(formData as Omit<Lead, 'id' | 'createdAt' | 'updatedAt'>);
+        await createLead(
+          formData as Omit<Lead, 'id' | 'createdAt' | 'updatedAt'>
+        );
       } else if (lead) {
         await updateLead(lead.id, formData);
       }
@@ -130,10 +132,9 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
     <Modal
       isOpen={isOpen}
       onClose={handleCancel}
-      title={mode === 'create' ? 'Create New Lead' : 'Edit Lead'}>
-      <form
-        onSubmit={handleSubmit}
-        className='space-y-6'>
+      title={mode === 'create' ? 'Create New Lead' : 'Edit Lead'}
+    >
+      <form onSubmit={handleSubmit} className='space-y-6'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           {/* Name */}
           <div className='md:col-span-2'>
@@ -141,7 +142,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
               id='name'
               label='Name'
               value={formData.name || ''}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              onChange={e => handleInputChange('name', e.target.value)}
               error={errors.name}
               placeholder='Enter lead name'
               required
@@ -154,7 +155,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
               id='company'
               label='Company'
               value={formData.company || ''}
-              onChange={(e) => handleInputChange('company', e.target.value)}
+              onChange={e => handleInputChange('company', e.target.value)}
               error={errors.company}
               placeholder='Enter company name'
               required
@@ -168,7 +169,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
               label='Email'
               type='email'
               value={formData.email || ''}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              onChange={e => handleInputChange('email', e.target.value)}
               error={errors.email}
               placeholder='Enter email address'
               required
@@ -181,7 +182,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
               id='source'
               label='Source'
               value={formData.source || ''}
-              onChange={(e) => handleInputChange('source', e.target.value)}
+              onChange={e => handleInputChange('source', e.target.value)}
               error={errors.source}
               options={sourceOptions}
               placeholder='Select source'
@@ -195,7 +196,9 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
               id='status'
               label='Status'
               value={formData.status || LeadStatus.NEW}
-              onChange={(e) => handleInputChange('status', e.target.value as LeadStatus)}
+              onChange={e =>
+                handleInputChange('status', e.target.value as LeadStatus)
+              }
               error={errors.status}
               options={statusOptions}
               required
@@ -207,7 +210,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
             <ScoreDial
               label='Score'
               value={formData.score || 1}
-              onChange={(value) => handleInputChange('score', value)}
+              onChange={value => handleInputChange('score', value)}
               error={errors.score}
               min={1}
               max={100}
@@ -222,7 +225,8 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
             variant='secondary'
             onClick={handleCancel}
             disabled={isSubmitting}
-            className='w-full sm:w-auto order-2 sm:order-1 mt-3 sm:mt-0'>
+            className='w-full sm:w-auto order-2 sm:order-1 mt-3 sm:mt-0'
+          >
             <X className='w-4 h-4 mr-2' />
             Cancel
           </Button>
@@ -231,8 +235,13 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
             variant='primary'
             disabled={isSubmitting}
             loading={isSubmitting}
-            className='w-full sm:w-auto order-1 sm:order-2'>
-            {isSubmitting ? 'Saving...' : mode === 'create' ? 'Create Lead' : 'Save Changes'}
+            className='w-full sm:w-auto order-1 sm:order-2'
+          >
+            {isSubmitting
+              ? 'Saving...'
+              : mode === 'create'
+                ? 'Create Lead'
+                : 'Save Changes'}
           </Button>
         </div>
       </form>
@@ -240,4 +249,4 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
   );
 };
 
-export default LeadFormModal;
+export default LeadForm;

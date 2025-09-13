@@ -2,13 +2,13 @@
  * Reusable delete confirmation modal component
  */
 
+import Button from '@/components/ui/Button';
+import Modal from '@/components/ui/Modal';
+import { ConfirmationModalProps } from '@/types';
 import { AlertTriangle } from 'lucide-react';
 import React from 'react';
-import Button from './ui/Button';
-import Modal from './ui/Modal';
-import { DeleteConfirmationModalProps } from '@/types';
 
-const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -22,10 +22,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}>
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <div className='space-y-4'>
         <div className='flex items-start space-x-3'>
           <div className='flex-shrink-0'>
@@ -34,8 +31,10 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
           <div className='flex-1'>
             <p className='text-gray-600'>
               {message}
-              {itemName && <span className='font-medium text-gray-900'> "{itemName}"</span>}? This
-              action cannot be undone.
+              {itemName && (
+                <span className='font-medium text-gray-900'> "{itemName}"</span>
+              )}
+              ? This action cannot be undone.
             </p>
           </div>
         </div>
@@ -45,14 +44,16 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
             variant='secondary'
             onClick={onClose}
             disabled={isLoading}
-            className='w-full sm:w-auto mt-3 sm:mt-0'>
+            className='w-full sm:w-auto mt-3 sm:mt-0'
+          >
             Cancel
           </Button>
           <Button
             variant='danger'
             onClick={handleConfirm}
             loading={isLoading}
-            className='w-full sm:w-auto'>
+            className='w-full sm:w-auto'
+          >
             Delete
           </Button>
         </div>
@@ -61,4 +62,4 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   );
 };
 
-export default DeleteConfirmationModal;
+export default ConfirmationModal;

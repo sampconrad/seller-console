@@ -2,6 +2,12 @@
  * Opportunities list component with management functionality
  */
 
+import Pagination from '@/components/layout/Pagination';
+import Searchbox from '@/components/layout/Searchbox';
+import ConfirmationModal from '@/components/modals/ConfirmationModal';
+import OpportunityDetailPanel from '@/components/panels/OpportunityDetailPanel';
+import Badge from '@/components/ui/Badge';
+import Table from '@/components/ui/Table';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useOpportunities } from '@/hooks/useOpportunities';
 import type { Opportunity, TableColumn } from '@/types';
@@ -14,14 +20,8 @@ import {
 } from '@/utils/dataTransform';
 import { Calendar, DollarSign, TrendingUp } from 'lucide-react';
 import React, { memo, useEffect, useState } from 'react';
-import DeleteConfirmationModal from './DeleteConfirmationModal';
-import OpportunityDetailPanel from './OpportunityDetailPanel';
-import Pagination from './Pagination';
-import Searchbox from './Searchbox';
-import Badge from './ui/Badge';
-import Table from './ui/Table';
 
-const OpportunitiesList: React.FC = memo(() => {
+const OpportunitiesTable: React.FC = memo(() => {
   const {
     opportunities,
     loading,
@@ -33,8 +33,10 @@ const OpportunitiesList: React.FC = memo(() => {
   } = useOpportunities();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
-  const [opportunityToDelete, setOpportunityToDelete] = useState<Opportunity | null>(null);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
+  const [opportunityToDelete, setOpportunityToDelete] =
+    useState<Opportunity | null>(null);
+  const [selectedOpportunity, setSelectedOpportunity] =
+    useState<Opportunity | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -78,18 +80,24 @@ const OpportunitiesList: React.FC = memo(() => {
   };
 
   // Filter opportunities based on search and stage
-  const filteredOpportunities = opportunities.filter((opportunity) => {
+  const filteredOpportunities = opportunities.filter(opportunity => {
     const matchesSearch =
       opportunity.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-      opportunity.accountName.toLowerCase().includes(debouncedSearch.toLowerCase());
+      opportunity.accountName
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase());
 
-    const matchesStage = filters.stage === 'all' || opportunity.stage === filters.stage;
+    const matchesStage =
+      filters.stage === 'all' || opportunity.stage === filters.stage;
 
     return matchesSearch && matchesStage;
   });
 
   // Sort filtered opportunities
-  const sortedOpportunities = sortOpportunities(filteredOpportunities, sortConfig);
+  const sortedOpportunities = sortOpportunities(
+    filteredOpportunities,
+    sortConfig
+  );
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -100,7 +108,10 @@ const OpportunitiesList: React.FC = memo(() => {
   const totalPages = Math.ceil(sortedOpportunities.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedOpportunities = sortedOpportunities.slice(startIndex, endIndex);
+  const paginatedOpportunities = sortedOpportunities.slice(
+    startIndex,
+    endIndex
+  );
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -128,7 +139,9 @@ const OpportunitiesList: React.FC = memo(() => {
         <div className='w-full'>
           <div className='font-medium text-gray-900'>{value}</div>
           <div className='text-sm text-gray-500'>{opportunity.accountName}</div>
-          <div className='text-xs text-gray-400 font-mono'>#{opportunity.id}</div>
+          <div className='text-xs text-gray-400 font-mono'>
+            #{opportunity.id}
+          </div>
         </div>
       ),
     },
@@ -137,7 +150,7 @@ const OpportunitiesList: React.FC = memo(() => {
       label: 'Stage',
       sortable: true,
       width: '200px',
-      render: (value) => (
+      render: value => (
         <Badge className={getStageColor(value as string)}>
           {formatStage(value as string).toUpperCase()}
         </Badge>
@@ -148,10 +161,12 @@ const OpportunitiesList: React.FC = memo(() => {
       label: 'Amount',
       sortable: true,
       width: '200px',
-      render: (value) => (
+      render: value => (
         <div className='flex items-center space-x-1'>
           <DollarSign className='w-4 h-4 text-gray-400' />
-          <span className={`font-medium ${value ? 'text-green-600' : 'text-gray-500'}`}>
+          <span
+            className={`font-medium ${value ? 'text-green-600' : 'text-gray-500'}`}
+          >
             {value ? formatNumber(value as number) : 'Not specified'}
           </span>
         </div>
@@ -162,7 +177,7 @@ const OpportunitiesList: React.FC = memo(() => {
       label: 'Created',
       sortable: true,
       width: '150px',
-      render: (value) => (
+      render: value => (
         <div className='flex items-center space-x-1'>
           <Calendar className='w-4 h-4 text-gray-400' />
           <span className='inline'>{formatDate(value as Date)}</span>
@@ -179,7 +194,9 @@ const OpportunitiesList: React.FC = memo(() => {
           <TrendingUp className='w-8 h-8 text-green-600' />
           <h1 className='text-2xl font-bold text-gray-900'>Opportunities</h1>
         </div>
-        <p className='text-base text-gray-600'>Manage your converted opportunities</p>
+        <p className='text-base text-gray-600'>
+          Manage your converted opportunities
+        </p>
       </div>
 
       <Searchbox
@@ -218,7 +235,7 @@ const OpportunitiesList: React.FC = memo(() => {
         onNextPage={handleNextPage}
       />
 
-      <DeleteConfirmationModal
+      <ConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
@@ -236,6 +253,6 @@ const OpportunitiesList: React.FC = memo(() => {
   );
 });
 
-OpportunitiesList.displayName = 'OpportunitiesList';
+OpportunitiesTable.displayName = 'OpportunitiesTable';
 
-export default OpportunitiesList;
+export default OpportunitiesTable;

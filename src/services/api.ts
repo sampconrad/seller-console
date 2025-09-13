@@ -2,7 +2,12 @@
  * Mock API service with simulated latency
  */
 
-import type { ApiResponse, Lead, Opportunity, OpportunityFormData } from '@/types';
+import type {
+  ApiResponse,
+  Lead,
+  Opportunity,
+  OpportunityFormData,
+} from '@/types';
 import { generateId } from '@/utils/dataTransform';
 import { storageService } from './storage';
 
@@ -10,14 +15,17 @@ import { storageService } from './storage';
  * Simulate network latency
  */
 const delay = (ms: number): Promise<void> => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 };
 
 /**
  * Mock API service class
  */
 class ApiService {
-  private async simulateRequest<T>(data: T, shouldError = false): Promise<ApiResponse<T>> {
+  private async simulateRequest<T>(
+    data: T,
+    shouldError = false
+  ): Promise<ApiResponse<T>> {
     // Simulate network latency (500-1500ms)
     const latency = Math.random() * 1000 + 500;
     await delay(latency);
@@ -38,9 +46,12 @@ class ApiService {
     return this.simulateRequest(leads);
   }
 
-  async updateLead(id: string, updates: Partial<Lead>): Promise<ApiResponse<Lead>> {
+  async updateLead(
+    id: string,
+    updates: Partial<Lead>
+  ): Promise<ApiResponse<Lead>> {
     const leads = storageService.getLeads();
-    const leadIndex = leads.findIndex((lead) => lead.id === id);
+    const leadIndex = leads.findIndex(lead => lead.id === id);
 
     if (leadIndex === -1) {
       throw new Error('Lead not found');
@@ -81,7 +92,7 @@ class ApiService {
     opportunityData: OpportunityFormData
   ): Promise<ApiResponse<Opportunity>> {
     const leads = storageService.getLeads();
-    const lead = leads.find((l) => l.id === leadId);
+    const lead = leads.find(l => l.id === leadId);
 
     if (!lead) {
       throw new Error('Lead not found');
@@ -103,7 +114,7 @@ class ApiService {
 
     // Only save data if the request succeeds
     // Remove the lead from the leads list since it's been converted
-    const updatedLeads = leads.filter((l) => l.id !== leadId);
+    const updatedLeads = leads.filter(l => l.id !== leadId);
 
     // Add opportunity
     const opportunities = storageService.getOpportunities();
@@ -126,7 +137,7 @@ class ApiService {
     updates: Partial<Opportunity>
   ): Promise<ApiResponse<Opportunity>> {
     const opportunities = storageService.getOpportunities();
-    const opportunityIndex = opportunities.findIndex((opp) => opp.id === id);
+    const opportunityIndex = opportunities.findIndex(opp => opp.id === id);
 
     if (opportunityIndex === -1) {
       throw new Error('Opportunity not found');
@@ -146,7 +157,7 @@ class ApiService {
 
   async deleteOpportunity(id: string): Promise<ApiResponse<void>> {
     const opportunities = storageService.getOpportunities();
-    const filteredOpportunities = opportunities.filter((opp) => opp.id !== id);
+    const filteredOpportunities = opportunities.filter(opp => opp.id !== id);
 
     if (filteredOpportunities.length === opportunities.length) {
       throw new Error('Opportunity not found');
@@ -160,7 +171,7 @@ class ApiService {
   // Import/Export operations
   async importLeads(leads: Lead[]): Promise<ApiResponse<Lead[]>> {
     const existingLeads = storageService.getLeads();
-    const newLeads = leads.map((lead) => ({
+    const newLeads = leads.map(lead => ({
       ...lead,
       id: generateId(),
       createdAt: new Date(lead.createdAt),

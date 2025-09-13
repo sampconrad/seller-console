@@ -2,17 +2,16 @@
  * Custom hook for managing focus in modals and accessible components
  */
 
+import { FocusManagementOptions } from '@/types';
 import { useEffect, useRef } from 'react';
 
-export interface FocusManagementOptions {
-  enabled?: boolean;
-  trapFocus?: boolean;
-  restoreFocus?: boolean;
-  initialFocusRef?: React.RefObject<HTMLElement>;
-}
-
 export const useFocusManagement = (options: FocusManagementOptions = {}) => {
-  const { enabled = true, trapFocus = false, restoreFocus = true, initialFocusRef } = options;
+  const {
+    enabled = true,
+    trapFocus = false,
+    restoreFocus = true,
+    initialFocusRef,
+  } = options;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
@@ -43,7 +42,9 @@ export const useFocusManagement = (options: FocusManagementOptions = {}) => {
       );
 
       const firstElement = focusableElements[0] as HTMLElement;
-      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+      const lastElement = focusableElements[
+        focusableElements.length - 1
+      ] as HTMLElement;
 
       if (event.shiftKey) {
         // Shift + Tab

@@ -1,4 +1,4 @@
-import { ScoreDialProps } from "@/types";
+import { ScoreDialProps } from '@/types';
 import React from 'react';
 
 const ScoreDial: React.FC<ScoreDialProps> = ({
@@ -18,7 +18,11 @@ const ScoreDial: React.FC<ScoreDialProps> = ({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      {label && <label className='block text-sm font-medium text-gray-700'>{label}</label>}
+      {label && (
+        <label className='block text-sm font-medium text-gray-700'>
+          {label}
+        </label>
+      )}
 
       <div className='space-y-2'>
         <input

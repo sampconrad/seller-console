@@ -73,7 +73,10 @@ describe('StorageService', () => {
 
     storageService.setLeads(leads);
 
-    expect(localStorageMock.setItem).toHaveBeenCalledWith('coverpin_leads', JSON.stringify(leads));
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'coverpin_leads',
+      JSON.stringify(leads)
+    );
   });
 });
 
@@ -118,7 +121,9 @@ John Doe,Acme Corp,invalid-email,website,85,new`;
       },
     ]);
 
-    const file = new File([jsonContent], 'test.json', { type: 'application/json' });
+    const file = new File([jsonContent], 'test.json', {
+      type: 'application/json',
+    });
 
     const result = await fileService.importLeads(file);
 

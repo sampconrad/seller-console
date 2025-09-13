@@ -21,8 +21,10 @@ const Button: React.FC<ButtonProps> = ({
     'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-fit';
 
   const variantClasses = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
-    secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
+    primary:
+      'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
+    secondary:
+      'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
     danger: 'bg-error-600 text-white hover:bg-error-700 focus:ring-error-500',
     ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
   };
@@ -46,12 +48,10 @@ const Button: React.FC<ButtonProps> = ({
       aria-describedby={ariaDescribedBy}
       aria-expanded={ariaExpanded}
       aria-pressed={ariaPressed}
-      {...props}>
+      {...props}
+    >
       {loading && (
-        <Loader2
-          className='w-4 h-4 mr-2 animate-spin'
-          aria-hidden='true'
-        />
+        <Loader2 className='w-4 h-4 mr-2 animate-spin' aria-hidden='true' />
       )}
       {children}
     </button>

@@ -2,9 +2,9 @@
  * Unit tests for React components
  */
 
+import ConfirmationModal from '@/components/modals/ConfirmationModal';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import Input from '@/components/ui/Input';
 import { AppProvider } from '@/context/AppContext';
 import { NotificationProvider } from '@/context/NotificationContext';
@@ -22,7 +22,9 @@ describe('UI Components', () => {
   describe('Button', () => {
     it('should render button with text', () => {
       render(<Button>Click me</Button>);
-      expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Click me' })
+      ).toBeInTheDocument();
     });
 
     it('should render loading state', () => {
@@ -58,12 +60,7 @@ describe('UI Components', () => {
 
   describe('Input', () => {
     it('should render input with label', () => {
-      render(
-        <Input
-          id='test-input'
-          label='Test Label'
-        />
-      );
+      render(<Input id='test-input' label='Test Label' />);
       expect(screen.getByLabelText('Test Label')).toBeInTheDocument();
     });
 
@@ -114,7 +111,7 @@ describe('UI Components', () => {
     });
   });
 
-  describe('DeleteConfirmationModal', () => {
+  describe('ConfirmationModal', () => {
     const defaultProps = {
       isOpen: true,
       onClose: vi.fn(),
@@ -125,30 +122,20 @@ describe('UI Components', () => {
     };
 
     it('should render modal when open', () => {
-      render(<DeleteConfirmationModal {...defaultProps} />);
+      render(<ConfirmationModal {...defaultProps} />);
       expect(screen.getByText('Delete Item')).toBeInTheDocument();
       expect(screen.getByText('Delete')).toBeInTheDocument();
       expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('should not render modal when closed', () => {
-      render(
-        <DeleteConfirmationModal
-          {...defaultProps}
-          isOpen={false}
-        />
-      );
+      render(<ConfirmationModal {...defaultProps} isOpen={false} />);
       expect(screen.queryByText('Delete Item')).not.toBeInTheDocument();
     });
 
     it('should call onConfirm when delete button is clicked', () => {
       const onConfirm = vi.fn();
-      render(
-        <DeleteConfirmationModal
-          {...defaultProps}
-          onConfirm={onConfirm}
-        />
-      );
+      render(<ConfirmationModal {...defaultProps} onConfirm={onConfirm} />);
 
       fireEvent.click(screen.getByText('Delete'));
       expect(onConfirm).toHaveBeenCalledTimes(1);
@@ -156,24 +143,14 @@ describe('UI Components', () => {
 
     it('should call onClose when cancel button is clicked', () => {
       const onClose = vi.fn();
-      render(
-        <DeleteConfirmationModal
-          {...defaultProps}
-          onClose={onClose}
-        />
-      );
+      render(<ConfirmationModal {...defaultProps} onClose={onClose} />);
 
       fireEvent.click(screen.getByText('Cancel'));
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should show loading state when isLoading is true', () => {
-      render(
-        <DeleteConfirmationModal
-          {...defaultProps}
-          isLoading={true}
-        />
-      );
+      render(<ConfirmationModal {...defaultProps} isLoading={true} />);
       expect(screen.getByText('Delete')).toBeDisabled();
       expect(screen.getByText('Cancel')).toBeDisabled();
     });
