@@ -23,7 +23,11 @@ const Badge: React.FC<BadgeProps> = ({
     lg: 'px-3 py-1 text-sm',
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  // If custom className is provided, don't apply variant colors
+  const shouldUseVariant = !className || className.trim() === '';
+  const variantClass = shouldUseVariant ? variantClasses[variant] : '';
+
+  const classes = `${baseClasses} ${variantClass} ${sizeClasses[size]} ${className}`;
 
   return <span className={classes}>{children}</span>;
 };

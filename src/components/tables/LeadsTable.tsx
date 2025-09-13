@@ -126,7 +126,7 @@ const LeadsTable: React.FC<LeadsTableProps> = memo(
         sortable: true,
         width: '150px',
         render: value => (
-          <Badge variant='default' className={getStatusColor(value as string)}>
+          <Badge className={getStatusColor(value as string)}>
             {(value as string).toUpperCase()}
           </Badge>
         ),

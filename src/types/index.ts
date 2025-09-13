@@ -390,6 +390,13 @@ interface TabConfig {
   iconColor: string;
 }
 
+export interface FilterChartProps {
+  filterOptions: FilterOption[];
+  title: string;
+  type: 'lead' | 'opportunity';
+  onSegmentClick?: (value: string) => void;
+}
+
 export interface MobileHeaderProps {
   activeTab: string;
   tabs: TabConfig[];

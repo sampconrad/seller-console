@@ -127,6 +127,74 @@ export const formatDateTime = (date: Date | string): string => {
   }).format(dateObj);
 };
 
+const SCORE_COLORS = {
+  high: 'text-green-600', // >= 80
+  medium: 'text-yellow-600', // >= 60
+  low: 'text-orange-600', // >= 40
+  veryLow: 'text-red-600', // < 40
+};
+
+const INACTIVE_COLORS = {
+  button: 'text-gray-700 hover:bg-gray-50 border border-transparent',
+  count: 'bg-gray-100 text-gray-600',
+};
+
+const COLOR_PALETTE = {
+  blue: {
+    badge: 'bg-blue-100 text-blue-800',
+    button: 'bg-blue-50 text-blue-700 border border-blue-200',
+    count: 'bg-blue-100 text-blue-600',
+  },
+  yellow: {
+    badge: 'bg-yellow-100 text-yellow-800',
+    button: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
+    count: 'bg-yellow-100 text-yellow-600',
+  },
+  green: {
+    badge: 'bg-green-100 text-green-800',
+    button: 'bg-green-50 text-green-700 border border-green-200',
+    count: 'bg-green-100 text-green-600',
+  },
+  red: {
+    badge: 'bg-red-100 text-red-800',
+    button: 'bg-red-50 text-red-700 border border-red-200',
+    count: 'bg-red-100 text-red-600',
+  },
+  purple: {
+    badge: 'bg-purple-100 text-purple-800',
+    button: 'bg-purple-50 text-purple-700 border border-purple-200',
+    count: 'bg-purple-100 text-purple-600',
+  },
+  orange: {
+    badge: 'bg-orange-100 text-orange-800',
+    button: 'bg-orange-50 text-orange-700 border border-orange-200',
+    count: 'bg-orange-100 text-orange-600',
+  },
+  gray: {
+    badge: 'bg-gray-100 text-gray-800',
+    button: 'bg-gray-50 text-gray-700 border border-gray-200',
+    count: 'bg-gray-100 text-gray-600',
+  },
+};
+
+// Status and stage mappings to colors
+const STATUS_MAPPING = {
+  new: 'blue',
+  contacted: 'yellow',
+  qualified: 'green',
+  unqualified: 'red',
+  converted: 'purple',
+} as const;
+
+const STAGE_MAPPING = {
+  prospecting: 'blue',
+  qualification: 'yellow',
+  proposal: 'orange',
+  negotiation: 'purple',
+  closed_won: 'green',
+  closed_lost: 'red',
+} as const;
+
 /**
  * Get status badge color class
  */
@@ -145,94 +213,76 @@ export const getStageColor = (stage: string): string => {
   );
 };
 
-// Pre-defined color objects to avoid creating new objects on every call
-const INACTIVE_COLORS = {
-  button: 'text-gray-700 hover:bg-gray-50 border border-transparent',
-  count: 'bg-gray-100 text-gray-600',
+// Hex color values for charts (matching the badge colors)
+const CHART_COLOR_PALETTE = {
+  blue: '#3B82F6', // blue-500
+  yellow: '#EAB308', // yellow-500
+  green: '#22C55E', // green-500
+  red: '#EF4444', // red-500
+  purple: '#8B5CF6', // violet-500
+  orange: '#F97316', // orange-500
+  gray: '#6B7280', // gray-500
 };
 
-const STATUS_COLORS = {
-  new: 'bg-blue-100 text-blue-800',
-  contacted: 'bg-yellow-100 text-yellow-800',
-  qualified: 'bg-green-100 text-green-800',
-  unqualified: 'bg-red-100 text-red-800',
-  converted: 'bg-purple-100 text-purple-800',
-  default: 'bg-gray-100 text-gray-800',
+/**
+ * Get chart color for a status
+ */
+export const getStatusChartColor = (status: string): string => {
+  const colorKey = STATUS_MAPPING[status as keyof typeof STATUS_MAPPING];
+  return colorKey ? CHART_COLOR_PALETTE[colorKey] : CHART_COLOR_PALETTE.gray;
 };
 
-const STAGE_COLORS = {
-  prospecting: 'bg-blue-100 text-blue-800',
-  qualification: 'bg-yellow-100 text-yellow-800',
-  proposal: 'bg-orange-100 text-orange-800',
-  negotiation: 'bg-purple-100 text-purple-800',
-  closed_won: 'bg-green-100 text-green-800',
-  closed_lost: 'bg-red-100 text-red-800',
-  default: 'bg-gray-100 text-gray-800',
+/**
+ * Get chart color for a stage
+ */
+export const getStageChartColor = (stage: string): string => {
+  const colorKey = STAGE_MAPPING[stage as keyof typeof STAGE_MAPPING];
+  return colorKey ? CHART_COLOR_PALETTE[colorKey] : CHART_COLOR_PALETTE.gray;
 };
 
-const SCORE_COLORS = {
-  high: 'text-green-600', // >= 80
-  medium: 'text-yellow-600', // >= 60
-  low: 'text-orange-600', // >= 40
-  veryLow: 'text-red-600', // < 40
+// Generate color objects from mappings
+const STATUS_COLORS = Object.fromEntries(
+  Object.entries(STATUS_MAPPING).map(([key, color]) => [
+    key,
+    COLOR_PALETTE[color].badge,
+  ])
+);
+STATUS_COLORS.default = COLOR_PALETTE.gray.badge;
+
+const STAGE_COLORS = Object.fromEntries(
+  Object.entries(STAGE_MAPPING).map(([key, color]) => [
+    key,
+    COLOR_PALETTE[color].badge,
+  ])
+);
+STAGE_COLORS.default = COLOR_PALETTE.gray.badge;
+
+const LEAD_COLORS = Object.fromEntries(
+  Object.entries(STATUS_MAPPING).map(([key, color]) => [
+    key,
+    {
+      button: COLOR_PALETTE[color].button,
+      count: COLOR_PALETTE[color].count,
+    },
+  ])
+);
+LEAD_COLORS.all = {
+  button: COLOR_PALETTE.gray.button,
+  count: COLOR_PALETTE.gray.count,
 };
 
-const LEAD_COLORS = {
-  new: {
-    button: 'bg-gray-50 text-gray-700 border border-gray-200',
-    count: 'bg-gray-100 text-gray-600',
-  },
-  contacted: {
-    button: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
-    count: 'bg-yellow-100 text-yellow-600',
-  },
-  qualified: {
-    button: 'bg-green-50 text-green-700 border border-green-200',
-    count: 'bg-green-100 text-green-600',
-  },
-  unqualified: {
-    button: 'bg-red-50 text-red-700 border border-red-200',
-    count: 'bg-red-100 text-red-600',
-  },
-  converted: {
-    button: 'bg-purple-50 text-purple-700 border border-purple-200',
-    count: 'bg-purple-100 text-purple-600',
-  },
-  all: {
-    button: 'bg-blue-50 text-blue-700 border border-blue-200',
-    count: 'bg-blue-100 text-blue-600',
-  },
-};
-
-const OPPORTUNITY_COLORS = {
-  prospecting: {
-    button: 'bg-gray-50 text-gray-700 border border-gray-200',
-    count: 'bg-gray-100 text-gray-600',
-  },
-  qualification: {
-    button: 'bg-yellow-50 text-yellow-700 border border-yellow-200',
-    count: 'bg-yellow-100 text-yellow-600',
-  },
-  proposal: {
-    button: 'bg-orange-50 text-orange-700 border border-orange-200',
-    count: 'bg-orange-100 text-orange-600',
-  },
-  negotiation: {
-    button: 'bg-purple-50 text-purple-700 border border-purple-200',
-    count: 'bg-purple-100 text-purple-600',
-  },
-  closed_won: {
-    button: 'bg-green-50 text-green-700 border border-green-200',
-    count: 'bg-green-100 text-green-600',
-  },
-  closed_lost: {
-    button: 'bg-red-50 text-red-700 border border-red-200',
-    count: 'bg-red-100 text-red-600',
-  },
-  all: {
-    button: 'bg-blue-50 text-blue-700 border border-blue-200',
-    count: 'bg-blue-100 text-blue-600',
-  },
+const OPPORTUNITY_COLORS = Object.fromEntries(
+  Object.entries(STAGE_MAPPING).map(([key, color]) => [
+    key,
+    {
+      button: COLOR_PALETTE[color].button,
+      count: COLOR_PALETTE[color].count,
+    },
+  ])
+);
+OPPORTUNITY_COLORS.all = {
+  button: COLOR_PALETTE.gray.button,
+  count: COLOR_PALETTE.gray.count,
 };
 
 /**

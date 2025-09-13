@@ -24,6 +24,11 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 - **Amount Tracking**: Optional monetary value tracking
 - **Note**: Opportunities cannot be imported/exported - only leads support file operations
 
+### Data Visualization
+
+- **Interactive Charts**: Doughnut charts in sidebar showing distribution of leads/opportunities by status/stage
+- **Real-time Updates**: Charts automatically update when data changes
+
 ## 📱 Responsive Design
 
 The application is built with a mobile-first approach:
@@ -50,6 +55,7 @@ src/
 │   │   ├── Badge.tsx                  # Status/stage badge component
 │   │   ├── Button.tsx                 # Button component with variants
 │   │   ├── Filter.tsx                 # Reusable quick filter component
+│   │   ├── FilterChart.tsx            # Interactive doughnut chart for data visualization
 │   │   ├── Footer.tsx                 # Application footer component
 │   │   ├── Input.tsx                  # Form input component
 │   │   ├── MobileHeader.tsx           # Generic mobile header with tab switching
@@ -123,9 +129,9 @@ src/
 2. **Custom Hooks for Logic**: Business logic separated from UI components using custom hooks
 3. **Service Layer with Dependency Injection**: Clean separation between UI and data operations using ServiceContainer pattern
 4. **Component Composition**: Modular components with reusable UI primitives
-6. **Accessibility-First**: Focus management, keyboard navigation, and ARIA attributes throughout
-7. **Optimistic Updates**: Immediate UI feedback with rollback on failure
-8. **TypeScript Throughout**: Full type safety across the entire application
+5. **Accessibility-First**: Focus management, keyboard navigation, and ARIA attributes throughout
+6. **Optimistic Updates**: Immediate UI feedback with rollback on failure
+7. **TypeScript Throughout**: Full type safety across the entire application
 
 ## 🛠️ Tech Stack
 
@@ -136,10 +142,11 @@ src/
 - **Vitest** - Fast unit testing framework
 - **React Testing Library** - React component testing utilities
 - **Lucide React** - Icon library
+- **Chart.js** - Charting library for data visualization
 - **ESLint** - Code linting and best practices
 - **Prettier** - Code formatting
 
-## 🛠️ Setup Instructions
+## 🚀 Setup Instructions
 
 ### Prerequisites
 
