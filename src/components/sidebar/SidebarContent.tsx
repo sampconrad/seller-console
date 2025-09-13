@@ -17,6 +17,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
   onNewLead,
   onImportClick,
   onExportClick,
+  onGenerateReport,
   onMobileClose,
 }) => {
   const handleNewLead = () => {
@@ -31,6 +32,11 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
 
   const handleExportClick = () => {
     onExportClick();
+    onMobileClose?.();
+  };
+
+  const handleGenerateReport = () => {
+    onGenerateReport?.();
     onMobileClose?.();
   };
 
@@ -59,6 +65,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
           onNewLead={handleNewLead}
           onImportClick={handleImportClick}
           onExportClick={handleExportClick}
+          onGenerateReport={handleGenerateReport}
         />
       </div>
 

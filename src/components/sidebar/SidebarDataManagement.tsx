@@ -1,15 +1,33 @@
 import Button from '@/components/ui/Button';
 import { SidebarDataManagementProps } from '@/types';
-import { Download, Plus, Upload } from 'lucide-react';
-import React from 'react';
+import { Download, FileText, Plus, Upload } from 'lucide-react';
+import React, { useState } from 'react';
 
 const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
   activeTab,
   onNewLead,
   onImportClick,
   onExportClick,
+  onGenerateReport,
   className = '',
 }) => {
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+
+  const handleGenerateReport = async () => {
+    if (!onGenerateReport || isGeneratingReport) return;
+
+    setIsGeneratingReport(true);
+
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      onGenerateReport();
+    } catch (error) {
+      console.error('Error generating report:', error);
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
   return (
     <div className={`space-y-4 ${className}`}>
       <h2 className='text-sm font-medium text-gray-500 uppercase tracking-wide'>
@@ -18,6 +36,19 @@ const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
 
       {activeTab === 'leads' ? (
         <div className='space-y-2'>
+          {onGenerateReport && (
+            <Button
+              variant='primary'
+              size='sm'
+              onClick={handleGenerateReport}
+              loading={isGeneratingReport}
+              disabled={isGeneratingReport}
+              className='w-full flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white'
+            >
+              {!isGeneratingReport && <FileText className='w-4 h-4 mr-2' />}
+              {isGeneratingReport ? 'Generating' : 'Generate Report'}
+            </Button>
+          )}
           <Button
             variant='primary'
             size='sm'
@@ -49,7 +80,7 @@ const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
       ) : (
         <div className='space-y-2'>
           <div className='text-sm text-gray-500 text-center py-4'>
-            Import/Export not available for opportunities.
+            Not available for opportunities.
           </div>
         </div>
       )}

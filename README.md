@@ -31,6 +31,10 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 - **Interactive Charts**: Doughnut charts in sidebar showing distribution of leads/opportunities by status/stage
 - **Real-time Updates**: Charts automatically update when data changes
 
+### Report Generation
+
+- **PDF Reports**: Generate comprehensive PDF reports with charts and detailed data tables
+
 ## 📱 Responsive Design
 
 The application is built with a mobile-first approach:
@@ -105,6 +109,7 @@ src/
 ├── services/                          # Business logic layer
 │   ├── api.ts                         # Mock API with latency simulation
 │   ├── fileService.ts                 # File import/export functionality (leads only)
+│   ├── pdfService.ts                  # PDF report generation with charts and tables
 │   ├── ServiceContainer.ts            # Dependency injection container
 │   └── storage.ts                     # Local storage management
 ├── utils/                             # Utility functions
@@ -145,6 +150,7 @@ src/
 - **React Testing Library** - React component testing utilities
 - **Lucide React** - Icon library
 - **Chart.js** - Charting library for data visualization
+- **jsPDF** - PDF generation library for creating reports
 - **ESLint** - Code linting and best practices
 - **Prettier** - Code formatting
 

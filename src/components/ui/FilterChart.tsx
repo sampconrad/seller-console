@@ -61,7 +61,7 @@ const FilterChart: React.FC<FilterChartProps> = ({
     },
     plugins: {
       legend: {
-        position: 'bottom' as const,
+        position: 'right' as const,
         labels: {
           usePointStyle: true,
           padding: 8,
@@ -74,14 +74,13 @@ const FilterChart: React.FC<FilterChartProps> = ({
       tooltip: {
         callbacks: {
           label: function (context) {
-            const label = context.label || '';
             const value = context.parsed;
             const total = context.dataset.data.reduce(
               (a: number, b: number) => a + b,
               0
             );
             const percentage = ((value / total) * 100).toFixed(1);
-            return `${label}: ${value} (${percentage}%)`;
+            return `${value} (${percentage}%)`;
           },
         },
       },
@@ -123,7 +122,7 @@ const FilterChart: React.FC<FilterChartProps> = ({
         <Doughnut data={data} options={chartOptions} />
       </div>
       <div className='mt-2 text-center text-xs text-gray-500'>
-        Total: {totalCount} items
+        <span className='font-bold'>Total:</span> {totalCount} items
       </div>
     </div>
   );

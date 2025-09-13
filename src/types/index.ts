@@ -186,6 +186,7 @@ export interface SidebarDataManagementProps {
   onNewLead: () => void;
   onImportClick: () => void;
   onExportClick: () => void;
+  onGenerateReport?: () => void;
   className?: string;
 }
 
@@ -260,6 +261,7 @@ export interface SidebarProps {
   onImportLeads: (format: 'json' | 'csv') => void;
   onExportLeads: (format: 'json' | 'csv') => void;
   onNewLead: () => void;
+  onGenerateReport?: () => void;
 }
 
 export interface ConfirmationModalProps {
@@ -350,6 +352,7 @@ export interface SidebarContentProps {
   onNewLead: () => void;
   onImportClick: () => void;
   onExportClick: () => void;
+  onGenerateReport?: () => void;
   onMobileClose?: () => void;
 }
 
@@ -428,6 +431,18 @@ export interface ServiceContainer {
   apiService: typeof apiService;
   fileService: typeof fileService;
   storageService: typeof storageService;
+}
+
+export interface ReportData {
+  leads: Lead[];
+  opportunities: Opportunity[];
+  leadStatusOptions: Array<{ value: string; label: string; count: number }>;
+  opportunityStageOptions: Array<{
+    value: string;
+    label: string;
+    count: number;
+  }>;
+  generatedAt: Date;
 }
 
 // Hook return types

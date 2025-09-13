@@ -132,7 +132,7 @@ const OpportunitiesTable: React.FC = memo(() => {
   const columns: TableColumn<Opportunity>[] = [
     {
       key: 'name',
-      label: 'Opportunity',
+      label: 'Name',
       sortable: true,
       width: '200px',
       render: (value, opportunity) => (
@@ -143,17 +143,6 @@ const OpportunitiesTable: React.FC = memo(() => {
             #{opportunity.id}
           </div>
         </div>
-      ),
-    },
-    {
-      key: 'stage',
-      label: 'Stage',
-      sortable: true,
-      width: '200px',
-      render: value => (
-        <Badge className={getStageColor(value as string)}>
-          {formatStage(value as string).toUpperCase()}
-        </Badge>
       ),
     },
     {
@@ -170,6 +159,17 @@ const OpportunitiesTable: React.FC = memo(() => {
             {value ? formatNumber(value as number) : 'Not specified'}
           </span>
         </div>
+      ),
+    },
+    {
+      key: 'stage',
+      label: 'Stage',
+      sortable: true,
+      width: '200px',
+      render: value => (
+        <Badge className={getStageColor(value as string)}>
+          {formatStage(value as string).toUpperCase()}
+        </Badge>
       ),
     },
     {

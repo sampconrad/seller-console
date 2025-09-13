@@ -9,15 +9,19 @@ import Sidebar from '@/components/sidebar/Sidebar';
 import LeadsTable from '@/components/tables/LeadsTable';
 import OpportunitiesTable from '@/components/tables/OpportunitiesTable';
 import Toast from '@/components/ui/Toast';
-import { AppProvider } from '@/context/AppContext';
+import { AppProvider, useApp } from '@/context/AppContext';
 import { NotificationProvider } from '@/context/NotificationContext';
+import { useFilterOptions } from '@/hooks/useFilterOptions';
 import { useLeads } from '@/hooks/useLeads';
+import { PDFService } from '@/services/pdfService';
 import { ServiceProvider } from '@/services/ServiceContainer';
 import { Lead } from '@/types';
 import React, { useRef, useState } from 'react';
 
 const AppContent: React.FC = () => {
   const { importLeads, exportLeads } = useLeads();
+  const { leadStatusOptions, opportunityStageOptions } = useFilterOptions();
+  const { state } = useApp();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isDetailPanelOpen, setIsDetailPanelOpen] = useState(false);
   const [isConversionModalOpen, setIsConversionModalOpen] = useState(false);
@@ -75,6 +79,22 @@ const AppContent: React.FC = () => {
     }
   };
 
+  const handleGenerateReport = async () => {
+    try {
+      const reportData = {
+        leads: state.leads,
+        opportunities: state.opportunities,
+        leadStatusOptions,
+        opportunityStageOptions,
+        generatedAt: new Date(),
+      };
+
+      await PDFService.generateReport(reportData);
+    } catch (error) {
+      console.error('Failed to generate PDF report:', error);
+    }
+  };
+
   return (
     <div className='h-screen bg-gray-50 flex flex-col lg:flex-row overflow-hidden'>
       <Sidebar
@@ -83,6 +103,7 @@ const AppContent: React.FC = () => {
         onImportLeads={handleImportClick}
         onExportLeads={handleExportClick}
         onNewLead={handleNewLead}
+        onGenerateReport={handleGenerateReport}
       />
 
       {/* Main Content Area */}

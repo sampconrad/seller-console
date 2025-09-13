@@ -14,6 +14,7 @@ export const useSidebar = ({
   onImportLeads,
   onExportLeads,
   onNewLead,
+  onGenerateReport,
 }: SidebarProps) => {
   const { filters: leadFilters, updateFilters: updateLeadFilters } = useLeads();
   const {
@@ -53,6 +54,7 @@ export const useSidebar = ({
       onNewLead,
       onImportClick: handleImportClick,
       onExportClick: handleExportClick,
+      onGenerateReport,
     }),
     [
       activeTab,
@@ -66,6 +68,7 @@ export const useSidebar = ({
       handleOpportunityFilter,
       handleImportClick,
       handleExportClick,
+      onGenerateReport,
     ]
   );
 
