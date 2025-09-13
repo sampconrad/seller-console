@@ -13,7 +13,6 @@ import { AppProvider, useApp } from '@/context/AppContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import { useFilterOptions } from '@/hooks/useFilterOptions';
 import { useLeads } from '@/hooks/useLeads';
-import { PDFService } from '@/services/pdfService';
 import { ServiceProvider } from '@/services/ServiceContainer';
 import { Lead } from '@/types';
 import React, { useRef, useState } from 'react';
@@ -81,6 +80,8 @@ const AppContent: React.FC = () => {
 
   const handleGenerateReport = async () => {
     try {
+      const { PDFService } = await import('@/services/pdfService'); // Lazy loading PDF service to reduce initial bundle size
+
       const reportData = {
         leads: state.leads,
         opportunities: state.opportunities,

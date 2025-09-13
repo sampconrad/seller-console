@@ -38,7 +38,7 @@ const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
         <div className='space-y-2'>
           {onGenerateReport && (
             <Button
-              variant='primary'
+              variant='secondary'
               size='sm'
               onClick={handleGenerateReport}
               loading={isGeneratingReport}
