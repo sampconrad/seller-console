@@ -2,8 +2,9 @@
  * Slide-over panel for opportunity details with inline editing
  */
 
+import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useOpportunities } from '@/hooks/useOpportunities';
-import type { Opportunity } from '@/types';
+import type { Opportunity, OpportunityDetailPanelProps } from '@/types';
 import { OpportunityStage } from '@/types';
 import {
   formatDateTime,
@@ -30,12 +31,6 @@ import Badge from './ui/Badge';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import Select from './ui/Select';
-
-interface OpportunityDetailPanelProps {
-  opportunity: Opportunity | null;
-  isOpen: boolean;
-  onClose: () => void;
-}
 
 const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
   opportunity,
@@ -127,6 +122,23 @@ const OpportunityDetailPanel: React.FC<OpportunityDetailPanelProps> = ({
       };
     }
   }, [isDragging, handleDragMove, handleDragEnd]);
+
+  // Keyboard navigation for detail panel
+  useKeyboardNavigation({
+    onEscape: () => {
+      if (isEditing) {
+        handleCancel();
+      } else {
+        onClose();
+      }
+    },
+    onEnter: () => {
+      if (isEditing && !isSaving) {
+        handleSave();
+      }
+    },
+    enabled: isOpen,
+  });
 
   const handleEdit = () => {
     setIsEditing(true);

@@ -1,25 +1,8 @@
-/**
- * Reusable quick filter button component
- */
-
-import { getQuickFilterColors } from '@/utils/dataTransform';
+import { FilterProps } from '@/types';
+import { getFilterColors } from '@/utils/dataTransform';
 import React, { memo, useCallback } from 'react';
 
-interface QuickFilterOption {
-  value: string;
-  label: string;
-  count: number;
-}
-
-interface QuickFilterProps {
-  options: QuickFilterOption[];
-  activeValue: string;
-  onFilterChange: (value: string) => void;
-  type: 'lead' | 'opportunity';
-  className?: string;
-}
-
-const QuickFilter: React.FC<QuickFilterProps> = memo(
+const Filter: React.FC<FilterProps> = memo(
   ({ options, activeValue, onFilterChange, type, className = '' }) => {
     const handleFilterChange = useCallback(
       (value: string) => {
@@ -32,7 +15,7 @@ const QuickFilter: React.FC<QuickFilterProps> = memo(
       <div className={`space-y-2 ${className}`}>
         {options.map((option) => {
           const isActive = activeValue === option.value;
-          const colors = getQuickFilterColors(type, option.value, isActive);
+          const colors = getFilterColors(type, option.value, isActive);
 
           return (
             <button
@@ -51,6 +34,6 @@ const QuickFilter: React.FC<QuickFilterProps> = memo(
   }
 );
 
-QuickFilter.displayName = 'QuickFilter';
+Filter.displayName = 'Filter';
 
-export default QuickFilter;
+export default Filter;

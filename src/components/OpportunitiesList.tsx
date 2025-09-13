@@ -13,15 +13,15 @@ import {
   sortOpportunities,
 } from '@/utils/dataTransform';
 import { Calendar, DollarSign, TrendingUp } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import OpportunityDetailPanel from './OpportunityDetailPanel';
 import Pagination from './Pagination';
+import Searchbox from './Searchbox';
 import Badge from './ui/Badge';
 import Table from './ui/Table';
-import Searchbox from './Searchbox';
 
-const OpportunitiesList: React.FC = () => {
+const OpportunitiesList: React.FC = memo(() => {
   const {
     opportunities,
     loading,
@@ -234,6 +234,8 @@ const OpportunitiesList: React.FC = () => {
       />
     </div>
   );
-};
+});
+
+OpportunitiesList.displayName = 'OpportunitiesList';
 
 export default OpportunitiesList;

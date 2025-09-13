@@ -1,20 +1,9 @@
-/**
- * Reusable data management section component
- */
-
-import { Download, Import, Plus } from 'lucide-react';
+import { SidebarDataManagementProps } from '@/types';
+import { Download, Upload, Plus } from 'lucide-react';
 import React from 'react';
 import Button from './Button';
 
-interface DataManagementSectionProps {
-  activeTab: 'leads' | 'opportunities';
-  onNewLead: () => void;
-  onImportClick: () => void;
-  onExportClick: () => void;
-  className?: string;
-}
-
-const DataManagementSection: React.FC<DataManagementSectionProps> = ({
+const SidebarDataManagement: React.FC<SidebarDataManagementProps> = ({
   activeTab,
   onNewLead,
   onImportClick,
@@ -40,7 +29,7 @@ const DataManagementSection: React.FC<DataManagementSectionProps> = ({
             size='sm'
             onClick={onImportClick}
             className='w-full flex items-center justify-center space-x-2'>
-            <Import className='w-4 h-4' />
+            <Download className='w-4 h-4' />
             <span>Import</span>
           </Button>
           <Button
@@ -48,7 +37,7 @@ const DataManagementSection: React.FC<DataManagementSectionProps> = ({
             size='sm'
             onClick={onExportClick}
             className='w-full flex items-center justify-center space-x-2'>
-            <Download className='w-4 h-4' />
+            <Upload className='w-4 h-4' />
             <span>Export</span>
           </Button>
         </div>
@@ -63,4 +52,4 @@ const DataManagementSection: React.FC<DataManagementSectionProps> = ({
   );
 };
 
-export default DataManagementSection;
+export default SidebarDataManagement;

@@ -11,6 +11,10 @@ const Button: React.FC<ButtonProps> = ({
   children,
   type = 'button',
   className = '',
+  'aria-label': ariaLabel,
+  'aria-describedby': ariaDescribedBy,
+  'aria-expanded': ariaExpanded,
+  'aria-pressed': ariaPressed,
   ...props
 }) => {
   const baseClasses =
@@ -38,8 +42,17 @@ const Button: React.FC<ButtonProps> = ({
       className={classes}
       disabled={disabled || loading}
       onClick={onClick}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedBy}
+      aria-expanded={ariaExpanded}
+      aria-pressed={ariaPressed}
       {...props}>
-      {loading && <Loader2 className='w-4 h-4 mr-2 animate-spin' />}
+      {loading && (
+        <Loader2
+          className='w-4 h-4 mr-2 animate-spin'
+          aria-hidden='true'
+        />
+      )}
       {children}
     </button>
   );

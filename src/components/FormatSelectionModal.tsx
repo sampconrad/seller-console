@@ -6,14 +6,7 @@ import { FileText, Table } from 'lucide-react';
 import React from 'react';
 import Button from './ui/Button';
 import Modal from './ui/Modal';
-
-interface FormatSelectionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onFormatSelect: (format: 'json' | 'csv') => void;
-  title: string;
-  description: string;
-}
+import { FormatSelectionModalProps } from '@/types';
 
 const FormatSelectionModal: React.FC<FormatSelectionModalProps> = ({
   isOpen,

@@ -4,13 +4,14 @@
 
 import { useApp } from '@/context/AppContext';
 import { useNotifications } from '@/context/NotificationContext';
-import { apiService } from '@/services/api';
+import { useServices } from '@/services/ServiceContainer';
 import type { Opportunity, OpportunityFilters } from '@/types';
 import { useCallback } from 'react';
 
 export const useOpportunities = () => {
   const { state, dispatch } = useApp();
   const { addNotification } = useNotifications();
+  const { apiService } = useServices();
 
   // Update filters (saves to localStorage)
   const updateFilters = useCallback(
@@ -64,7 +65,7 @@ export const useOpportunities = () => {
         });
       }
     },
-    [state.opportunities, dispatch, addNotification]
+    [state.opportunities, dispatch, addNotification, apiService]
   );
 
   // Delete opportunity
@@ -91,7 +92,7 @@ export const useOpportunities = () => {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     },
-    [dispatch, addNotification]
+    [dispatch, addNotification, apiService]
   );
 
   return {

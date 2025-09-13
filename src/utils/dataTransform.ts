@@ -227,7 +227,7 @@ const OPPORTUNITY_COLORS = {
 /**
  * Get quick filter button and count colors for leads and opportunities
  */
-export const getQuickFilterColors = (
+export const getFilterColors = (
   type: 'lead' | 'opportunity',
   value: string,
   isActive: boolean

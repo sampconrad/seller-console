@@ -4,22 +4,17 @@
 
 import { useDebounce } from '@/hooks/useDebounce';
 import { useLeads } from '@/hooks/useLeads';
-import type { Lead, TableColumn } from '@/types';
+import type { Lead, LeadsListProps, TableColumn } from '@/types';
 import { formatDate, formatSource, getScoreColor, getStatusColor } from '@/utils/dataTransform';
 import { Calendar, Users } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import LeadFormModal from './LeadFormModal';
 import Pagination from './Pagination';
+import Searchbox from './Searchbox';
 import Badge from './ui/Badge';
 import Table from './ui/Table';
-import Searchbox from './Searchbox';
 
-interface LeadsListProps {
-  onLeadSelect: (lead: Lead) => void;
-  onNewLeadRef?: React.MutableRefObject<(() => void) | null>;
-}
-
-const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onNewLeadRef }) => {
+const LeadsList: React.FC<LeadsListProps> = memo(({ onLeadSelect, onNewLeadRef }) => {
   const { leads, loading, filters, sortConfig, updateSearch, updateSort } = useLeads();
 
   const [searchValue, setSearchValue] = useState(filters.search);
@@ -199,6 +194,8 @@ const LeadsList: React.FC<LeadsListProps> = ({ onLeadSelect, onNewLeadRef }) => 
       />
     </div>
   );
-};
+});
+
+LeadsList.displayName = 'LeadsList';
 
 export default LeadsList;

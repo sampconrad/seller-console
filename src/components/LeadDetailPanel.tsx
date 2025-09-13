@@ -2,9 +2,10 @@
  * Slide-over panel for lead details with inline editing
  */
 
+import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useLeads } from '@/hooks/useLeads';
 import type { Lead } from '@/types';
-import { LeadStatus } from '@/types';
+import { LeadDetailPanelProps, LeadStatus } from '@/types';
 import { formatDateTime, formatSource, getScoreColor, getStatusColor } from '@/utils/dataTransform';
 import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
 import {
@@ -26,13 +27,6 @@ import Button from './ui/Button';
 import Input from './ui/Input';
 import ScoreDial from './ui/ScoreDial';
 import Select from './ui/Select';
-
-interface LeadDetailPanelProps {
-  lead: Lead | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onConvert: (lead: Lead) => void;
-}
 
 const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose, onConvert }) => {
   const { updateLead, deleteLead } = useLeads();
@@ -118,6 +112,23 @@ const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({ lead, isOpen, onClose
       };
     }
   }, [isDragging, handleDragMove, handleDragEnd]);
+
+  // Keyboard navigation for detail panel
+  useKeyboardNavigation({
+    onEscape: () => {
+      if (isEditing) {
+        handleCancel();
+      } else {
+        onClose();
+      }
+    },
+    onEnter: () => {
+      if (isEditing && !isSaving) {
+        handleSave();
+      }
+    },
+    enabled: isOpen,
+  });
 
   const handleEdit = () => {
     setIsEditing(true);

@@ -5,14 +5,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import Button from './ui/Button';
-
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  onPreviousPage: () => void;
-  onNextPage: () => void;
-}
+import { PaginationProps } from '@/types';
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,

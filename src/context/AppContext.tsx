@@ -1,5 +1,4 @@
-import { apiService } from '@/services/api';
-import { storageService } from '@/services/storage';
+import { useServices } from '@/services/ServiceContainer';
 import type {
   AppState,
   Lead,
@@ -73,15 +72,15 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case 'SET_SELECTED_LEAD':
       return { ...state, selectedLead: action.payload };
 
-    case 'UPDATE_FILTERS':
+    case 'UPDATE_FILTERS': {
       const newFilters = { ...state.filters, ...action.payload };
-      storageService.setFilters(newFilters);
       return { ...state, filters: newFilters };
+    }
 
-    case 'UPDATE_OPPORTUNITY_FILTERS':
+    case 'UPDATE_OPPORTUNITY_FILTERS': {
       const newOpportunityFilters = { ...state.opportunityFilters, ...action.payload };
-      storageService.setOpportunityFilters(newOpportunityFilters);
       return { ...state, opportunityFilters: newOpportunityFilters };
+    }
 
     case 'UPDATE_SEARCH':
       return {
@@ -96,11 +95,9 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       };
 
     case 'UPDATE_SORT':
-      storageService.setSortConfig(action.payload);
       return { ...state, sortConfig: action.payload };
 
     case 'UPDATE_OPPORTUNITY_SORT':
-      storageService.setOpportunitySortConfig(action.payload);
       return { ...state, opportunitySortConfig: action.payload };
 
     case 'ADD_NOTIFICATION':
@@ -109,29 +106,29 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case 'REMOVE_NOTIFICATION':
       return { ...state };
 
-    case 'UPDATE_LEAD':
+    case 'UPDATE_LEAD': {
       const updatedLeads = state.leads.map((lead) =>
         lead.id === action.payload.id ? action.payload : lead
       );
-      storageService.setLeads(updatedLeads);
       return { ...state, leads: updatedLeads };
+    }
 
-    case 'ADD_OPPORTUNITY':
+    case 'ADD_OPPORTUNITY': {
       const newOpportunities = [...state.opportunities, action.payload];
-      storageService.setOpportunities(newOpportunities);
       return { ...state, opportunities: newOpportunities };
+    }
 
-    case 'UPDATE_OPPORTUNITY':
+    case 'UPDATE_OPPORTUNITY': {
       const updatedOpportunities = state.opportunities.map((opp) =>
         opp.id === action.payload.id ? action.payload : opp
       );
-      storageService.setOpportunities(updatedOpportunities);
       return { ...state, opportunities: updatedOpportunities };
+    }
 
-    case 'DELETE_OPPORTUNITY':
+    case 'DELETE_OPPORTUNITY': {
       const filteredOpportunities = state.opportunities.filter((opp) => opp.id !== action.payload);
-      storageService.setOpportunities(filteredOpportunities);
       return { ...state, opportunities: filteredOpportunities };
+    }
 
     default:
       return state;
@@ -146,6 +143,7 @@ const AppContext = createContext<{
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const [isInitialized, setIsInitialized] = useState(false);
+  const { apiService, storageService } = useServices();
 
   // Load initial data from localStorage
   useEffect(() => {
@@ -206,7 +204,38 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     loadInitialData();
-  }, [isInitialized]);
+  }, [isInitialized, apiService, storageService]);
+
+  // Sync state changes to storage
+  useEffect(() => {
+    if (!isInitialized) return;
+    storageService.setFilters(state.filters);
+  }, [state.filters, isInitialized, storageService]);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    storageService.setOpportunityFilters(state.opportunityFilters);
+  }, [state.opportunityFilters, isInitialized, storageService]);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    storageService.setSortConfig(state.sortConfig);
+  }, [state.sortConfig, isInitialized, storageService]);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    storageService.setOpportunitySortConfig(state.opportunitySortConfig);
+  }, [state.opportunitySortConfig, isInitialized, storageService]);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    storageService.setLeads(state.leads);
+  }, [state.leads, isInitialized, storageService]);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    storageService.setOpportunities(state.opportunities);
+  }, [state.opportunities, isInitialized, storageService]);
 
   return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
 };

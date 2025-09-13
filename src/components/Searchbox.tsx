@@ -5,24 +5,7 @@
 import { Search, X } from 'lucide-react';
 import React from 'react';
 import Input from './ui/Input';
-
-export interface FilterOption {
-  value: string;
-  label: string;
-}
-
-export interface SearchboxProps {
-  searchValue: string;
-  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchClear?: () => void;
-  searchPlaceholder?: string;
-  totalItems: number;
-  itemLabel: string;
-  className?: string;
-  // Pagination data for "Showing X to Y of Z results"
-  currentPage?: number;
-  itemsPerPage?: number;
-}
+import { SearchboxProps } from '@/types';
 
 const Searchbox: React.FC<SearchboxProps> = ({
   searchValue,

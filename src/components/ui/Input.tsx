@@ -1,13 +1,5 @@
-import type { ReactNode } from 'react';
-import React, { forwardRef } from 'react';
-
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
-  helperText?: string;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
-}
+import { InputProps } from "@/types";
+import { forwardRef } from 'react';
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, helperText, leftIcon, rightIcon, className = '', ...props }, ref) => {

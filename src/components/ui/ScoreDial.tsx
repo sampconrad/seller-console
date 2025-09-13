@@ -1,15 +1,5 @@
+import { ScoreDialProps } from "@/types";
 import React from 'react';
-
-interface ScoreDialProps {
-  value: number;
-  onChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  label?: string;
-  error?: string;
-  disabled?: boolean;
-  className?: string;
-}
 
 const ScoreDial: React.FC<ScoreDialProps> = ({
   value,

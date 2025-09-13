@@ -2,8 +2,9 @@
  * Modal for converting leads to opportunities
  */
 
+import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useLeads } from '@/hooks/useLeads';
-import type { Lead, OpportunityFormData } from '@/types';
+import type { OpportunityFormData, OpportunityFormModalProps } from '@/types';
 import { OpportunityStage } from '@/types';
 import { handleAmountInputChange } from '@/utils/dataTransform';
 import { convertValidationErrorsToMap, validateOpportunity } from '@/utils/validation';
@@ -13,13 +14,6 @@ import Button from './ui/Button';
 import Input from './ui/Input';
 import Modal from './ui/Modal';
 import Select from './ui/Select';
-
-interface OpportunityFormModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: () => void;
-  lead: Lead | null;
-}
 
 const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
   isOpen,
@@ -113,6 +107,18 @@ const OpportunityFormModal: React.FC<OpportunityFormModalProps> = ({
     setErrors({});
     onClose();
   };
+
+  // Keyboard navigation for form
+  useKeyboardNavigation({
+    onEscape: handleCancel,
+    onEnter: () => {
+      // Submit form when Enter is pressed (but not in input fields)
+      if (!isSubmitting) {
+        handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+      }
+    },
+    enabled: isOpen,
+  });
 
   const stageOptions = [
     { value: OpportunityStage.PROSPECTING, label: 'Prospecting' },

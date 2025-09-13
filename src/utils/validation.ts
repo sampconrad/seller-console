@@ -23,11 +23,6 @@ export const validateAmount = (amount: number | undefined): boolean => {
   return amount >= 0 && Number.isFinite(amount);
 };
 
-export interface ValidationError {
-  field: string;
-  message: string;
-}
-
 export const validateLead = (lead: Partial<Lead>): ValidationError[] => {
   const errors: ValidationError[] = [];
 
@@ -85,4 +80,4 @@ export const convertValidationErrorsToMap = (errors: ValidationError[]): Record<
   return errorMap;
 };
 
-import type { Lead, Opportunity } from '@/types';
+import type { Lead, Opportunity, ValidationError } from '@/types';

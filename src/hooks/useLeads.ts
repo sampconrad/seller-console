@@ -4,9 +4,7 @@
 
 import { useApp } from '@/context/AppContext';
 import { useNotifications } from '@/context/NotificationContext';
-import { apiService } from '@/services/api';
-import { fileService } from '@/services/fileService';
-import { storageService } from '@/services/storage';
+import { useServices } from '@/services/ServiceContainer';
 import type { ExportOptions, ImportResult, Lead, LeadFilters, OpportunityFormData } from '@/types';
 import { filterLeads, sortLeads } from '@/utils/dataTransform';
 import { useCallback, useMemo } from 'react';
@@ -14,6 +12,7 @@ import { useCallback, useMemo } from 'react';
 export const useLeads = () => {
   const { state, dispatch } = useApp();
   const { addNotification } = useNotifications();
+  const { apiService, fileService, storageService } = useServices();
 
   // Compute filtered and sorted leads
   const leads = useMemo(() => {
@@ -73,7 +72,7 @@ export const useLeads = () => {
         });
       }
     },
-    [state.leads, dispatch, addNotification]
+    [state.leads, dispatch, addNotification, apiService]
   );
 
   // Convert lead to opportunity
@@ -105,7 +104,7 @@ export const useLeads = () => {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     },
-    [state.leads, dispatch, addNotification]
+    [dispatch, addNotification, apiService, storageService]
   );
 
   // Delete lead
@@ -133,7 +132,7 @@ export const useLeads = () => {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     },
-    [state.leads, dispatch, addNotification]
+    [state.leads, dispatch, addNotification, storageService]
   );
 
   // Import leads from file
@@ -180,7 +179,7 @@ export const useLeads = () => {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     },
-    [dispatch, addNotification]
+    [dispatch, addNotification, fileService, apiService, storageService]
   );
 
   // Export leads
@@ -207,7 +206,7 @@ export const useLeads = () => {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     },
-    [dispatch, addNotification]
+    [dispatch, addNotification, apiService, fileService]
   );
 
   // Create new lead
@@ -240,7 +239,7 @@ export const useLeads = () => {
         dispatch({ type: 'SET_LOADING', payload: false });
       }
     },
-    [dispatch, addNotification]
+    [dispatch, addNotification, apiService, storageService]
   );
 
   return {

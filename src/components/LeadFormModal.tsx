@@ -2,8 +2,9 @@
  * Modal for creating and editing leads
  */
 
+import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
 import { useLeads } from '@/hooks/useLeads';
-import type { Lead } from '@/types';
+import type { Lead, LeadFormModalProps } from '@/types';
 import { LeadStatus } from '@/types';
 import { convertValidationErrorsToMap, validateLead } from '@/utils/validation';
 import { X } from 'lucide-react';
@@ -13,13 +14,6 @@ import Input from './ui/Input';
 import Modal from './ui/Modal';
 import ScoreDial from './ui/ScoreDial';
 import Select from './ui/Select';
-
-interface LeadFormModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  lead?: Lead | null;
-  mode: 'create' | 'edit';
-}
 
 const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mode }) => {
   const { createLead, updateLead } = useLeads();
@@ -101,6 +95,18 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, lead, mo
     setErrors({});
     onClose();
   };
+
+  // Keyboard navigation for form
+  useKeyboardNavigation({
+    onEscape: handleCancel,
+    onEnter: () => {
+      // Submit form when Enter is pressed (but not in input fields)
+      if (!isSubmitting) {
+        handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+      }
+    },
+    enabled: isOpen,
+  });
 
   const statusOptions = [
     { value: LeadStatus.NEW, label: 'New' },

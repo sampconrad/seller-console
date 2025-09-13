@@ -35,57 +35,67 @@ A lightweight, modern seller console built with React, TypeScript, and Tailwind 
 ### Project Structure
 ```
 src/
-├── components/                    # UI components
-│   ├── ui/                       # Reusable UI primitives
-│   │   ├── Badge.tsx            # Status/stage badge component
-│   │   ├── Button.tsx           # Button component with variants
-│   │   ├── DataManagementSection.tsx  # Reusable data management UI
-│   │   ├── Footer.tsx           # Application footer component
-│   │   ├── Input.tsx            # Form input component
-│   │   ├── Modal.tsx            # Modal dialog component
-│   │   ├── QuickFilter.tsx      # Reusable quick filter component
-│   │   ├── ScoreDial.tsx        # Interactive lead scoring component
-│   │   ├── Select.tsx           # Dropdown select component
-│   │   ├── Table.tsx            # Data table component
-│   │   ├── Toast.tsx            # Toast notification component
-│   │   └── ToastContainer.tsx   # Toast notification container
-│   ├── DashboardPanel.tsx            # Left sidebar with navigation and filters
-│   ├── DeleteConfirmationModal.tsx  # Delete confirmation dialog
-│   ├── FormatSelectionModal.tsx     # Import/export format selection
-│   ├── LeadDetailPanel.tsx          # Lead details with inline editing
-│   ├── LeadFormModal.tsx            # Create/edit lead modal
-│   ├── LeadsList.tsx                # Main leads management with pagination
-│   ├── OpportunitiesList.tsx        # Opportunities management
-│   ├── OpportunityDetailPanel.tsx   # Opportunity details with inline editing
-│   ├── OpportunityFormModal.tsx     # Converting leads to opportunities
-│   ├── Pagination.tsx               # Pagination component
-│   └── Searchbox.tsx                # Search input component
-├── context/                       # React Context providers
-│   ├── AppContext.tsx            # Global state management
-│   └── NotificationContext.tsx   # Toast notification context
-├── hooks/                         # Custom React hooks
-│   ├── useDebounce.ts            # Debounced input hook
-│   ├── useFilterOptions.ts       # Filter options generation hook
-│   ├── useLeads.ts               # Lead management logic
-│   └── useOpportunities.ts       # Opportunity management logic
-├── services/                      # Business logic layer
-│   ├── api.ts                    # Mock API with latency simulation
-│   ├── fileService.ts            # File import/export functionality (leads only)
-│   └── storage.ts                # Local storage management
-├── utils/                         # Utility functions
-│   ├── dataTransform.ts          # Data manipulation and formatting
-│   └── validation.ts             # Form validation utilities
-├── types/                         # TypeScript definitions
-│   └── index.ts                  # All type definitions
-├── test/                          # Test files
-│   ├── components.test.tsx       # Component tests
-│   ├── setup.ts                  # Test setup configuration
-│   └── utils.test.ts             # Utility function tests
-├── data/                          # Sample data
-│   └── sampleLeads.json          # 100 sample leads for testing
-├── App.tsx                        # Main application component
-├── index.css                      # Global styles and Tailwind imports
-└── main.tsx                       # Application entry point
+├── components/                        # UI components
+│   ├── ui/                            # Reusable UI primitives
+│   │   ├── Badge.tsx                  # Status/stage badge component
+│   │   ├── Button.tsx                 # Button component with variants
+│   │   ├── ErrorBoundary.tsx          # React error boundary component
+│   │   ├── Filter.tsx                 # Reusable quick filter component
+│   │   ├── Footer.tsx                 # Application footer component
+│   │   ├── Input.tsx                  # Form input component
+│   │   ├── Modal.tsx                  # Modal dialog component
+│   │   ├── ScoreDial.tsx              # Interactive lead scoring component
+│   │   ├── Select.tsx                 # Dropdown select component
+│   │   ├── SidebarContent.tsx         # Reusable sidebar content wrapper
+│   │   ├── SidebarDataManagement.tsx  # Reusable data management UI
+│   │   ├── SidebarFilters.tsx         # Sidebar filter section
+│   │   ├── SidebarHeader.tsx          # Sidebar header with branding
+│   │   ├── SidebarNavigation.tsx      # Sidebar navigation section
+│   │   ├── Table.tsx                  # Data table component
+│   │   ├── Toast.tsx                  # Toast notification component
+│   │   └── ToastContainer.tsx         # Toast notification container
+│   ├── DashboardPanel.tsx             # Left sidebar with navigation and filters
+│   ├── DeleteConfirmationModal.tsx    # Delete confirmation dialog
+│   ├── FormatSelectionModal.tsx       # Import/export format selection
+│   ├── LeadDetailPanel.tsx            # Lead details with inline editing
+│   ├── LeadFormModal.tsx              # Create/edit lead modal
+│   ├── LeadsList.tsx                  # Main leads management with pagination
+│   ├── OpportunitiesList.tsx          # Opportunities management
+│   ├── OpportunityDetailPanel.tsx     # Opportunity details with inline editing
+│   ├── OpportunityFormModal.tsx       # Converting leads to opportunities
+│   ├── Pagination.tsx                 # Pagination component
+│   └── Searchbox.tsx                  # Search input component
+├── context/                           # React Context providers
+│   ├── AppContext.tsx                 # Global state management
+│   └── NotificationContext.tsx        # Toast notification context
+├── hooks/                             # Custom React hooks
+│   ├── useDebounce.ts                 # Debounced input hook
+│   ├── useFilterOptions.ts            # Filter options generation hook
+│   ├── useFocusManagement.ts          # Focus management hook
+│   ├── useKeyboardNavigation.ts       # Keyboard navigation hook
+│   ├── useLeads.ts                    # Lead management logic
+│   └── useOpportunities.ts            # Opportunity management logic
+├── services/                          # Business logic layer
+│   ├── api.ts                         # Mock API with latency simulation
+│   ├── fileService.ts                 # File import/export functionality (leads only)
+│   ├── ServiceContainer.ts            # Dependency injection container
+│   └── storage.ts                     # Local storage management
+├── utils/                             # Utility functions
+│   ├── dataTransform.ts               # Data manipulation and formatting
+│   └── validation.ts                  # Form validation utilities
+├── types/                             # TypeScript definitions
+│   └── index.ts                       # All type definitions
+├── test/                              # Test files
+│   ├── components.test.tsx            # Component tests
+│   ├── hooks.test.ts                  # Custom hooks tests
+│   ├── services.test.ts               # Services tests
+│   ├── setup.ts                       # Test setup configuration
+│   └── utils.test.ts                  # Utility function tests
+├── data/                              # Sample data
+│   └── sampleLeads.json               # 100 sample leads for testing
+├── App.tsx                            # Main application component
+├── index.css                          # Global styles and Tailwind imports
+└── main.tsx                           # Application entry point
 ```
 
 ### Design Principles
@@ -101,9 +111,33 @@ src/
 
 1. **Context API for State Management**: Chosen over Redux for simplicity and built-in React support
 2. **Custom Hooks for Logic**: Reusable business logic separated from UI components
-3. **Service Layer**: Clean separation between UI and data operations
-4. **Optimistic Updates**: Immediate UI feedback with rollback on failure
-5. **TypeScript Throughout**: Full type safety across the entire application
+3. **Service Layer with Dependency Injection**: Clean separation between UI and data operations using ServiceContainer pattern
+4. **Component Composition**: Modular sidebar components
+5. **Error Boundaries**: React Error Boundaries for graceful error handling
+6. **Accessibility-First**: Focus management, keyboard navigation, and ARIA attributes throughout
+7. **Optimistic Updates**: Immediate UI feedback with rollback on failure
+8. **TypeScript Throughout**: Full type safety across the entire application
+
+## 🛠️ Tech Stack
+
+### Core
+- **React 18** - UI library with hooks and concurrent features
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+
+### Development & Testing
+- **Vitest** - Unit testing framework
+- **@testing-library/react** - Component testing utilities
+- **ESLint** - Code linting with TypeScript and React plugins
+- **Lucide React** - SVG icon library
+
+### Architecture
+- **React Context API** - State management
+- **Custom Hooks** - Reusable stateful logic
+- **Service Container** - Dependency injection
+- **Local Storage** - Client-side persistence
+- **Mock API** - Simulated backend with latency
 
 ## 🛠️ Setup Instructions
 
@@ -174,9 +208,11 @@ interface Opportunity {
 
 ## 🧪 Testing
 
-The application includes comprehensive unit tests:
+The application includes comprehensive unit tests using Vitest:
 
 - **Utility Functions**: Validation, data transformation, formatting
+- **Custom Hooks**: useDebounce, useKeyboardNavigation, and other custom hooks
+- **Services**: API, file service, and storage service testing
 - **React Components**: UI component behavior and interactions
 - **Integration Tests**: End-to-end component integration
 
@@ -208,6 +244,8 @@ The application is built with a mobile-first approach:
 - **Debounced Search**: Efficient search with 300ms debounce
 - **Pagination**: Efficient data loading with 20 items per page
 - **Memoization**: React.memo and useMemo for expensive operations
+- **Component Composition**: Reusable components reducing bundle size
+- **Dependency Injection**: ServiceContainer pattern for efficient service management
 
 ## 🔒 Error Handling
 

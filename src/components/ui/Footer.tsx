@@ -1,13 +1,6 @@
-/**
- * Reusable footer component
- */
-
+import { FooterProps } from "@/types";
 import { Github, Globe, Linkedin } from 'lucide-react';
 import React from 'react';
-
-interface FooterProps {
-  className?: string;
-}
 
 const Footer: React.FC<FooterProps> = ({ className = '' }) => {
   return (

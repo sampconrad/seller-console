@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 // Core entity types
 export interface Lead {
   id: string;
@@ -140,6 +142,15 @@ export interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+}
+
+export interface BadgeProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
 export interface ButtonProps {
@@ -151,11 +162,207 @@ export interface ButtonProps {
   children: React.ReactNode;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
+  'aria-expanded'?: boolean;
+  'aria-pressed'?: boolean;
 }
 
-export interface HeaderProps {
+export interface SidebarDataManagementProps {
+  activeTab: 'leads' | 'opportunities';
+  onNewLead: () => void;
+  onImportClick: () => void;
+  onExportClick: () => void;
+  className?: string;
+}
+
+export interface FooterProps {
+  className?: string;
+}
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+  helperText?: string;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+}
+
+export interface FilterOption {
+  value: string;
+  label: string;
+  count: number;
+}
+
+export interface FilterProps {
+  options: FilterOption[];
+  activeValue: string;
+  onFilterChange: (value: string) => void;
+  type: 'lead' | 'opportunity';
+  className?: string;
+}
+
+export interface ScoreDialProps {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+  label?: string;
+  error?: string;
+  disabled?: boolean;
+  className?: string;
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  error?: string;
+  helperText?: string;
+  options: SelectOption[];
+  placeholder?: string;
+  leftIcon?: React.ReactNode;
+}
+
+export interface TableProps<T> {
+  data: T[];
+  columns: TableColumn<T>[];
+  onSort?: (field: keyof T, direction: 'asc' | 'desc') => void;
+  sortField?: keyof T;
+  sortDirection?: 'asc' | 'desc';
+  loading?: boolean;
+  emptyMessage?: string;
+  onRowClick?: (item: T) => void;
+  className?: string;
+}
+
+export interface DashboardPanelProps {
   activeTab: 'leads' | 'opportunities';
   onTabChange: (tab: 'leads' | 'opportunities') => void;
+  onImportLeads: (format: 'json' | 'csv') => void;
+  onExportLeads: (format: 'json' | 'csv') => void;
+  onNewLead: () => void;
+}
+
+export interface DeleteConfirmationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+  itemName?: string;
+  isLoading?: boolean;
+}
+
+export interface FormatSelectionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onFormatSelect: (format: 'json' | 'csv') => void;
+  title: string;
+  description: string;
+}
+
+export interface LeadDetailPanelProps {
+  lead: Lead | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onConvert: (lead: Lead) => void;
+}
+
+export interface LeadFormModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  lead?: Lead | null;
+  mode: 'create' | 'edit';
+}
+
+export interface LeadsListProps {
+  onLeadSelect: (lead: Lead) => void;
+  onNewLeadRef?: React.MutableRefObject<(() => void) | null>;
+}
+
+export interface OpportunityDetailPanelProps {
+  opportunity: Opportunity | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface OpportunityFormModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
+  lead: Lead | null;
+}
+
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  onPreviousPage: () => void;
+  onNextPage: () => void;
+}
+
+export interface FilterOption {
+  value: string;
+  label: string;
+}
+
+export interface SearchboxProps {
+  searchValue: string;
+  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchClear?: () => void;
+  searchPlaceholder?: string;
+  totalItems: number;
+  itemLabel: string;
+  className?: string;
+  // Pagination data for "Showing X to Y of Z results"
+  currentPage?: number;
+  itemsPerPage?: number;
+}
+
+export interface SidebarContentProps {
+  activeTab: 'leads' | 'opportunities';
+  onTabChange: (tab: 'leads' | 'opportunities') => void;
+  leadStatusOptions: FilterOption[];
+  opportunityStageOptions: FilterOption[];
+  leadFilters: { status: LeadStatus | 'all' };
+  opportunityFilters: { stage: OpportunityStage | 'all' };
+  onLeadFilterChange: (value: LeadStatus | 'all') => void;
+  onOpportunityFilterChange: (value: OpportunityStage | 'all') => void;
+  onNewLead: () => void;
+  onImportClick: () => void;
+  onExportClick: () => void;
+  onMobileClose?: () => void;
+}
+
+export interface SidebarFiltersProps {
+  activeTab: 'leads' | 'opportunities';
+  leadStatusOptions: FilterOption[];
+  opportunityStageOptions: FilterOption[];
+  leadFilters: { status: LeadStatus | 'all' };
+  opportunityFilters: { stage: OpportunityStage | 'all' };
+  onLeadFilterChange: (value: LeadStatus | 'all') => void;
+  onOpportunityFilterChange: (value: OpportunityStage | 'all') => void;
+  onMobileClose?: () => void;
+}
+
+export interface SidebarHeaderProps {
+  variant: 'mobile' | 'desktop';
+  onClose?: () => void;
+}
+
+export interface SidebarNavigationProps {
+  activeTab: 'leads' | 'opportunities';
+  onTabChange: (tab: 'leads' | 'opportunities') => void;
+  onMobileClose?: () => void;
+}
+
+export interface ValidationError {
+  field: string;
+  message: string;
 }
 
 // Hook return types
@@ -184,4 +391,17 @@ export interface UseOpportunitiesReturn {
   updateSort: (field: keyof Opportunity, direction: 'asc' | 'desc') => void;
   updateOpportunity: (id: string, updates: Partial<Opportunity>) => Promise<void>;
   deleteOpportunity: (id: string) => Promise<void>;
+}
+
+// Keyboard navigation types
+export interface KeyboardNavigationOptions {
+  onEnter?: () => void;
+  onEscape?: () => void;
+  onArrowUp?: () => void;
+  onArrowDown?: () => void;
+  onArrowLeft?: () => void;
+  onArrowRight?: () => void;
+  onTab?: () => void;
+  onShiftTab?: () => void;
+  enabled?: boolean;
 }

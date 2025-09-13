@@ -3,14 +3,8 @@
  */
 
 import { useApp } from '@/context/AppContext';
-import { LeadStatus, OpportunityStage } from '@/types';
+import { FilterOption, LeadStatus, OpportunityStage } from '@/types';
 import { useMemo } from 'react';
-
-interface FilterOption {
-  value: string;
-  label: string;
-  count: number;
-}
 
 export const useFilterOptions = () => {
   const { state } = useApp();

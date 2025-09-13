@@ -6,16 +6,7 @@ import { AlertTriangle } from 'lucide-react';
 import React from 'react';
 import Button from './ui/Button';
 import Modal from './ui/Modal';
-
-interface DeleteConfirmationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  itemName?: string;
-  isLoading?: boolean;
-}
+import { DeleteConfirmationModalProps } from '@/types';
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   isOpen,

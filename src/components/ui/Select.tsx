@@ -1,19 +1,6 @@
+import { SelectProps } from "@/types";
 import { ChevronDown } from 'lucide-react';
-import React, { forwardRef } from 'react';
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
-
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  label?: string;
-  error?: string;
-  helperText?: string;
-  options: SelectOption[];
-  placeholder?: string;
-  leftIcon?: React.ReactNode;
-}
+import { forwardRef } from 'react';
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, helperText, options, placeholder, leftIcon, className = '', ...props }, ref) => {

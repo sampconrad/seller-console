@@ -7,10 +7,12 @@ import LeadDetailPanel from '@/components/LeadDetailPanel';
 import LeadsList from '@/components/LeadsList';
 import OpportunitiesList from '@/components/OpportunitiesList';
 import OpportunityFormModal from '@/components/OpportunityFormModal';
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import ToastContainer from '@/components/ui/ToastContainer';
 import { AppProvider } from '@/context/AppContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import { useLeads } from '@/hooks/useLeads';
+import { ServiceProvider } from '@/services/ServiceContainer';
 import { Lead } from '@/types';
 import React, { useRef, useState } from 'react';
 
@@ -113,11 +115,15 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <AppProvider>
-      <NotificationProvider>
-        <AppContent />
-      </NotificationProvider>
-    </AppProvider>
+    <ErrorBoundary>
+      <ServiceProvider>
+        <AppProvider>
+          <NotificationProvider>
+            <AppContent />
+          </NotificationProvider>
+        </AppProvider>
+      </ServiceProvider>
+    </ErrorBoundary>
   );
 };
 
