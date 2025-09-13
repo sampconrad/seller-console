@@ -127,6 +127,18 @@ src/
 7. **Optimistic Updates**: Immediate UI feedback with rollback on failure
 8. **TypeScript Throughout**: Full type safety across the entire application
 
+## 🛠️ Tech Stack
+
+- **React 18** - UI library with hooks and context
+- **TypeScript** - Type safety and developer experience
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vite** - Fast build tool and dev server
+- **Vitest** - Fast unit testing framework
+- **React Testing Library** - React component testing utilities
+- **Lucide React** - Icon library
+- **ESLint** - Code linting and best practices
+- **Prettier** - Code formatting
+
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
@@ -225,15 +237,3 @@ npm run test
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🛠️ Tech Stack
-
-- **React 18** - UI library with hooks and context
-- **TypeScript** - Type safety and developer experience
-- **Tailwind CSS** - Utility-first CSS framework
-- **Vite** - Fast build tool and dev server
-- **Vitest** - Fast unit testing framework
-- **React Testing Library** - React component testing utilities
-- **Lucide React** - Icon library
-- **ESLint** - Code linting and best practices
-- **Prettier** - Code formatting
