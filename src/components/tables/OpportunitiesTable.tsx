@@ -187,9 +187,9 @@ const OpportunitiesTable: React.FC = memo(() => {
   ];
 
   return (
-    <div className='h-full flex flex-col max-w-full'>
+    <div className='h-full flex flex-col max-w-full min-h-0'>
       {/* Header - Hidden on mobile, shown on lg+ */}
-      <div className='hidden lg:block w-full text-left mb-6'>
+      <div className='hidden lg:block w-full text-left mb-6 flex-shrink-0'>
         <div className='flex items-center space-x-3 mb-2'>
           <TrendingUp className='w-8 h-8 text-green-600' />
           <h1 className='text-2xl font-bold text-gray-900'>Opportunities</h1>
@@ -199,16 +199,18 @@ const OpportunitiesTable: React.FC = memo(() => {
         </p>
       </div>
 
-      <Searchbox
-        searchValue={searchValue}
-        onSearchChange={handleSearchChange}
-        onSearchClear={handleSearchClear}
-        searchPlaceholder='Search opportunities by name or company...'
-        totalItems={sortedOpportunities.length}
-        itemLabel='opportunity'
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-      />
+      <div className='flex-shrink-0'>
+        <Searchbox
+          searchValue={searchValue}
+          onSearchChange={handleSearchChange}
+          onSearchClear={handleSearchClear}
+          searchPlaceholder='Search opportunities by name or company...'
+          totalItems={sortedOpportunities.length}
+          itemLabel='opportunity'
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+        />
+      </div>
 
       {/* Table Container - Takes remaining space */}
       <div className='flex-1 min-h-0 flex flex-col'>
@@ -227,13 +229,15 @@ const OpportunitiesTable: React.FC = memo(() => {
         </div>
       </div>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        onPreviousPage={handlePreviousPage}
-        onNextPage={handleNextPage}
-      />
+      <div className='flex-shrink-0'>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          onPreviousPage={handlePreviousPage}
+          onNextPage={handleNextPage}
+        />
+      </div>
 
       <DeleteModal
         isOpen={isDeleteModalOpen}

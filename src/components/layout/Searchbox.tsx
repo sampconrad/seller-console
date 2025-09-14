@@ -19,8 +19,8 @@ const Searchbox: React.FC<SearchboxProps> = ({
   itemsPerPage = 20,
 }) => {
   return (
-    <div className={`py-4 ${className}`}>
-      <div className='space-y-3'>
+    <div className={`sm:pt-4 ${className}`}>
+      <div className='space-y-2 mb-2 sm:space-y-3 sm:mb-3'>
         <Input
           placeholder={searchPlaceholder}
           value={searchValue}

@@ -146,9 +146,9 @@ const LeadsTable: React.FC<LeadsTableProps> = memo(
     ];
 
     return (
-      <div className='h-full flex flex-col max-w-full'>
+      <div className='h-full flex flex-col max-w-full min-h-0'>
         {/* Header - Hidden on mobile, shown on lg+ */}
-        <div className='hidden lg:block w-full text-left mb-6'>
+        <div className='hidden lg:block w-full text-left mb-6 flex-shrink-0'>
           <div className='flex items-center space-x-3 mb-2'>
             <Users className='w-8 h-8 text-blue-600' />
             <h1 className='text-2xl font-bold text-gray-900'>Leads</h1>
@@ -158,16 +158,18 @@ const LeadsTable: React.FC<LeadsTableProps> = memo(
           </p>
         </div>
 
-        <Searchbox
-          searchValue={searchValue}
-          onSearchChange={handleSearchChange}
-          onSearchClear={handleSearchClear}
-          searchPlaceholder='Search leads by name or company...'
-          totalItems={leads.length}
-          itemLabel='lead'
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-        />
+        <div className='flex-shrink-0'>
+          <Searchbox
+            searchValue={searchValue}
+            onSearchChange={handleSearchChange}
+            onSearchClear={handleSearchClear}
+            searchPlaceholder='Search leads by name or company...'
+            totalItems={leads.length}
+            itemLabel='lead'
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+          />
+        </div>
 
         {/* Table Container - Takes remaining space */}
         <div className='flex-1 min-h-0 flex flex-col'>
@@ -186,13 +188,15 @@ const LeadsTable: React.FC<LeadsTableProps> = memo(
           </div>
         </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          onPreviousPage={handlePreviousPage}
-          onNextPage={handleNextPage}
-        />
+        <div className='flex-shrink-0'>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            onPreviousPage={handlePreviousPage}
+            onNextPage={handleNextPage}
+          />
+        </div>
 
         <LeadForm
           isOpen={isLeadFormOpen}
