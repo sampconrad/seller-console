@@ -41,7 +41,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 overflow-y-auto ${
+      className={`fixed inset-0 z-50 overflow-hidden ${
         isOpen ? 'pointer-events-auto' : 'pointer-events-none'
       }`}
     >
@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal */}
-      <div className='flex h-screen xxs:min-h-screen xxs:max-h-screen items-stretch xxs:items-center justify-center p-0 xxs:p-4'>
+      <div className='flex h-full xxs:min-h-screen xxs:max-h-screen items-stretch xxs:items-center justify-center p-0 xxs:p-4'>
         <div
           ref={containerRef}
           className='relative bg-white rounded-none xxs:rounded-lg shadow-xl max-w-lg w-full h-full xxs:max-h-[90vh] xxs:h-auto overflow-hidden transform transition-all duration-200 ease-out flex flex-col'
