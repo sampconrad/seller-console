@@ -55,10 +55,10 @@ const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal */}
-      <div className='flex h-screen xxs:min-h-full max-h-screen items-stretch xxs:items-center justify-center p-0 xxs:p-4'>
+      <div className='flex h-screen xxs:min-h-screen xxs:max-h-screen items-stretch xxs:items-center justify-center p-0 xxs:p-4'>
         <div
           ref={containerRef}
-          className='relative bg-white rounded-none xxs:rounded-lg shadow-xl max-w-lg w-full h-screen xxs:max-h-[90vh] xxs:h-auto overflow-hidden transform transition-all duration-200 ease-out'
+          className='relative bg-white rounded-none xxs:rounded-lg shadow-xl max-w-lg w-full h-full xxs:max-h-[90vh] xxs:h-auto overflow-hidden transform transition-all duration-200 ease-out flex flex-col'
           style={{
             transform: isOpen ? 'scale(1)' : 'scale(0.8)',
             opacity: isOpen ? 1 : 0,
@@ -69,38 +69,36 @@ const Modal: React.FC<ModalProps> = ({
           aria-describedby={ariaDescribedBy}
           tabIndex={-1}
         >
-          <div className='h-full flex flex-col'>
-            {/* Header */}
-            <div className='flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0'>
-              <h3
-                id={ariaLabelledBy}
-                className='text-lg font-semibold text-gray-900'
-              >
-                {title}
-              </h3>
-              <button
-                ref={closeButtonRef}
-                onClick={onClose}
-                className='text-gray-400 hover:text-gray-600 transition-colors'
-                aria-label='Close modal'
-                type='button'
-              >
-                <X className='w-6 h-6' aria-hidden='true' />
-              </button>
-            </div>
-
-            {/* Content */}
-            <div className='flex-1 overflow-y-auto p-6 max-h-[calc(100vh-200px)] xxs:max-h-[calc(90vh-200px)]'>
-              {children}
-            </div>
-
-            {/* Footer */}
-            {footer && (
-              <div className='flex-shrink-0 border-t border-gray-200 bg-white'>
-                {footer}
-              </div>
-            )}
+          {/* Header */}
+          <div className='flex items-center justify-between p-4 xxs:p-6 border-b border-gray-200 flex-shrink-0'>
+            <h3
+              id={ariaLabelledBy}
+              className='text-lg font-semibold text-gray-900'
+            >
+              {title}
+            </h3>
+            <button
+              ref={closeButtonRef}
+              onClick={onClose}
+              className='text-gray-400 hover:text-gray-600 transition-colors'
+              aria-label='Close modal'
+              type='button'
+            >
+              <X className='w-6 h-6' aria-hidden='true' />
+            </button>
           </div>
+
+          {/* Content */}
+          <div className='flex-1 overflow-y-auto p-4 xxs:p-6 min-h-0'>
+            {children}
+          </div>
+
+          {/* Footer */}
+          {footer && (
+            <div className='flex-shrink-0 border-t border-gray-200 bg-white'>
+              {footer}
+            </div>
+          )}
         </div>
       </div>
     </div>

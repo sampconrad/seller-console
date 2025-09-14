@@ -22,7 +22,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   };
 
   const footer = (
-    <div className='p-6 flex flex-col'>
+    <div className='p-4 sm:p-6 flex flex-col'>
       <Button
         type='button'
         variant='secondary'
